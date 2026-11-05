@@ -79,6 +79,8 @@ def setup(dbo, admin, rescue_password):
     import asm3.users
     import ynh_oidc
     ynh_oidc.setup(dbo)
+    import ynh_mfa
+    ynh_mfa.setup(dbo)
     dbo.execute("CREATE TABLE IF NOT EXISTS ynh_auth_identity (Subject VARCHAR(64) PRIMARY KEY, UserID INTEGER NOT NULL UNIQUE)")
     dbo.execute("CREATE TABLE IF NOT EXISTS ynh_auth_config (Name VARCHAR(64) PRIMARY KEY, Value VARCHAR(255) NOT NULL)")
     if not dbo.query("SELECT Value FROM ynh_auth_config WHERE Name='default_role'"):
@@ -223,6 +225,8 @@ def processor(session, installpath):
         path = web.ctx.path
         if path.startswith("/static/") or path in PUBLIC_PATHS:
             return handler()
+        if web.ctx.path.startswith("/auth/mfa") or session.get("mfa_pending"):
+            return handler()
         uid = web.ctx.env.get("asm3.ynh_user", "")
         params = web.input()
         if path in ("/logout", "/mobile_logout") and session.get("user"):
@@ -252,6 +256,10 @@ def processor(session, installpath):
             else:
                 return handler()
         if not uid:
+            if not session.get("user") and path in ("/", "/login") and web.ctx.method == "GET":
+                cfg = ynh_oidc.config()
+                if cfg.get("enabled") and cfg.get("managed_by") == "asm3-dex":
+                    raise web.seeother(BASE_URL + "/oidc/login")
             if session.get("ynh_source") == "sso":
                 reset_session(session)
             if path == "/ynh_sso":
@@ -270,14 +278,15 @@ def processor(session, installpath):
             if not asm3.users.authenticate_ip(user, web.ctx.ip):
                 raise AccessDenied("ASM3 IP restriction denied access")
             same = session.get("ynh_subject") == person["subject"] and session.get("ynh_source") == "sso"
+            import ynh_mfa
             if not same:
-                if (user.get("ENABLETOTP", 0) and session.get("ynh_pending_subject") == person["subject"]
+                if (not ynh_mfa.enforced() and user.get("ENABLETOTP", 0) and session.get("ynh_pending_subject") == person["subject"]
                         and session.get("ynh_challenge_expires", 0) >= time.time()):
                     if path in ("/login", "/mobile_login", "/config.js"):
                         return handler()
                     raise web.seeother(BASE_URL + "/login")
                 reset_session(session)
-                if user.get("ENABLETOTP", 0):
+                if user.get("ENABLETOTP", 0) and not ynh_mfa.enforced():
                     session.ynh_pending_subject = person["subject"]
                     session.ynh_pending_uid = person["uid"]
                     session.ynh_login_token = secrets.token_urlsafe(32)

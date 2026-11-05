@@ -70,39 +70,10 @@ Fuentes: [Google OIDC](https://developers.google.com/identity/openid-connect/ope
 
 ## Configurar Dex en YunoHost
 
-Para iniciar sesión usa `ASM3/oidc/login`: la raíz de Dex puede mostrar únicamente
-un mensaje informativo. El flujo OIDC se inicia desde el cliente, con state y PKCE.
-
-1. Instala Dex desde el catálogo y conserva su conector LDAP existente. Usa el
-   dominio/ruta que hayas registrado, por ejemplo `https://identidad.example.org/dex`.
-2. Consulta la ruta real con `sudo yunohost app setting dex install_dir`.
-3. Su paquete genera `config.yaml` desde `config.yaml.head` y los fragmentos de
-   `config.yaml.d`. Añade clientes en el directorio de fragmentos; no edites el
-   archivo generado esperando conservar el cambio. Los conectores se añaden a la
-   lista existente de `config.yaml.head`; conserva LDAP, almacenamiento y puertos.
-4. Usa [el fragmento de cliente ASM3](examples/dex-asm3-client.yaml), reemplazando
-   dominio y ruta del callback. Deja la línea inicial vacía, como pide el paquete.
-5. Define `ASM3_DEX_CLIENT_SECRET` mediante un EnvironmentFile root 0600 para el
-   servicio Dex. Usa el mismo secreto en el archivo OIDC protegido de ASM3.
-   `secretEnv` es una función de Dex; no es una variable que ASM3 expanda.
-6. Fusiona [los conectores sociales](examples/dex-social-connectors.yaml) en
-   `config.yaml.head`. Registra las tres aplicaciones externas y define sus seis
-   variables de cliente/secreto en el entorno protegido del servicio Dex.
-7. Ejecuta el `regenerate_config.sh` instalado por el paquete Dex y reinicia su
-   servicio. Valida discovery. Conserva copia de la configuración personalizada
-   y revisa los cambios de plantillas del paquete al actualizar Dex.
-8. Parte de [asm3-dex.json](examples/asm3-dex.json), completa credenciales y listas
-   de autorización, cambia `enabled` a true y aplica con `manage_oidc.py` siguiendo
-   [OIDC.md](OIDC.md). Las plantillas están desactivadas y sin secretos reales.
-
-Las variables de entorno de los conectores son interpretadas por Dex. Un fragmento
-por sí solo no configura el servicio systemd ni registra las aplicaciones cloud.
-Protege el EnvironmentFile y sus copias; no lo añadas al repositorio.
-
-Fuentes del paquete: [plantilla Dex/YunoHost](https://github.com/YunoHost-Apps/dex_ynh/blob/master/conf/config.yaml.head),
-[administración](https://github.com/YunoHost-Apps/dex_ynh/blob/master/doc/ADMIN.md),
-[generador](https://github.com/YunoHost-Apps/dex_ynh/blob/master/sources/regenerate_config.sh),
-[clientes estáticos y secretEnv](https://dexidp.io/docs/configuration/custom-scopes-claims-clients/).
+Desde `51.1~ynh6`, el [panel integrado](DEX.md) crea el cliente ASM3 y los tres
+conectores sociales, protege los secretos y mantiene callbacks tras cambios de URL.
+Usa este panel para la integración gestionada. Los archivos de `examples/` son
+referencias para despliegues manuales y no deben duplicar sus conectores.
 
 ## Las dos clases de callback
 
@@ -136,29 +107,14 @@ Conectores: [Google](https://dexidp.io/docs/connectors/google/),
 [GitHub](https://dexidp.io/docs/connectors/github/),
 [Microsoft](https://dexidp.io/docs/connectors/microsoft/).
 
-## Dónde se exige el segundo factor
+## Segundo factor obligatorio en esta integración
 
-RS256/RS512 describen la firma del ID token, **no un segundo factor**. Conservar
-un login LDAP de contraseña en Dex no lo convierte en MFA. Exige MFA en el flujo
-que realmente autentica, o utiliza el TOTP de ASM3 ya soportado para el perfil.
-
-Para MFA central con acceso social, configura un flujo que no termine después de
-Google/GitHub/Microsoft sino que valide también el factor exigido por tu política.
-No deduzcas MFA solo de que existe un conector OAuth o de que la cuenta tiene un
-método 2FA inscrito. El cliente ASM3 actual no impone un valor `acr`/`amr` del IdP.
-
-Activar MFA en el IdP tampoco protege automáticamente `/ynh_sso`, que sigue siendo
-una entrada independiente. Si mantienes ambas entradas para los mismos perfiles,
-configura el TOTP de ASM3 que se comprueba en ambas y revisa quién tiene `staff`.
-La recuperación local debe conservarse para administración controlada.
-
-En Pocket ID selecciona **User verification: Required** si tu política exige PIN
-o biometría en cada acceso; `Preferred` también admite llaves de solo presencia.
-Consulta [sus políticas de passkeys](https://pocket-id.org/docs/guides/sign-in-methods).
-Pocket ID usa passkeys con verificación del usuario, no un segundo formulario
-TOTP sobre una contraseña LDAP. Su sincronización LDAP no autentica con la
-contraseña del directorio y no reemplaza la autorización inmediata de los vínculos
-LDAP de ASM3. Confirma las opciones disponibles en la versión del paquete instalado.
+Desde `~ynh6`, ASM3 exige inscribir y confirmar TOTP en todas las entradas privadas:
+Dex, OIDC directo, SSO/LDAP nativo y recuperación. No depende de las políticas
+MFA de los proveedores ni acepta `amr` como excepción. Las API por contraseña se
+bloquean. El panel YunoHost permite el alta social y restablecer un factor perdido;
+consulta [DEX.md](DEX.md). Los datos y sesiones siguen sometidos a roles, política
+OIDC y revocación LDAP en cada petición privada.
 
 ## Algoritmos y cuentas vinculadas
 

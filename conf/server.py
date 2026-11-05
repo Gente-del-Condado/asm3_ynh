@@ -70,6 +70,8 @@ if __name__ == "__main__":
     application = main.application
     if ynh_auth.enabled():
         main.app.add_processor(ynh_auth.processor(main.session, main.PATH))
+        import ynh_mfa
+        main.app.add_processor(ynh_mfa.processor(main.session, main.PATH))
     from web070.httpserver import StaticMiddleware
 
     if ynh_auth.enabled() and not get_string("ynh_proxy_secret"):

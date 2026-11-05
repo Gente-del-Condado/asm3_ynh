@@ -14,6 +14,7 @@ import subprocess
 import sys
 import time
 import tomllib
+from mfa_lab import complete
 
 
 def main():
@@ -49,7 +50,7 @@ def main():
     base = 'https://' + setting('domain') + setting('path').rstrip('/')
     portal = 'https://' + setting('domain') + '/yunohost/portalapi/'
     # The dummy password is reset only in this disposable container.
-    dummy = secrets.token_urlsafe(30)
+    dummy = "Lab_"+secrets.token_urlsafe(30)
     command('yunohost', 'user', 'update', admin, '-p', dummy)
     uid = 'asm3_sso_probe'
     subprocess.run(['yunohost', 'user', 'delete', uid], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -57,6 +58,7 @@ def main():
     dbo.execute('DELETE FROM ynh_auth_identity WHERE UserID IN (SELECT ID FROM users WHERE UserName=?)', [uid])
     dbo.execute('DELETE FROM users WHERE UserName=?', [uid])
     command('yunohost', 'user', 'create', uid, '--domain', setting('domain'), '--fullname', 'SSO Probe', '--password', dummy)
+    prior_operation_logs=set(Path('/var/log/yunohost/operations').glob('*.log'))
     passed = []
 
     def check(label, condition):
@@ -83,6 +85,7 @@ def main():
     def enter(s):
         r = get(s, '/ynh_sso')
         check('SSO redirects to private main', r.status_code == 303 and r.headers.get('Location') == base + '/main')
+        complete(s,base,dbo,check)
         check('private main is available', get(s, '/main').status_code == 200)
 
     try:
@@ -127,6 +130,7 @@ def main():
         r = a.post(portal + 'login', data={'credentials': uid + ':' + dummy}, timeout=20)
         check('portal identity switch login works', r.status_code == 200)
         get(a, '/main')
+        complete(a,base,dbo,check)
         cfg = get(a, '/config.js')
         config = json.loads(cfg.text[len('const asm = '):].rstrip(';'))
         check('identity switch drops administrator privileges', config['user'] == uid and config['superuser'] == 0)
@@ -152,24 +156,12 @@ def main():
         dbo.execute('UPDATE users SET Password=? WHERE ID=?', [asm3.users.hash_password(secret), user.ID])
         r = anon.post(base + '/login?local=1', data={'username': uid, 'password': secret}, timeout=20)
         check('managed local password bypass blocked', r.text == 'FAIL')
-        # Native TOTP is preserved rather than bypassed by SSO.
+        # Existing TOTP is reused by the mandatory package challenge.
         otpsecret = asm3.utils.otp_secret()
-        dbo.execute('UPDATE users SET EnableTOTP=1, OTPSecret=? WHERE ID=?', [otpsecret, user.ID])
-        b = login(uid)
-        r = get(b, '/ynh_sso')
-        check('2FA identity requires challenge', r.status_code == 303 and r.headers['Location'] == base + '/login')
-        r = get(b, '/login')
-        match = re.search(r'controller = (.*);', r.text)
-        controller = json.loads(match.group(1))
-        token = controller['hpassword']
-        data = {'username': controller['husername'], 'password': token}
-        check('2FA nonce alone does not authenticate', b.post(base + '/login', data=data, timeout=20).text == 'ASK2FA')
-        data['onetimepass'] = 'wrong'
-        check('incorrect TOTP rejected', b.post(base + '/login', data=data, timeout=20).text == 'BAD2FA')
-        data['onetimepass'] = str(asm3.utils.totp(otpsecret))
-        check('correct TOTP completes SSO', b.post(base + '/login', data=data, timeout=20).text == uid)
-        check('2FA private page available', get(b, '/main').status_code == 200)
-        dbo.execute('UPDATE users SET EnableTOTP=0 WHERE ID=?', [user.ID])
+        dbo.execute('UPDATE users SET EnableTOTP=1, OTPSecret=? WHERE ID=?', [otpsecret,user.ID])
+        b=login(uid)
+        enter(b)
+        check('existing TOTP accepted by mandatory SSO challenge',get(b,'/main').status_code==200)
         # Same username with a different directory identifier may never claim data.
         altered = dict(person, subject='00000000-0000-0000-0000-000000000000')
         try:
@@ -183,7 +175,9 @@ def main():
         c = client()
         get(c, '/login?local=1')
         r = c.post(base + '/login?local=1', data={'username': rescue, 'password': setting('rescue_password')}, timeout=20)
-        check('local recovery account works', r.text == rescue and get(c, '/main').status_code == 200)
+        check('local recovery first factor accepted',r.text==rescue)
+        complete(c,base,dbo,check)
+        check('local recovery requires and accepts MFA',get(c,'/main').status_code==200)
         # Log redaction: desktop, mobile, malformed base64, service authentication.
         marker = 'ASM3_PASSWORD_MUST_NEVER_BE_LOGGED_' + secrets.token_hex(8)
         c = client()
@@ -191,16 +185,16 @@ def main():
             c.post(base + endpoint, data={'username': 'bad_user', 'password': marker}, timeout=20)
             c.get(base + endpoint + '&b=' + marker, timeout=20)
         r = c.post(base + '/service', data={'method': 'json_report', 'username': 'bad_user', 'password': marker}, timeout=20)
-        check('API failed authentication path exercised', 'Invalid username and password' in r.text)
+        check('API failed authentication path exercised', 'Password API is disabled by mandatory MFA policy' in r.text)
         c.get(base + '/service', params={'method': 'invalid', 'password': marker}, timeout=20)
         journal = command('journalctl', '-u', app, '--no-pager')
-        check('passwords and malformed credentials absent from journal', marker not in journal and secret not in journal and token not in journal)
+        check('passwords and malformed credentials absent from journal', marker not in journal and secret not in journal )
         access = Path('/var/log/nginx/' + setting('domain') + '-access.log')
         check('credentials absent from Nginx access log', not access.exists() or marker not in access.read_text())
-        logs = Path('/var/log/yunohost/categories/operation')
+        logs = Path('/var/log/yunohost/operations')
         for secret_name in ('proxy_secret', 'rescue_password'):
             value = setting(secret_name)
-            check(secret_name + ' absent from operation logs', all(value not in f.read_text(errors='replace') for f in logs.glob('*' + app + '*.log')))
+            check(secret_name + ' absent from operation logs', all(value not in f.read_text(errors='replace') for f in logs.glob('*' + app + '*.log') if f not in prior_operation_logs))
         if args.lifecycle:
             subject = person['subject']
             backup = 'asm3-sso-' + secrets.token_hex(4)

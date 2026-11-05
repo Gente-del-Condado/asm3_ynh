@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eu
+if [[ "${YNH_APP_ID:-}" != dex ]]; then exit 0; fi
+owner=${0##*/}
+owner=${owner#*-}
+install_dir=$(yunohost app setting "$owner" install_dir)
+if [ -f "$install_dir/ynh/manage_identity.py" ]; then
+    PYTHONDONTWRITEBYTECODE=1 ASM3_CONF="$install_dir/asm3.conf" python3 "$install_dir/ynh/manage_identity.py" reconcile --app "$owner" --install-dir "$install_dir"
+fi

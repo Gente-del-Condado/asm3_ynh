@@ -1,19 +1,19 @@
 {
     "app": "asm3",
-    "app_version": "51.1~ynh5",
-    "commit": "65a5dae161f0e18d108cfa988a37f90a75be1346",
-    "commit_timestamp": 1793882281,
+    "app_version": "51.1~ynh6",
+    "commit": "de6d3053e03742f0d2c45a3e28cce705833c2e8a",
+    "commit_timestamp": 1793889410,
     "architecture": "amd64",
     "yunohost_version": "12.1.41.2",
     "yunohost_branch": "stable",
-    "timestamp": 1793883181,
+    "timestamp": 1793890825,
     "tests": [
         {
             "test_type": "TEST_PACKAGE_LINTER",
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "2",
+            "test_duration": "25",
             "test_notes": [
                 "<style=warning>2 warnings</style>",
                 "2 possible improvements"
@@ -24,7 +24,7 @@
             "test_arg": "root",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "151",
+            "test_duration": "334",
             "test_notes": []
         },
         {
@@ -32,7 +32,7 @@
             "test_arg": "subdir",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "130",
+            "test_duration": "251",
             "test_notes": []
         },
         {
@@ -40,7 +40,7 @@
             "test_arg": "multi",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "103",
+            "test_duration": "175",
             "test_notes": []
         },
         {
@@ -48,7 +48,7 @@
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "281",
+            "test_duration": "309",
             "test_notes": []
         },
         {
@@ -56,7 +56,7 @@
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "42",
+            "test_duration": "47",
             "test_notes": []
         },
         {
@@ -64,7 +64,7 @@
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "148",
+            "test_duration": "143",
             "test_notes": []
         }
     ],

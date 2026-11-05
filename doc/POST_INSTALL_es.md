@@ -12,3 +12,7 @@ No la compartas ni la incluyas en registros. Las cuentas de ejemplo están desha
 Configura organización, zona horaria y correo en ASM3. El SMTP local ya está configurado.
 
 OpenID Connect opcional: configura un cliente registrado siguiendo `doc/OIDC.md`. El SSO nativo permanece disponible.
+
+TOTP es obligatorio en todos los accesos privados. Inscribe el factor al entrar.
+Google/GitHub/Microsoft: instala Dex y configura sus clientes en el panel de ASM3
+de YunoHost. El mismo panel permite restablecer un factor perdido. Guía: `doc/DEX.md`.

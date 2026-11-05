@@ -107,9 +107,34 @@ El informe queda en `/root/asm3-oidc-results.json`. No usar en producción: camb
 usuarios, permisos, configuración y, con `--lifecycle`, elimina la aplicación.
 Las claves y secretos del proveedor se generan durante la prueba, no van en Git.
 
+## Dex real y MFA obligatorio (solo laboratorio desechable)
+
+Instala primero el Dex oficial en el mismo servidor y ejecuta como root:
+
+```bash
+python3 tools/test_yunohost_dex.py --disposable-lab asm3 --lifecycle
+```
+
+Modifica credenciales de laboratorio, fuerza alta de factores, configura los tres
+conectores con fixtures, cambia permisos y URL, retira y restaura ASM3. No debe
+usarse en producción. Prueba Dex/LDAP completo, alta QR/TOTP, códigos reutilizados,
+CSRF, bloqueo persistente, restablecimiento root y revocación de sesiones/pending.
+Comprueba las URLs OAuth generadas por los tres conectores, sus callbacks y
+`User.Read` en Microsoft sin seguir los logins cloud.
+Verifica credenciales especiales en el proceso Dex sin mostrarlas, el getter,
+registros, permisos de archivos y coexistencia con un cliente de otra app.
+No inicia sesiones contra las cuentas cloud reales.
+
+Las suites SSO/OIDC usan `mfa_lab.py` para completar el factor tras el primer
+login. Solo el harness root desechable reinicia el contador TOTP entre logins para
+no esperar 30 segundos por cada caso; el código de producción nunca lo reinicia
+al autenticar. Los casos específicos Dex prueban replay y bloqueo sin ese ajuste.
+
 ## Estado de esta entrega
 
-Validación del **5 de noviembre de 2026**, revisión **51.1~ynh5**.
+Validación del **5 de noviembre de 2026**, revisión **51.1~ynh6**.
+Las suites incluyen ahora la puerta MFA obligatoria y el Dex real; los recuentos
+actuales y sus límites se detallan en la evidencia.
 La evidencia definitiva está en [validation/README.md](validation/README.md).
 El laboratorio y las imágenes exactas se describen en [LAB.md](LAB.md).
 

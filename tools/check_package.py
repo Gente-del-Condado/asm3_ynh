@@ -25,8 +25,11 @@ def main():
     assert manifest["integration"]["helpers_version"] == "2.1"
     test_manifest = tomllib.loads((ROOT / "tests.toml").read_text())
     jsonschema.validate(test_manifest, json.loads((ROOT / "tests/schemas/tests.v1.schema.json").read_text()))
+    panel = tomllib.loads((ROOT / "config_panel.toml").read_text())
+    jsonschema.validate(panel, json.loads((ROOT / "tests/schemas/config_panel.v1.schema.json").read_text()))
     scripts = [str(p) for p in sorted((ROOT / "scripts").iterdir())]
     scripts += [str(p) for p in sorted((ROOT / "tools").glob("*.sh"))]
+    scripts += [str(p) for p in sorted((ROOT / "hooks").iterdir())]
     for script in scripts:
         subprocess.run(["bash", "-n", script], check=True)
         assert Path(script).stat().st_mode & 0o111, f"Not executable: {script}"

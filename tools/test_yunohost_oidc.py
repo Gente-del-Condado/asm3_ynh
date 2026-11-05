@@ -16,6 +16,7 @@ import time
 from urllib.parse import parse_qs, urlencode, urlsplit
 
 from oidc_fixture import Provider
+from mfa_lab import complete
 
 
 def main():
@@ -51,7 +52,7 @@ def main():
     base = 'https://' + setting('domain') + setting('path').rstrip('/')
     portal = 'https://' + setting('domain') + '/yunohost/portalapi/'
     admin = setting('admin')
-    dummy = secrets.token_urlsafe(32)
+    dummy = "Lab_"+secrets.token_urlsafe(32)
     command('yunohost', 'user', 'update', admin, '-p', dummy)
     config_path = root/'oidc.json'
     previous = config_path.read_bytes()
@@ -103,9 +104,12 @@ def main():
         s = s or client()
         callback = initiate(s)
         r = s.get(callback, allow_redirects=False, timeout=20)
+        if r.status_code==303 and r.headers.get("Location")==base+"/main":
+            complete(s,base,dbo,check)
         return s, r, callback
 
     def app_config(s):
+        complete(s,base,dbo,check)
         r = get(s, '/config.js')
         assert r.status_code == 200
         return json.loads(r.text[len('const asm = '):].rstrip(';'))
@@ -188,21 +192,12 @@ def main():
         r = local.post(base+'/login?local=1',data={'username':username,'password':secret},timeout=20)
         check('OIDC profile local password bypass blocked', r.text=='FAIL')
         r = client().post(base+'/service',data={'method':'json_report','username':username,'password':secret},timeout=20)
-        check('OIDC profile cannot bypass login through password API', 'Invalid username and password' in r.text)
-        # Native ASM3 TOTP remains required for managed OIDC profiles.
+        check('OIDC profile cannot bypass login through password API', 'Password API is disabled by mandatory MFA policy' in r.text)
+        # Existing factors are reused by the mandatory package challenge.
         otp = asm3.utils.otp_secret()
         dbo.execute('UPDATE users SET EnableTOTP=1, OTPSecret=? WHERE ID=?', [otp,userid])
         s,r,_ = login()
-        check('OIDC identity with TOTP requires native challenge', r.status_code==303 and r.headers['Location']==base+'/login')
-        html = get(s,'/login').text
-        controller = json.loads(re.search(r'controller = (.*);',html).group(1))
-        fields = {'username':controller['husername'],'password':controller['hpassword']}
-        check('OIDC nonce does not bypass TOTP', s.post(base+'/login',data=fields,timeout=20).text=='ASK2FA')
-        fields['onetimepass']='wrong'
-        check('incorrect OIDC TOTP rejected', s.post(base+'/login',data=fields,timeout=20).text=='BAD2FA')
-        fields['onetimepass']=str(asm3.utils.totp(otp))
-        check('correct OIDC TOTP completes login', s.post(base+'/login',data=fields,timeout=20).text==username and get(s,'/main').status_code==200)
-        dbo.execute('UPDATE users SET EnableTOTP=0 WHERE ID=?',[userid])
+        check('OIDC reuses an existing factor through mandatory MFA', get(s,'/main').status_code==200)
         # Native portal authentication and OIDC can be selected independently.
         a=client()
         check('native portal remains available', a.post(portal+'login',data={'credentials':admin+':'+dummy},timeout=20).status_code==200)

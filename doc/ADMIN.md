@@ -48,3 +48,16 @@ backup before removal.
 See [OIDC.md](OIDC.md). Configuration is `__INSTALL_DIR__/oidc.json`, root:__APP__ 0640.
 Use `python3 __INSTALL_DIR__/ynh/manage_oidc.py --app __APP__ --config /root/oidc.json`.
 OIDC is disabled until you register and configure your identity provider client.
+
+## Dex and mandatory MFA
+
+Every private login, including native SSO and local recovery, requires TOTP.
+Enroll and confirm the factor at first login. Password APIs are disabled to
+prevent a second-factor bypass. Public adoption forms and services stay available
+according to ASM3 and YunoHost permissions.
+
+Install Dex from the catalog and use the ASM3 YunoHost configuration panel to
+configure Google, GitHub and Microsoft. Register the cloud clients yourself and
+use the Dex callback displayed in the panel. Empty allowlists deny external access.
+Only a YunoHost administrator/root can reset a lost MFA factor from this panel;
+resetting invalidates existing and pending sessions. See [DEX.md](DEX.md).

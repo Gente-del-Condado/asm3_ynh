@@ -1,5 +1,15 @@
 # Cambios del paquete
 
+## 51.1~ynh6 — 5 de noviembre de 2026
+
+- Integración gestionada de Dex oficial con Google, GitHub y Microsoft desde el panel YunoHost.
+- TOTP obligatorio y alta automática para SSO/LDAP, OIDC y cuentas locales; recuperación root sin bypass.
+- Códigos de uso único, bloqueo por intentos, CSRF, caducidad y revocación por época.
+- API por contraseña bloqueada; recuperación de contraseña conserva MFA.
+- Secretos de proveedores root 0600, getter sin secretos, actualización transaccional y hooks de reconciliación.
+- Se conservan otros clientes/conectores de Dex y el OIDC genérico RS256/RS512.
+- Pruebas portables a Python de Debian 12, extracción segura y charset utf8mb4 explícito en el servidor temporal.
+
 ## 51.1~ynh5 — 5 de noviembre de 2026
 
 - Algoritmo de ID token seleccionable RS256/RS512, fijado por cliente sin downgrade.

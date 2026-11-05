@@ -1,38 +1,64 @@
 {
-  "package_version": "51.1~ynh5",
+  "package_version": "51.1~ynh6",
   "tests": {
     "unit_local": {
-      "passed": 49,
+      "passed": 66,
       "failed": 0,
       "skipped": 0
     },
     "unit_debian12": {
-      "passed": 49,
+      "passed": 66,
       "failed": 0,
       "skipped": 0
     },
     "oidc_rs256": {
-      "passed": 115,
-      "lifecycle": "backup/remove/restore"
+      "passed": 127,
+      "lifecycle": "backup/remove/restore",
+      "mfa": "mandatory"
     },
     "oidc_rs512": {
-      "passed": 115,
-      "lifecycle": "backup/remove/restore"
+      "passed": 127,
+      "lifecycle": "backup/remove/restore",
+      "mfa": "mandatory"
     },
     "native_sso_ldap": {
-      "passed": 53,
-      "lifecycle": "backup/remove/restore"
+      "passed": 62,
+      "lifecycle": "backup/remove/restore",
+      "mfa": "mandatory"
     },
-    "native_mariadb_smoke": "passed, including session failure cleanup and password/email/error redaction",
-    "smtp_starttls_587": "passed as service user after restore; no email sent",
+    "real_dex": {
+      "passed": 50,
+      "version": "2.46.1~ynh1",
+      "lifecycle": "backup/remove/restore/change_url/hook/detach",
+      "first_factor": "actual Dex LDAP login",
+      "social": "actual Google/GitHub/Microsoft authorization redirects checked without following cloud login",
+      "microsoft": "Graph user.read scope verified"
+    },
+    "native_mariadb_smoke": "passed locally and Debian 12, including safe extraction, utf8mb4, partial-session cleanup, redaction, root/subpath HTTP, schema migrations, SQL/media restore",
+    "smtp_starttls_587": "passed as service user after restore; no email sent; required mail services started in appci lab",
     "pdf_as_service_user": {
       "passed": true,
-      "bytes": 4093
+      "bytes": 7681
     },
-    "provider_templates": "JSON/YAML syntax checked"
+    "mfa_browser_preview": "passed at default desktop viewport with fictional fixture data; QR loaded, no horizontal overflow, visible label and POST forms; no console warnings/errors",
+    "provider_templates": "JSON/YAML syntax checked",
+    "workflow_syntax": "GitHub and Forgejo YAML checked",
+    "credential_audit": {
+      "operation_and_upgrade_logs": 70,
+      "protected_credentials": 8,
+      "variants": [
+        "literal",
+        "JSON",
+        "URL encoded",
+        "shell quoted"
+      ],
+      "passed": true
+    }
   },
   "remote_ci_executed": false,
   "remote_repositories_published": false,
   "live_cloud_provider_logins_tested": false,
-  "dex_or_pocket_id_deployed": false
+  "cloud_registrations_created": false,
+  "dex_deployed": true,
+  "pocket_id_deployed": false
 }

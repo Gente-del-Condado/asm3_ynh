@@ -139,11 +139,11 @@ La entrada predeterminada sigue siendo el portal nativo. Un acceso explícito po
 OIDC cambia a la identidad OIDC; volver a `/ynh_sso` cambia a la identidad LDAP.
 Una cabecera del portal no sustituye una sesión OIDC seleccionada expresamente.
 Las cuentas vinculadas a OIDC no aceptan contraseñas locales ni contraseñas por API.
-Las integraciones API usan cuentas locales de servicio con permisos propios.
+Las API por contraseña están bloqueadas para todas las cuentas desde `~ynh6`.
 
-Se conserva el TOTP de ASM3: el token OIDC no permite saltarse un segundo factor
-ya activado. La limitación de alta de TOTP para cuentas gestionadas descrita en
-[SSO.md](SSO.md) sigue aplicándose.
+Desde `~ynh6` todos los perfiles deben inscribir y confirmar TOTP antes de acceder,
+aunque el proveedor afirme haber realizado MFA. Se reutilizan factores existentes.
+El panel YunoHost permite restablecerlos: [SSO.md](SSO.md) y [DEX.md](DEX.md).
 
 El servidor valida la firma con las claves del proveedor, emisor, audiencia única,
 `azp` si existe, caducidad, emisión, nonce y política de autorización. Cada transacción

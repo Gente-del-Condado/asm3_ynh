@@ -12,3 +12,7 @@ Do not share it or place it in logs. Default upstream accounts are disabled.
 Set organisation, timezone and email in ASM3. Local authenticated SMTP is configured.
 
 Optional OpenID Connect: configure a registered client following `doc/OIDC.md`. Native SSO stays available.
+
+TOTP is required for every private login. Enroll your factor when prompted.
+For Google/GitHub/Microsoft, install Dex and configure its clients through the ASM3
+YunoHost configuration panel. The same panel can reset a lost factor. See `doc/DEX.md`.

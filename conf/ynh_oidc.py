@@ -57,7 +57,7 @@ def config(path=None):
             raise ValueError()
         if method != 'none' and not data['client_secret']:
             raise ValueError()
-        for key in ('allowed_subjects', 'allowed_groups'):
+        for key in ('allowed_subjects', 'allowed_groups', 'allowed_emails', 'allowed_connectors'):
             data.setdefault(key, [])
             if not isinstance(data[key], list) or not all(isinstance(x, str) and x for x in data[key]):
                 raise ValueError()
@@ -130,10 +130,16 @@ def discovery(cfg):
 
 
 def allowed(cfg, claims):
+    connectors=cfg.get('allowed_connectors',[])
+    if connectors and (not isinstance(claims.get('federated_claims'),dict) or claims['federated_claims'].get('connector_id') not in connectors):
+        return False
     groups = claims.get(cfg['groups_claim'], [])
     if not isinstance(groups, list) or not all(isinstance(g, str) for g in groups):
         groups = []
-    return claims.get('sub') in cfg['allowed_subjects'] or bool(set(groups) & set(cfg['allowed_groups']))
+    email=claims.get('email')
+    email_allowed=(claims.get('email_verified') is True and isinstance(email,str)
+                   and email.lower() in {e.lower() for e in cfg.get('allowed_emails',[])})
+    return claims.get('sub') in cfg['allowed_subjects'] or bool(set(groups) & set(cfg['allowed_groups'])) or email_allowed
 
 
 def verify_token(cfg, metadata, token, nonce):
@@ -335,7 +341,7 @@ def callback(session, cfg, query, dbo, path):
     tokens = request_json(cfg, metadata['token_endpoint'], data=body, basic=basic)
     claims = verify_token(cfg, metadata, tokens.get('id_token'), transaction['nonce'])
     # Store only verified identity attributes; never store access/refresh/ID tokens.
-    keep = {k: claims[k] for k in ('iss', 'sub', 'iat', 'exp', 'name', 'email', 'email_verified', cfg['groups_claim']) if k in claims}
+    keep = {k: claims[k] for k in ('iss', 'sub', 'iat', 'exp', 'name', 'email', 'email_verified', 'federated_claims', cfg['groups_claim']) if k in claims}
     identity = {'claims': keep, 'fingerprint': fingerprint(cfg), 'key': identity_key(cfg['issuer'], claims['sub']),
                 'deadline': min(claims['exp'], time.time() + cfg['session_max_age'])}
     user = provision(dbo, cfg, claims)
@@ -343,7 +349,8 @@ def callback(session, cfg, query, dbo, path):
     import web070 as web
     if not asm3.users.authenticate_ip(user, web.ctx.ip):
         raise auth.AccessDenied('ASM3 IP restriction denied access')
-    if user.get('ENABLETOTP', 0):
+    import ynh_mfa
+    if user.get('ENABLETOTP', 0) and not ynh_mfa.enforced():
         auth.reset_session(session)
         session.oidc_identity = identity
         session.ynh_pending_provider = 'oidc'

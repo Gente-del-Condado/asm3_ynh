@@ -13,10 +13,8 @@
   "final_base_with_checker_preinstalled_dependencies": "950ecf6981aebbb1c84a9d375d2f5b7d998eb4316e3e7412b330f82502cebdce",
   "package_check_commit": "f7d32cadac3cfced282decede024707fba9e6ec6",
   "cloud_image_sha512": "d25999de0770d4cde1be72c299ba3ad94eac7ea8fd4d18f8cc86c69df69337e2e8a91d64465a9bfd8f2a78c566fcbcb0842eacc91c09efdef72d719d9f13b535",
-  "tested_package_commit": "65a5dae161f0e18d108cfa988a37f90a75be1346",
-  "package_check_timestamp_utc": 1793883181,
-  "package_version": "51.1~ynh5",
-  "tested_pre_report_archive_sha256": "29776d8bce2dc214b792e6dd6c2c85e272e2db2e9ceb82ec20413ebd8c8282a5",
+  "package_version": "51.1~ynh6",
+  "tested_pre_report_archive_sha256": "d047cb2084439f09eaac02b31b012a06d4806a70a32ed53a5014bfe40b1757f8",
   "package_linter_commit": "c1a7491aab2c22d28b220330513e9555a8da3a1d",
   "native_runtime": {
     "python": "3.14.10",
@@ -24,17 +22,31 @@
     "mysqlclient": "2.3.0",
     "pyjwt": "2.15.1"
   },
-  "tested_functional_files": 23,
-  "sso_integration_assertions": 53,
+  "tested_functional_files": 31,
+  "sso_integration_assertions": 62,
   "official_quality_level": 0,
   "oidc_integration_assertions": {
-    "RS256": 115,
-    "RS512": 115
+    "RS256": 127,
+    "RS512": 127
   },
   "unit_tests": {
-    "local": 49,
-    "debian12": 49,
+    "local": 66,
+    "debian12": 66,
     "failed": 0,
     "skipped": 0
-  }
+  },
+  "dex": {
+    "version": "2.46.1~ynh1",
+    "assertions": 50,
+    "real_ldap_federation": true,
+    "real_social_authorization_redirects": true,
+    "live_cloud_logins": false
+  },
+  "debian_runtime": {
+    "python": "3.11.2",
+    "mariadb": "10.11.19"
+  },
+  "tested_package_commit": "de6d3053e03742f0d2c45a3e28cce705833c2e8a",
+  "package_check_timestamp_utc": 1793890825,
+  "package_linter_report": "original standalone official JSON recheck of the exact tested Git commit; matrix linter temporary files removed automatically"
 }

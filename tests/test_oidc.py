@@ -95,6 +95,22 @@ class TokenTests(unittest.TestCase):
         self.cfg['allowed_subjects'] = ['stable-subject']
         self.assertTrue(self.verify(self.token()))
 
+    def test_email_allowlist_requires_boolean_verified_claim(self):
+        self.cfg.update(allowed_groups=[],allowed_emails=['Alice@example.test'])
+        self.assertTrue(self.verify(self.token({'email':'alice@example.test','email_verified':True})))
+        for value in (False,'true',1,None):
+            with self.subTest(value=value),self.assertRaises(auth.AccessDenied):
+                self.verify(self.token({'email':'alice@example.test','email_verified':value}))
+        with self.assertRaises(auth.AccessDenied):
+            self.verify(self.token({'email':'attacker@example.test','email_verified':True}))
+
+    def test_connector_filter_applies_before_every_allowlist(self):
+        self.cfg.update(allowed_connectors=['ldap'],allowed_subjects=['stable-subject'])
+        for claims in ({},{'federated_claims':{'connector_id':'other'}},{'federated_claims':'ldap'}):
+            with self.subTest(claims=claims),self.assertRaises(auth.AccessDenied):
+                self.verify(self.token(claims))
+        self.assertTrue(self.verify(self.token({'federated_claims':{'connector_id':'ldap'}})))
+
     def test_identity_namespace_includes_issuer(self):
         self.assertNotEqual(oidc.identity_key(self.cfg['issuer'], 'same-sub'),
                             oidc.identity_key('https://other.example.test', 'same-sub'))

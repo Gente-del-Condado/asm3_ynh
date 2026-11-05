@@ -42,13 +42,18 @@ En instalaciones múltiples sustituye `asm3` por el identificador, por ejemplo `
 
 ## 2FA y cierre de sesión
 
-Si ASM3 tiene TOTP activado para el perfil, se conserva su verificación nativa.
-El puente entrega un nonce aleatorio ligado a la sesión y a la identidad LDAP,
-con caducidad de cinco minutos; solo sirve para completar el login con el TOTP
-correcto. No sirve como contraseña de API. Los perfiles SSO no usan remember-me.
-La política nativa Force2FA conserva la exigencia de alta de segundo factor.
-La administración de secretos TOTP de perfiles gestionados requiere un administrador
-ASM3; las comprobaciones que exijan contraseña local no aceptan la de YunoHost.
+Desde `51.1~ynh6`, el paquete exige TOTP a todos los accesos privados, con independencia
+de Force2FA. Después de verificar el primer factor se retiran de la sesión usuario,
+roles y base de datos hasta confirmar el código. El alta se completa con un primer
+código válido; un factor existente se reutiliza. QR y clave manual solo se muestran
+durante el alta, con `no-store`, CSRF y CSP. El código no puede reutilizarse y cinco
+fallos bloquean la cuenta cinco minutos. La comprobación pendiente caduca en cinco
+minutos y la sesión MFA en ocho horas como máximo (OIDC además limita por su token).
+
+Restablece un factor perdido desde el panel YunoHost, sección recuperación,
+indicando el nombre exacto de usuario ASM3. Esta acción root invalida tanto sesiones
+abiertas como verificaciones pendientes; nunca crea una excepción al segundo factor.
+La recuperación de contraseña conserva el factor. Los perfiles no usan remember-me.
 
 Salir de ASM3 destruye su sesión y muestra la pantalla de acceso sin reconectar
 inmediatamente. La sesión del portal permanece abierta: volver a `/ynh_sso` o a
@@ -72,8 +77,9 @@ La cuenta de recuperación no utiliza LDAP ni recibe privilegios del portal.
 Si cambias su contraseña en ASM3, el valor inicial guardado por YunoHost deja de
 ser válido; consérvalo en tu gestor de secretos. No se resetea en las actualizaciones.
 
-Las API autenticadas usan cuentas locales de servicio con roles mínimos. Las
-cuentas vinculadas a SSO rechazan contraseñas locales, también en la API.
+Las API autenticadas por contraseña se bloquean para todas las cuentas, incluidas
+las de servicio, porque omitirían el segundo factor. Los servicios públicos,
+formularios y callbacks de pagos conservan el comportamiento de ASM3.
 Usa POST para credenciales. Se desactiva access_log en la ubicación ASM3 para no
 registrar contraseñas enviadas por clientes antiguos en la query; los logs de ASM3
 no imprimen contraseñas fallidas, datos base64 ni códigos TOTP. También se

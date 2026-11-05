@@ -25,6 +25,23 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def extract_source(tar, destination):
+    """Portable safe extraction, including Debian 12's Python before data_filter."""
+    destination.mkdir(parents=True,exist_ok=True)
+    destination=destination.resolve()
+    for member in tar.getmembers():
+        target=(destination/member.name).resolve()
+        if not target.is_relative_to(destination) or not (member.isdir() or member.isfile()):
+            raise ValueError('Unsafe source archive member')
+        if member.isdir():
+            target.mkdir(parents=True,exist_ok=True)
+        else:
+            target.parent.mkdir(parents=True,exist_ok=True)
+            with tar.extractfile(member) as source,target.open('xb') as output:
+                shutil.copyfileobj(source,output)
+            target.chmod(member.mode&0o777)
+
+
 def free_port():
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
@@ -73,12 +90,12 @@ def main():
         with tarfile.open(archive) as tar:
             members = tar.getmembers()
             top = members[0].name.split("/")[0]
-            tar.extractall(work / "unpack", filter="data")
+            extract_source(tar, work / "unpack")
         shutil.copytree(work / "unpack" / top, upstream, dirs_exist_ok=True)
         for patch in sorted((ROOT / "patches/main").glob("*.patch")):
             subprocess.run(["patch", "--batch", "--forward", "--strip=1", "--input", str(patch)], cwd=upstream, check=True)
         shutil.copytree(ROOT / "conf", install / "ynh")
-        for module in ("ynh_auth", "ynh_oidc"):
+        for module in ("ynh_auth", "ynh_oidc", "ynh_mfa"):
             shutil.copy(ROOT / f"conf/{module}.py", upstream / f"src/{module}.py")
         cache = work / "cache"
         cache.mkdir()
@@ -100,7 +117,7 @@ def main():
 
             wait_for(ready, db, db_log)
             db_password = secrets.token_hex(20)
-            subprocess.run(cli, input=f"CREATE DATABASE asm3_smoke; CREATE USER 'asm3test'@'127.0.0.1' IDENTIFIED BY '{db_password}'; GRANT ALL ON asm3_smoke.* TO 'asm3test'@'127.0.0.1';", text=True, check=True)
+            subprocess.run(cli, input=f"CREATE DATABASE asm3_smoke CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; CREATE USER 'asm3test'@'127.0.0.1' IDENTIFIED BY '{db_password}'; GRANT ALL ON asm3_smoke.* TO 'asm3test'@'127.0.0.1';", text=True, check=True)
             config = install / "asm3.conf"
             config.write_text(f"db_type = MYSQL\ndb_host = 127.0.0.1\ndb_port = {db_port}\ndb_username = asm3test\ndb_password = {db_password}\ndb_name = asm3_smoke\nlocale = es\nlog_location = stderr\nlog_debug = false\ndisk_cache = {cache}\nsession_secure_cookie = true\n")
             env = {**os.environ, "ASM3_CONF": str(config), "PYTHONDONTWRITEBYTECODE": "1"}
@@ -231,7 +248,7 @@ assert main.session.session_id != previous_id
             assert rejected.returncode != 0 and b"database migration failed" in rejected.stderr
             failure.unlink()
             dump = subprocess.check_output(["mariadb-dump", "--no-defaults", f"--socket={db_socket}", "-uroot", "--single-transaction", "asm3_smoke"])
-            sql("DROP DATABASE asm3_smoke; CREATE DATABASE asm3_smoke;")
+            sql("DROP DATABASE asm3_smoke; CREATE DATABASE asm3_smoke CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
             subprocess.run([*cli, "asm3_smoke"], input=dump, check=True)
             subprocess.run([*manage, "upgrade"], check=True, env=env)
             assert sql("SELECT Content FROM dbfs WHERE Name='ynh-smoke-marker'") == "c3Vydml2ZXM="

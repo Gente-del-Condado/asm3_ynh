@@ -16,6 +16,27 @@ server = module("server", "conf/server.py")
 updater = module("updater", "tools/update_upstream.py")
 
 
+class SourceArchiveTests(unittest.TestCase):
+    def test_portable_extraction_rejects_traversal_and_links(self):
+        import io,tarfile,tempfile
+        smoke=module('smoke_test','tools/smoke_test.py')
+        for name,kind in (('../escape',tarfile.REGTYPE),('/absolute',tarfile.REGTYPE),('link',tarfile.SYMTYPE)):
+            with tempfile.TemporaryDirectory() as directory,tarfile.open(fileobj=io.BytesIO(),mode='w') as archive:
+                member=tarfile.TarInfo(name);member.type=kind;archive.addfile(member,io.BytesIO())
+                with self.assertRaises(ValueError):smoke.extract_source(archive,Path(directory)/'out')
+
+    def test_portable_extraction_preserves_regular_source(self):
+        import io,tarfile,tempfile
+        smoke=module('smoke_test','tools/smoke_test.py')
+        with tempfile.TemporaryDirectory() as directory:
+            data=io.BytesIO()
+            with tarfile.open(fileobj=data,mode='w') as archive:
+                member=tarfile.TarInfo('root/file');member.size=3;archive.addfile(member,io.BytesIO(b'abc'))
+            data.seek(0)
+            with tarfile.open(fileobj=data) as archive:smoke.extract_source(archive,Path(directory)/'out')
+            self.assertEqual((Path(directory)/'out/root/file').read_bytes(),b'abc')
+
+
 class ProxyTests(unittest.TestCase):
     def test_prefix_https_remote_ip_and_cookie_isolation(self):
         for prefix in ("", "/", "/refugio", "/apps/asm3"):

@@ -7,6 +7,11 @@ ynh_print_info "Removing ASM3 services and web configuration..."
 if [ -n "${data_dir:-}" ] && [ -d "$data_dir" ]; then
     asm3_lock
 fi
+if [ -f "${install_dir:-}/ynh/manage_identity.py" ]; then
+    set +x
+    ASM3_CONF="$install_dir/asm3.conf" PYTHONDONTWRITEBYTECODE=1 python3 "$install_dir/ynh/manage_identity.py" detach --app "$app" --install-dir "$install_dir"
+    set -x
+fi
 ynh_safe_rm "/etc/cron.d/$app"
 ynh_config_remove_systemd
 yunohost service remove "$app"

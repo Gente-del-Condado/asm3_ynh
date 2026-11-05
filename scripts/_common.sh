@@ -17,12 +17,29 @@ asm3_url_path() {
     url_path="${path%/}"
 }
 
+# Configuration helpers may print unified diffs before YunoHost redacts values.
+# Filter credential-bearing lines before they reach either the console or log.
+asm3_redact_config_log() {
+    python3 -u -c 'import re,sys
+for line in sys.stdin:
+    if re.search(r"password|passwd|passphrase|secret|token|db_pass|smtp_pass",line,re.I):
+        sys.stdout.write("[redacted configuration line]\n")
+    else:
+        sys.stdout.write(line)'
+}
+
+asm3_safe_config() (
+    set +x
+    set -o pipefail
+    "$@" 2>&1 | asm3_redact_config_log
+)
+
 asm3_configure() {
     asm3_url_path
     set +x
     ynh_app_setting_set_default --key=proxy_secret --value="$(ynh_string_random --length=64)"
     ynh_app_setting_set_default --key=rescue_password --value="$(ynh_string_random --length=48)"
-    ynh_config_add --template=asm3.conf --destination="$install_dir/asm3.conf"
+    asm3_safe_config ynh_config_add --template=asm3.conf --destination="$install_dir/asm3.conf"
     chown "root:$app" "$install_dir/asm3.conf"
     chmod 640 "$install_dir/asm3.conf"
     if [ ! -e "$install_dir/oidc.json" ]; then
@@ -39,12 +56,16 @@ asm3_configure() {
 asm3_sources() {
     ynh_setup_source --dest_dir="$install_dir/upstream" --full_replace
     mkdir -p "$install_dir/ynh"
-    cp ../conf/{server,build,manage,manage_oidc}.py "$install_dir/ynh/"
-    cp ../conf/ynh_{auth,oidc}.py "$install_dir/upstream/src/"
+    cp ../conf/{server,build,manage,manage_oidc,manage_identity}.py "$install_dir/ynh/"
+    cp ../conf/ynh_{auth,oidc,mfa}.py "$install_dir/upstream/src/"
     # Build as root before making application code read-only to the service.
     ASM3_CONF="$install_dir/asm3.conf" python3 "$install_dir/ynh/build.py" "$install_dir/upstream"
     chown -R "root:$app" "$install_dir"
     chmod -R u=rwX,g=rX,o= "$install_dir"
+    if [ -f "$install_dir/identity_admin.json" ]; then
+        chown root:root "$install_dir/identity_admin.json"
+        chmod 600 "$install_dir/identity_admin.json"
+    fi
     # Nginx proxies all requests; no web-server access to source or credentials.
 }
 
@@ -59,4 +80,10 @@ asm3_start() {
     done
     journalctl -u "$app" -n 50 --no-pager >&2
     ynh_die "ASM3 did not become ready on its local port"
+}
+
+asm3_identity_reconcile() {
+    set +x
+    ASM3_CONF="$install_dir/asm3.conf" PYTHONDONTWRITEBYTECODE=1 python3 "$install_dir/ynh/manage_identity.py" reconcile --app "$app" --install-dir "$install_dir"
+    set -x
 }

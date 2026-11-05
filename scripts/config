@@ -1,0 +1,5 @@
+#!/bin/bash
+source /usr/share/yunohost/helpers
+set +x
+install_dir=$(ynh_app_setting_get --key=install_dir)
+ASM3_CONF="$install_dir/asm3.conf" PYTHONDONTWRITEBYTECODE=1 python3 "$install_dir/ynh/manage_identity.py" "$1" --app "$app" --install-dir "$install_dir" >> "$YNH_STDRETURN"

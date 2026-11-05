@@ -13,12 +13,12 @@ jobs:
       - name: Package syntax, metadata and helper contracts
         run: |
           sudo apt-get update
-          sudo apt-get install -y shellcheck python3-jsonschema python3-jwt python3-cryptography
+          sudo apt-get install -y shellcheck python3-jsonschema python3-jwt python3-cryptography python3-yaml
           python3 tools/check_package.py
           python3 -m unittest discover -s tests -v
       - name: Exercise ASM3 against MariaDB
         run: |
-          sudo apt-get install -y mariadb-server python3-cheroot python3-jwt python3-cryptography python3-pil python3-mysqldb python3-psycopg2 python3-lxml python3-requests python3-reportlab python3-openpyxl python3-qrcode python3-boto3 python3-stripe python3-kombu
+          sudo apt-get install -y mariadb-server python3-cheroot python3-jwt python3-cryptography python3-yaml python3-pil python3-mysqldb python3-psycopg2 python3-lxml python3-requests python3-reportlab python3-openpyxl python3-qrcode python3-boto3 python3-stripe python3-kombu
           python3 tools/smoke_test.py
       - name: Build repository archive
         run: bash tools/build_release.sh

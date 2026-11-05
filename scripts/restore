@@ -8,6 +8,10 @@ ynh_restore "$install_dir"
 chown -R "root:$app" "$install_dir"
 chmod -R u=rwX,g=rX,o= "$install_dir"
 chmod 640 "$install_dir/asm3.conf"
+if [ -f "$install_dir/identity_admin.json" ]; then
+    chown root:root "$install_dir/identity_admin.json"
+    chmod 600 "$install_dir/identity_admin.json"
+fi
 ynh_mysql_db_shell < db.sql
 ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
 chmod 600 "/etc/nginx/conf.d/$domain.d/$app.conf"
@@ -17,5 +21,6 @@ systemctl daemon-reload
 systemctl enable "$app.service" --quiet
 yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/log/nginx/$domain-error.log"
 asm3_start
+asm3_identity_reconcile
 ynh_systemctl --service=nginx --action=reload
 ynh_script_progression "ASM3 restoration completed"

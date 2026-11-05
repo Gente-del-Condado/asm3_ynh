@@ -1,0 +1,193 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/main/schemas/config_panel.v1.schema.json
+version = "1.0"
+[identity]
+name.es = "Identidad y segundo factor"
+name.en = "Identity and second factor"
+[identity.access]
+name.es = "Dex, Google, GitHub y Microsoft"
+name.en = "Dex, Google, GitHub and Microsoft"
+help.es = "Instala Dex desde el catálogo. Registra sus clientes en Google/GitHub/Microsoft y completa los campos. Se exige TOTP en ASM3 para todos los accesos privados, incluido el SSO nativo y la recuperación. Las listas vacías deniegan el acceso por Dex."
+help.en = "Install Dex from the catalog and register its cloud clients. ASM3 requires TOTP for every private browser login, including native SSO and recovery. Empty allowlists deny Dex access."
+[identity.access.identity_status]
+type = "alert"
+bind = "null"
+ask.es = "Los callbacks se muestran al leer la configuración."
+style = "info"
+
+[identity.access.dex_enabled]
+type = "boolean"
+bind = "null"
+ask.es = "Activar la integración con Dex"
+ask.en = "Activar la integración con Dex"
+optional = true
+default = false
+
+[identity.access.dex_instance]
+type = "string"
+bind = "null"
+ask.es = "Identificador de la aplicación Dex instalada"
+ask.en = "Identificador de la aplicación Dex instalada"
+optional = true
+default = "dex"
+
+[identity.access.dex_ldap_login]
+type = "boolean"
+bind = "null"
+ask.es = "Permitir también el conector LDAP de Dex"
+ask.en = "Permitir también el conector LDAP de Dex"
+optional = true
+default = true
+
+[identity.access.allow_external_entry]
+type = "boolean"
+bind = "null"
+ask.es = "Permitir llegar al acceso externo sin sesión en el portal"
+ask.en = "Permitir llegar al acceso externo sin sesión en el portal"
+optional = true
+default = true
+help.es = "Se permite la entrada al login; los datos siguen protegidos por autorización y 2FA obligatorio."
+
+[identity.access.allowed_emails]
+type = "text"
+bind = "null"
+ask.es = "Correos verificados permitidos (uno por línea)"
+ask.en = "Correos verificados permitidos (uno por línea)"
+optional = true
+default = ""
+
+[identity.access.allowed_groups]
+type = "text"
+bind = "null"
+ask.es = "Grupos Dex permitidos (uno por línea)"
+ask.en = "Grupos Dex permitidos (uno por línea)"
+optional = true
+default = ""
+
+[identity.access.allowed_subjects]
+type = "text"
+bind = "null"
+ask.es = "Identificadores sub permitidos (avanzado, uno por línea)"
+ask.en = "Identificadores sub permitidos (avanzado, uno por línea)"
+optional = true
+default = ""
+
+[identity.access.google_login]
+type = "boolean"
+bind = "null"
+ask.es = "Activar Google"
+ask.en = "Activar Google"
+optional = true
+default = false
+
+[identity.access.google_client_id]
+type = "string"
+bind = "null"
+ask.es = "Client ID de Google"
+ask.en = "Client ID de Google"
+optional = true
+default = ""
+
+[identity.access.google_client_secret]
+type = "password"
+bind = "null"
+ask.es = "Secreto de Google"
+ask.en = "Secreto de Google"
+optional = true
+help.es = "Déjalo vacío para conservar el secreto guardado."
+
+[identity.access.github_login]
+type = "boolean"
+bind = "null"
+ask.es = "Activar GitHub"
+ask.en = "Activar GitHub"
+optional = true
+default = false
+
+[identity.access.github_client_id]
+type = "string"
+bind = "null"
+ask.es = "Client ID de GitHub"
+ask.en = "Client ID de GitHub"
+optional = true
+default = ""
+
+[identity.access.github_client_secret]
+type = "password"
+bind = "null"
+ask.es = "Secreto de GitHub"
+ask.en = "Secreto de GitHub"
+optional = true
+help.es = "Déjalo vacío para conservar el secreto guardado."
+
+[identity.access.github_org]
+type = "string"
+bind = "null"
+ask.es = "Organización GitHub permitida (opcional)"
+ask.en = "Organización GitHub permitida (opcional)"
+optional = true
+default = ""
+
+[identity.access.github_team]
+type = "string"
+bind = "null"
+ask.es = "Equipo de la organización GitHub (opcional)"
+ask.en = "Equipo de la organización GitHub (opcional)"
+optional = true
+default = ""
+
+[identity.access.microsoft_login]
+type = "boolean"
+bind = "null"
+ask.es = "Activar Microsoft"
+ask.en = "Activar Microsoft"
+optional = true
+default = false
+
+[identity.access.microsoft_client_id]
+type = "string"
+bind = "null"
+ask.es = "Client ID de Microsoft Entra"
+ask.en = "Client ID de Microsoft Entra"
+optional = true
+default = ""
+
+[identity.access.microsoft_client_secret]
+type = "password"
+bind = "null"
+ask.es = "Secreto de Microsoft"
+ask.en = "Secreto de Microsoft"
+optional = true
+help.es = "Déjalo vacío para conservar el secreto guardado."
+
+[identity.access.microsoft_tenant]
+type = "string"
+bind = "null"
+ask.es = "UUID del tenant de Microsoft"
+ask.en = "UUID del tenant de Microsoft"
+optional = true
+default = ""
+
+[identity.access.dex_ca_file]
+type = "string"
+bind = "null"
+ask.es = "Ruta PEM de CA privada de Dex (avanzado, opcional)"
+ask.en = "Ruta PEM de CA privada de Dex (avanzado, opcional)"
+optional = true
+default = ""
+
+[identity.recovery]
+name.es = "Recuperar el segundo factor"
+name.en = "Recover second factor"
+help.es = "Solo administración: invalida las sesiones y el factor del usuario. Tras volver a autenticarse tendrá que registrar un TOTP nuevo. No permite saltarse el 2FA."
+[identity.recovery.reset_mfa_user]
+type = "string"
+bind = "null"
+ask.es = "Nombre exacto del usuario ASM3"
+ask.en = "Exact ASM3 username"
+optional = true
+[identity.recovery.reset_mfa]
+type = "button"
+bind = "null"
+ask.es = "Restablecer segundo factor"
+ask.en = "Reset second factor"
+style = "danger"
