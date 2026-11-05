@@ -22,6 +22,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--disposable-lab', required=True, metavar='APP')
     p.add_argument('--lifecycle', action='store_true')
+    p.add_argument('--algorithm', choices=('RS256', 'RS512'), default='RS256')
     args = p.parse_args()
     app = args.disposable_lab
     assert os.geteuid() == 0 and re.fullmatch(r'asm3(?:__\d+)?', app)
@@ -56,12 +57,13 @@ def main():
     previous = config_path.read_bytes()
     gid = pwd.getpwnam(app).pw_gid
     provider = Provider()
+    provider.algorithm = args.algorithm
     ca = root/'oidc-test-ca.pem'
     ca.write_bytes(provider.ca)
     os.chown(ca, 0, gid)
     os.chmod(ca, 0o640)
     cfg = {'enabled': True, 'issuer': provider.issuer, 'client_id': provider.client_id,
-           'client_secret': provider.secret, 'ca_bundle': str(ca),
+           'client_secret': provider.secret, 'ca_bundle': str(ca), 'id_token_signing_alg': args.algorithm,
            'token_endpoint_auth_method': 'client_secret_basic', 'scopes': ['openid','profile','email','groups'],
            'allowed_subjects': [], 'allowed_groups': ['asm3-staff'], 'groups_claim': 'groups',
            'ldap_links': {}, 'session_max_age': 300}
@@ -250,7 +252,7 @@ def main():
         check('tokens and credentials absent from journal', all(value not in journal for value in secrets_to_check))
         access=Path('/var/log/nginx/'+setting('domain')+'-access.log')
         check('tokens absent from Nginx access log', not access.exists() or all(t not in access.read_text() for t in provider.tokens))
-        report={'package_version':tomllib.loads(Path('/etc/yunohost/apps/'+app+'/manifest.toml').read_text())['version'],'provider':'ephemeral HTTPS provider with genuine RS256 tokens and PKCE enforcement','checks':results,'result':'success'}
+        report={'package_version':tomllib.loads(Path('/etc/yunohost/apps/'+app+'/manifest.toml').read_text())['version'],'provider':'ephemeral HTTPS provider with genuine '+args.algorithm+' tokens and PKCE enforcement','algorithm':args.algorithm,'checks':results,'result':'success'}
         Path('/root/asm3-oidc-results.json').write_text(json.dumps(report,indent=2)+'\n')
     finally:
         config_path.write_bytes(previous)

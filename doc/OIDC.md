@@ -4,7 +4,7 @@ Desde `51.1~ynh4`, ASM3 puede actuar como cliente OpenID Connect de un proveedor
 externo, además del SSO nativo de YunoHost. OIDC está **desactivado por defecto**.
 No se instala ni se sustituye el proveedor de identidad. Registra un cliente en tu
 Dex, Keycloak, Authentik u otro proveedor que ofrezca discovery, Authorization Code,
-PKCE S256 y tokens ID firmados con RS256. Se configura un emisor por instancia.
+PKCE S256 y tokens ID firmados con RS256 o RS512, según la selección del cliente. Se configura un emisor por instancia.
 Las pruebas de entrega usan un proveedor HTTPS efímero con firma RSA real; no son
 una certificación de interoperabilidad con cada producto comercial.
 
@@ -18,7 +18,7 @@ Para una instalación `https://refugio.example.org/asm3`:
 | Redirect URI exacta | `https://refugio.example.org/asm3/oidc/callback` |
 | Post-logout redirect URI | `https://refugio.example.org/asm3/oidc/logged_out` |
 | Flujo | Authorization Code con PKCE S256, respuesta por query GET |
-| Algoritmo del ID token | RS256 |
+| Algoritmo del ID token | RS256 (predeterminado) o RS512, seleccionado explícitamente |
 | Scopes iniciales | `openid profile email`; añade el scope de grupos si tu proveedor lo requiere |
 
 En raíz de dominio omite `/asm3`; respeta exactamente dominio y ruta, sin comodines.
@@ -47,6 +47,7 @@ sustituyendo el emisor, cliente, secreto y sujetos/grupos permitidos:
   "issuer": "https://identidad.example.org",
   "client_id": "asm3",
   "client_secret": "SECRETO_DEL_CLIENTE_REGISTRADO",
+  "id_token_signing_alg": "RS256",
   "token_endpoint_auth_method": "client_secret_basic",
   "scopes": ["openid", "profile", "email", "groups"],
   "allowed_subjects": [],
@@ -82,6 +83,19 @@ Ambas listas vacías deniegan todos los accesos OIDC.
 Para una CA privada, añade `"ca_bundle": "/var/www/asm3/oidc-ca.pem"`, instala el
 certificado PEM root:asm3 0640 y conserva ese archivo en la copia. No se admite
 TLS sin verificar, HTTP, redirecciones de backchannel ni credenciales en URL.
+
+## Seleccionar RS256 o RS512
+
+Configura `"id_token_signing_alg": "RS512"` si el proveedor anuncia RS512 y firma
+así los ID tokens de este cliente. Sin esa propiedad se conserva RS256 para
+compatibilidad. Se acepta exclusivamente el algoritmo seleccionado; no hay
+negociación automática ni confianza en el algoritmo que indique un token recibido.
+El cambio invalida las sesiones por la huella de configuración. RS512 no cambia
+PKCE S256 ni convierte una clave RSA en una clave de 512 bits: el mínimo sigue en
+2048 bits. Dex con su firmante local sigue requiriendo RS256.
+
+Consulta [proveedores, MFA y accesos sociales](IDENTITY_PROVIDERS.md), con plantillas
+para Google, GitHub y Microsoft mediante Dex y alternativas para YunoHost.
 
 ## Perfiles y vinculación con LDAP
 

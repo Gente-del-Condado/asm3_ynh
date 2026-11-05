@@ -1,0 +1,18 @@
+{
+  "enabled": false,
+  "issuer": "https://login.microsoftonline.com/REEMPLAZAR_TENANT_UUID/v2.0",
+  "client_id": "REEMPLAZAR_CLIENTE_WEB_ENTRA",
+  "client_secret": "",
+  "id_token_signing_alg": "RS256",
+  "token_endpoint_auth_method": "client_secret_basic",
+  "scopes": [
+    "openid",
+    "profile",
+    "email"
+  ],
+  "allowed_subjects": [],
+  "allowed_groups": [],
+  "groups_claim": "groups",
+  "ldap_links": {},
+  "session_max_age": 3600
+}

@@ -1,6 +1,7 @@
 {
-  "package_version": "51.1~ynh4",
+  "package_version": "51.1~ynh5",
   "provider": "ephemeral HTTPS provider with genuine RS256 tokens and PKCE enforcement",
+  "algorithm": "RS256",
   "checks": [
     "OIDC configuration applied through validation helper",
     "authorization redirect issued (HTTP 303)",

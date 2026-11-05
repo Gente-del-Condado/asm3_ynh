@@ -13,10 +13,10 @@
   "final_base_with_checker_preinstalled_dependencies": "950ecf6981aebbb1c84a9d375d2f5b7d998eb4316e3e7412b330f82502cebdce",
   "package_check_commit": "f7d32cadac3cfced282decede024707fba9e6ec6",
   "cloud_image_sha512": "d25999de0770d4cde1be72c299ba3ad94eac7ea8fd4d18f8cc86c69df69337e2e8a91d64465a9bfd8f2a78c566fcbcb0842eacc91c09efdef72d719d9f13b535",
-  "tested_package_commit": "f75d2699e1aebd1cb372a12273fc29c7b543abdc",
-  "package_check_timestamp_utc": 1793881681,
-  "package_version": "51.1~ynh4",
-  "tested_pre_report_archive_sha256": "2b62b6c7a604cd5337834f7f8f63f7d1bb1dc5301f6cc5f4837c0b46215d2f3d",
+  "tested_package_commit": "65a5dae161f0e18d108cfa988a37f90a75be1346",
+  "package_check_timestamp_utc": 1793883181,
+  "package_version": "51.1~ynh5",
+  "tested_pre_report_archive_sha256": "29776d8bce2dc214b792e6dd6c2c85e272e2db2e9ceb82ec20413ebd8c8282a5",
   "package_linter_commit": "c1a7491aab2c22d28b220330513e9555a8da3a1d",
   "native_runtime": {
     "python": "3.14.10",
@@ -27,10 +27,13 @@
   "tested_functional_files": 23,
   "sso_integration_assertions": 53,
   "official_quality_level": 0,
-  "oidc_integration_assertions": 115,
+  "oidc_integration_assertions": {
+    "RS256": 115,
+    "RS512": 115
+  },
   "unit_tests": {
-    "local": 35,
-    "debian12": 35,
+    "local": 49,
+    "debian12": 49,
     "failed": 0,
     "skipped": 0
   }

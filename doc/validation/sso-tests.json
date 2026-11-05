@@ -1,5 +1,5 @@
 {
-  "package_version": "51.1~ynh4",
+  "package_version": "51.1~ynh5",
   "checks": [
     "local recovery form available",
     "SSOwat rejects forged identity headers",

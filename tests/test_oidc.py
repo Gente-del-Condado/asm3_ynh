@@ -170,3 +170,47 @@ class ConfigurationTests(unittest.TestCase):
             with self.assertRaises(auth.AccessDenied):
                 oidc.callback({'oidc_transaction': transaction}, {}, '?state=valid&code=x', None, '/src')
             http.assert_not_called()
+
+class AlgorithmTests(TokenTests):
+    """Run the existing signature/claim attack suite with RS512 as well."""
+    def setUp(self):
+        super().setUp()
+        self.cfg['id_token_signing_alg'] = 'RS512'
+        self.rs512_jwk = dict(self.jwk, alg='RS512')
+        self.http.stop()
+        self.http = patch.object(oidc, 'request_json', return_value={'keys': [self.rs512_jwk]})
+        self.http.start()
+        self.addCleanup(self.http.stop)
+
+    def token(self, changes=None, remove=None, key=None, headers=None):
+        claims = copy.deepcopy(self.claims)
+        claims.update(changes or {})
+        if remove:
+            claims.pop(remove)
+        return jwt.encode(claims, key or self.key, algorithm='RS512', headers=headers or {'kid': 'current'})
+
+    def test_rs256_cannot_downgrade_an_rs512_client(self):
+        token = jwt.encode(self.claims, self.key, algorithm='RS256', headers={'kid':'current'})
+        with self.assertRaises(auth.AccessDenied):
+            self.verify(token)
+
+    def test_rs512_requires_explicit_client_selection(self):
+        self.cfg.pop('id_token_signing_alg')
+        with self.assertRaises(auth.AccessDenied):
+            self.verify(self.token())
+
+    def test_discovery_must_advertise_selected_algorithm(self):
+        metadata={'issuer':self.cfg['issuer'],'authorization_endpoint':self.cfg['issuer']+'/auth',
+                  'token_endpoint':self.cfg['issuer']+'/token','jwks_uri':self.cfg['issuer']+'/keys',
+                  'response_types_supported':['code'],'id_token_signing_alg_values_supported':['RS256']}
+        with patch.object(oidc,'request_json',return_value=metadata):
+            with self.assertRaises(auth.AccessDenied):
+                oidc.discovery(dict(self.cfg,token_endpoint_auth_method='client_secret_basic'))
+        metadata['id_token_signing_alg_values_supported']=['RS512']
+        with patch.object(oidc,'request_json',return_value=metadata):
+            self.assertIs(oidc.discovery(dict(self.cfg,token_endpoint_auth_method='client_secret_basic')),metadata)
+
+    def test_invalid_algorithm_configuration_rejected(self):
+        for algorithm in ('HS512','none','RS384',['RS512'],None):
+            with self.subTest(algorithm=algorithm),self.assertRaises(auth.AccessDenied):
+                oidc.signing_algorithm({'id_token_signing_alg':algorithm})

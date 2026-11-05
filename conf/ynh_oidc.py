@@ -24,6 +24,13 @@ def https_url(value):
     return value
 
 
+def signing_algorithm(cfg):
+    algorithm = cfg.get('id_token_signing_alg', 'RS256')
+    if algorithm not in ('RS256', 'RS512'):
+        raise auth.AccessDenied('Unsupported OIDC ID token signing algorithm')
+    return algorithm
+
+
 def config(path=None):
     if path is None:
         from asm3.sitedefs import get_string
@@ -41,6 +48,8 @@ def config(path=None):
             raise ValueError()
         if not isinstance(data['client_id'], str) or not data['client_id']:
             raise ValueError()
+        data.setdefault('id_token_signing_alg', 'RS256')
+        signing_algorithm(data)
         method = data.setdefault('token_endpoint_auth_method', 'client_secret_basic')
         if method not in ('client_secret_basic', 'client_secret_post', 'none'):
             raise ValueError()
@@ -109,8 +118,8 @@ def discovery(cfg):
         https_url(result.get(key))
     if 'code' not in result.get('response_types_supported', []):
         raise auth.AccessDenied('OIDC provider does not support authorization codes')
-    if 'RS256' not in result.get('id_token_signing_alg_values_supported', []):
-        raise auth.AccessDenied('OIDC provider must support RS256')
+    if signing_algorithm(cfg) not in result.get('id_token_signing_alg_values_supported', []):
+        raise auth.AccessDenied('OIDC provider does not support the selected signing algorithm')
     if 'code_challenge_methods_supported' in result and 'S256' not in result['code_challenge_methods_supported']:
         raise auth.AccessDenied('OIDC provider must support PKCE S256')
     if cfg['token_endpoint_auth_method'] not in result.get('token_endpoint_auth_methods_supported', ['client_secret_basic']):
@@ -132,20 +141,21 @@ def verify_token(cfg, metadata, token, nonce):
     try:
         if not isinstance(token, str) or len(token) > 65536:
             raise ValueError()
+        algorithm = signing_algorithm(cfg)
         header = jwt.get_unverified_header(token)
-        if header.get('alg') != 'RS256' or any(k in header for k in ('jku', 'jwk', 'x5u', 'crit')):
+        if header.get('alg') != algorithm or any(k in header for k in ('jku', 'jwk', 'x5u', 'crit')):
             raise ValueError()
         keys = request_json(cfg, metadata['jwks_uri']).get('keys', [])
         keys = [k for k in keys if isinstance(k, dict) and k.get('kty') == 'RSA'
-                and k.get('use', 'sig') == 'sig' and k.get('alg', 'RS256') == 'RS256'
+                and k.get('use', 'sig') == 'sig' and k.get('alg', algorithm) == algorithm
                 and ('verify' in k.get('key_ops', ['verify']))
                 and (not header.get('kid') or k.get('kid') == header['kid'])]
         if len(keys) != 1 or 'd' in keys[0]:
             raise ValueError()
-        key = jwt.PyJWK.from_dict(keys[0], algorithm='RS256').key
+        key = jwt.PyJWK.from_dict(keys[0], algorithm=algorithm).key
         if key.key_size < 2048:
             raise ValueError()
-        claims = jwt.decode(token, key, algorithms=['RS256'], audience=cfg['client_id'], issuer=cfg['issuer'],
+        claims = jwt.decode(token, key, algorithms=[algorithm], audience=cfg['client_id'], issuer=cfg['issuer'],
                             options={'require': ['iss', 'sub', 'aud', 'exp', 'iat', 'nonce']}, leeway=15)
         # PyJWT 2.6 (Debian 12) does not validate subject/azp types itself.
         if claims['iss'] != cfg['issuer'] or claims['iat'] > time.time() + 15:

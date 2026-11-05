@@ -1,12 +1,12 @@
 {
     "app": "asm3",
-    "app_version": "51.1~ynh4",
-    "commit": "f75d2699e1aebd1cb372a12273fc29c7b543abdc",
-    "commit_timestamp": 1793880847,
+    "app_version": "51.1~ynh5",
+    "commit": "65a5dae161f0e18d108cfa988a37f90a75be1346",
+    "commit_timestamp": 1793882281,
     "architecture": "amd64",
     "yunohost_version": "12.1.41.2",
     "yunohost_branch": "stable",
-    "timestamp": 1793881681,
+    "timestamp": 1793883181,
     "tests": [
         {
             "test_type": "TEST_PACKAGE_LINTER",
@@ -24,7 +24,7 @@
             "test_arg": "root",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "163",
+            "test_duration": "151",
             "test_notes": []
         },
         {
@@ -32,7 +32,7 @@
             "test_arg": "subdir",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "131",
+            "test_duration": "130",
             "test_notes": []
         },
         {
@@ -40,7 +40,7 @@
             "test_arg": "multi",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "80",
+            "test_duration": "103",
             "test_notes": []
         },
         {
@@ -48,7 +48,7 @@
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "234",
+            "test_duration": "281",
             "test_notes": []
         },
         {
@@ -56,7 +56,7 @@
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "40",
+            "test_duration": "42",
             "test_notes": []
         },
         {
@@ -64,7 +64,7 @@
             "test_arg": "",
             "test_serie": "default",
             "main_result": "success",
-            "test_duration": "136",
+            "test_duration": "148",
             "test_notes": []
         }
     ],

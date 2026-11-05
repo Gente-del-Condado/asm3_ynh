@@ -1,0 +1,6 @@
+
+ - id: asm3
+   name: Animal Shelter Manager
+   redirectURIs:
+     - https://refugio.example.org/asm3/oidc/callback
+   secretEnv: ASM3_DEX_CLIENT_SECRET

@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-11-05",
+  "sources": {
+    "catalog": "https://github.com/YunoHost/apps/blob/main/apps.toml",
+    "rejected": "https://github.com/YunoHost/apps/blob/main/rejectedlist.toml"
+  },
+  "providers": {
+    "dex": {
+      "state": "working",
+      "level": 8,
+      "package": "https://github.com/YunoHost-Apps/dex_ynh"
+    },
+    "pocket-id": {
+      "state": "working",
+      "level": 7,
+      "package": "https://github.com/YunoHost-Apps/pocket-id_ynh"
+    },
+    "authentik": {
+      "state": "rejected",
+      "note": "YunoHost SSO overlap; external IdP remains possible"
+    },
+    "keycloak": {
+      "state": "rejected",
+      "note": "YunoHost SSO overlap; external IdP remains possible"
+    },
+    "authelia": {
+      "state": "not present in consulted catalog",
+      "note": "external deployment requires its own administration"
+    }
+  }
+}

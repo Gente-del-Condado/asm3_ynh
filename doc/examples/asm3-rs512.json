@@ -1,0 +1,21 @@
+{
+  "enabled": false,
+  "issuer": "https://identidad.example.org",
+  "client_id": "asm3",
+  "client_secret": "",
+  "id_token_signing_alg": "RS512",
+  "token_endpoint_auth_method": "client_secret_basic",
+  "scopes": [
+    "openid",
+    "profile",
+    "email",
+    "groups"
+  ],
+  "allowed_subjects": [],
+  "allowed_groups": [
+    "asm3-staff"
+  ],
+  "groups_claim": "groups",
+  "ldap_links": {},
+  "session_max_age": 3600
+}

@@ -1,5 +1,13 @@
 # Cambios del paquete
 
+## 51.1~ynh5 — 5 de noviembre de 2026
+
+- Algoritmo de ID token seleccionable RS256/RS512, fijado por cliente sin downgrade.
+- Discovery, cabecera JWT, JWK y firma respetan el algoritmo configurado.
+- Pruebas criptográficas y suites completas con ambos algoritmos.
+- Estudio de proveedores libres, disponibilidad YunoHost, MFA y conectores sociales.
+- Plantillas Dex/ASM3 para Google, GitHub y Microsoft sin credenciales incluidas.
+
 ## 51.1~ynh4 — 5 de noviembre de 2026
 
 - Cliente OIDC opcional: discovery HTTPS, Authorization Code, PKCE S256 y tokens RS256.

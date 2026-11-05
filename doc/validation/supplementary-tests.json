@@ -1,41 +1,38 @@
 {
-  "package_version": "51.1~ynh4",
-  "target": "Debian 12 / YunoHost 12.1.41.2 / amd64",
+  "package_version": "51.1~ynh5",
   "tests": {
-    "unit_tests_local": {
-      "passed": 35,
+    "unit_local": {
+      "passed": 49,
       "failed": 0,
       "skipped": 0
     },
-    "unit_tests_debian12": {
-      "passed": 35,
+    "unit_debian12": {
+      "passed": 49,
       "failed": 0,
       "skipped": 0
     },
-    "oidc_integration": {
+    "oidc_rs256": {
       "passed": 115,
-      "failed": 0,
-      "provider": "ephemeral HTTPS, genuine RS256 signatures, enforced PKCE S256",
-      "client_authentication_methods": [
-        "client_secret_basic",
-        "client_secret_post",
-        "none"
-      ],
-      "lifecycle": "backup/remove/restore passed"
+      "lifecycle": "backup/remove/restore"
     },
-    "native_sso_ldap_integration": {
+    "oidc_rs512": {
+      "passed": 115,
+      "lifecycle": "backup/remove/restore"
+    },
+    "native_sso_ldap": {
       "passed": 53,
-      "failed": 0,
-      "lifecycle": "backup/remove/restore passed"
+      "lifecycle": "backup/remove/restore"
     },
-    "native_mariadb_smoke": "passed, including partial session failure cleanup, password/email/error redaction, migrations and media restore",
+    "native_mariadb_smoke": "passed, including session failure cleanup and password/email/error redaction",
+    "smtp_starttls_587": "passed as service user after restore; no email sent",
     "pdf_as_service_user": {
       "passed": true,
-      "bytes": 4222
+      "bytes": 4093
     },
-    "workflow_yaml_syntax": "passed for GitHub and Forgejo",
-    "smtp_starttls_587_authentication": "passed as service user after restore; no email sent"
+    "provider_templates": "JSON/YAML syntax checked"
   },
   "remote_ci_executed": false,
-  "remote_repositories_published": false
+  "remote_repositories_published": false,
+  "live_cloud_provider_logins_tested": false,
+  "dex_or_pocket_id_deployed": false
 }

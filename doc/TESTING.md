@@ -94,7 +94,8 @@ El informe se escribe en `/root/asm3-sso-results.json`.
 Dentro del mismo YunoHost desechable, con las dependencias del manifest:
 
 ```bash
-python3 tools/test_yunohost_oidc.py --disposable-lab asm3 --lifecycle
+python3 tools/test_yunohost_oidc.py --disposable-lab asm3 --algorithm RS256 --lifecycle
+python3 tools/test_yunohost_oidc.py --disposable-lab asm3 --algorithm RS512 --lifecycle
 ```
 
 Arranca un proveedor efímero HTTPS con RSA 2048, discovery, JWKS, authorization,
@@ -108,7 +109,7 @@ Las claves y secretos del proveedor se generan durante la prueba, no van en Git.
 
 ## Estado de esta entrega
 
-Validación del **5 de noviembre de 2026**, revisión **51.1~ynh4**.
+Validación del **5 de noviembre de 2026**, revisión **51.1~ynh5**.
 La evidencia definitiva está en [validation/README.md](validation/README.md).
 El laboratorio y las imágenes exactas se describen en [LAB.md](LAB.md).
 

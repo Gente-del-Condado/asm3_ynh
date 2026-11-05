@@ -4,7 +4,7 @@ id = "asm3"
 name = "Animal Shelter Manager"
 description.en = "Manage animal shelters, adoptions, veterinary care, volunteers and donations"
 description.es = "Gestiona protectoras, adopciones, atención veterinaria, voluntariado y donaciones"
-version = "51.1~ynh4"
+version = "51.1~ynh5"
 maintainers = []
 
 [upstream]

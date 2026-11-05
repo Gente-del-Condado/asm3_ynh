@@ -43,6 +43,7 @@ class Provider:
         self.email = 'external@example.test'
         self.groups = ['asm3-staff']
         self.scenario = ''
+        self.algorithm = 'RS256'
         self.codes = {}
         self.exchanges = []
         self.tokens = []
@@ -74,10 +75,10 @@ class Provider:
                     self.answer({'issuer': provider.issuer, 'authorization_endpoint': provider.issuer+'/auth',
                                  'token_endpoint': provider.issuer+'/token', 'jwks_uri': provider.issuer+'/keys',
                                  'end_session_endpoint': provider.issuer+'/logout', 'response_types_supported': ['code'],
-                                 'id_token_signing_alg_values_supported': ['RS256'], 'code_challenge_methods_supported': ['S256'],
+                                 'id_token_signing_alg_values_supported': ['RS256', 'RS512'], 'code_challenge_methods_supported': ['S256'],
                                  'token_endpoint_auth_methods_supported': ['client_secret_basic', 'client_secret_post', 'none']})
                 elif url.path.endswith('/keys'):
-                    self.answer({'keys': [provider.jwk]})
+                    self.answer({'keys': [dict(provider.jwk, alg=provider.algorithm)]})
                 elif url.path.endswith('/auth'):
                     q = {k: v[0] for k, v in parse_qs(url.query).items()}
                     if q.get('client_id') != provider.client_id or q.get('code_challenge_method') != 'S256':
@@ -120,7 +121,7 @@ class Provider:
                 if provider.scenario == 'unsigned':
                     token = jwt.encode(claims, None, algorithm='none')
                 else:
-                    token = jwt.encode(claims, provider.key, algorithm='RS256', headers={'kid': 'fixture-key'})
+                    token = jwt.encode(claims, provider.key, algorithm=provider.algorithm, headers={'kid': 'fixture-key'})
                 provider.tokens.append(token)
                 self.answer({'id_token': token, 'access_token': 'ACCESS_TOKEN_MUST_NOT_LEAK',
                              'refresh_token': 'REFRESH_TOKEN_MUST_NOT_LEAK', 'token_type': 'Bearer', 'expires_in': 600})

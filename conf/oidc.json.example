@@ -3,6 +3,7 @@
   "issuer": "https://identity.example.org",
   "client_id": "asm3",
   "client_secret": "",
+  "id_token_signing_alg": "RS256",
   "token_endpoint_auth_method": "client_secret_basic",
   "scopes": ["openid", "profile", "email"],
   "allowed_subjects": [],

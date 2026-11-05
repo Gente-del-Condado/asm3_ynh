@@ -1,48 +1,43 @@
-# Evidencia de validación — 51.1~ynh4
+# Evidencia de validación — 51.1~ynh5
 
 Validado el 5 de noviembre de 2026 en Debian 12 / YunoHost 12.1.41.2 / amd64.
 
 | Prueba | Resultado |
 | --- | --- |
 | Esquemas, ShellCheck, Bash/Python y YAML GitHub/Forgejo | Correctos |
-| Unitarias, incluidas firma/claims/política/configuración OIDC | 35 correctas tanto en el entorno local como en Debian 12; sin omisiones |
-| OIDC real: proveedor HTTPS efímero, RS256 y PKCE | 115 comprobaciones correctas |
-| SSOwat/LDAP reales: perfiles, roles, revocación, TOTP, logout y recuperación | 53 comprobaciones correctas |
-| Copia, eliminación y restauración con OIDC activado | Correcto; conserva configuración, CA, identidad y roles |
-| Copia, eliminación y restauración de perfiles LDAP | Correcto; conserva UUID y roles |
-| MariaDB nativa: instalación, login, migraciones y documentos | Correcto |
-| Regresión de sesión parcialmente inicializada tras fallo de autorización | Correcto; borra usuario/privilegios y rota el identificador |
-| Contraseñas, tokens, debug de correo y diagnósticos 500 | Correcto; secretos ausentes en los destinos comprobados |
-| package_check: linter, raíz, subruta, varias instancias, backup/restore, upgrade y change_url | 7 resultados originales `success` |
-| SMTP con STARTTLS tras restaurar, como usuario de servicio | Correcto; sin enviar correo de prueba |
-| PDF tras restaurar, como usuario de servicio | Correcto; 4222 bytes |
+| Unitarias: RS256/RS512, claims, claves, política y configuración | 49 correctas en el entorno local y otras 49 en Debian 12; sin omisiones |
+| OIDC HTTPS con firmas RS256 reales | 115 comprobaciones correctas, incluida restauración |
+| OIDC HTTPS con firmas RS512 reales | 115 comprobaciones correctas, incluida restauración |
+| Rechazo de downgrade y algoritmos no seleccionados | Correcto |
+| SSOwat/LDAP, perfiles, roles, revocación, TOTP y recuperación | 53 comprobaciones correctas, incluida restauración |
+| MariaDB nativa, migraciones, documentos y limpieza de sesiones parciales | Correcto |
+| Contraseñas/tokens ausentes de los registros comprobados | Correcto |
+| package_check: linter, raíz, subruta, varias instancias, backup/restore, upgrade, change_url | 7 resultados originales `success` |
+| SMTP STARTTLS y PDF tras restaurar, como usuario de servicio | Correctos; sin enviar correo de prueba; PDF de 4093 bytes |
+| Plantillas de proveedores | Sintaxis JSON/YAML correcta; no se han activado cuentas cloud |
 
-OIDC se ha probado con `client_secret_basic`, `client_secret_post` y clientes
-públicos `none`, siempre con PKCE. Incluye expiración real de sesión, rechazo de
-state/cookie/replay y tokens inválidos, TOTP, separación de cuentas con nombre/correo
-coincidente, selección entre portal/OIDC y revocación LDAP de vínculos explícitos.
-El proveedor es una fixture local HTTPS que firma tokens auténticos; no se afirma
-certificación ni ejecución de estas pruebas contra todos los IdP comerciales.
+Ambas suites OIDC prueban PKCE S256, clientes basic/post/públicos, state y replay,
+caducidad real, TOTP, elección de entrada nativa/OIDC y vínculos LDAP explícitos.
+El proveedor de prueba es efímero con HTTPS y RSA 2048. No equivale a probar las
+cuentas Google/GitHub/Microsoft ni a certificar un producto IdP concreto.
 
-La **nota oficial es 0**. El linter marca `AppCatalog.is_in_catalog` como crítico
-y `AppCatalog.state_is_working` como error: la aplicación no está aceptada en el
-catálogo comunitario. Los avisos restantes son README manual y categoría.
-El wrapper conserva ese resultado y devuelve error de calidad, aunque los siete
-escenarios funcionales pasen. La instalación personalizada no requiere alta editorial.
+La **nota oficial permanece en 0**: `AppCatalog.is_in_catalog` es crítico y
+`AppCatalog.state_is_working` es error. Los avisos restantes son README manual y
+categoría. El wrapper conserva ese resultado; no convierte la ausencia en el
+catálogo comunitario en una aprobación. Los siete escenarios funcionales pasan.
 
-- `package-check-results.json`: JSON original de la matriz final.
-- `package-linter.json`: JSON original del linter.
-- `oidc-tests.json` y `sso-tests.json`: comprobaciones integradas, sin secretos.
-- `supplementary-tests.json`: unitarias, MariaDB, SMTP, PDF y estado de las forjas.
-- `environment.json`: versiones, imágenes y commit exacto de la matriz.
+- `package-check-results.json` y `package-linter.json`: resultados originales.
+- `oidc-tests.json`: RS256; `oidc-rs512-tests.json`: RS512.
+- `sso-tests.json`: comprobaciones nativas LDAP.
+- `provider-catalog.json`: consulta de disponibilidad YunoHost; no es una instalación.
+- `environment.json` y `package-check-commit.txt`: entorno y revisiones utilizadas.
 - `runtime.sha256`: hashes de los 23 archivos funcionales/configuración probados.
-- `package-check-commit.txt`: revisión de la herramienta oficial.
+- `supplementary-tests.json`: comprobaciones adicionales y límites.
 
-`asm3_ynh-51.1~ynh4-validation.tar.gz` contiene informes y logs completos. La
-instantánea anterior a los informes identifica el código de la matriz; los scripts
-de pruebas y documentación se completan después. Los 23 archivos funcionales de
-la entrega coinciden con los probados: `sha256sum -c doc/validation/runtime.sha256`.
+`asm3_ynh-51.1~ynh5-validation.tar.gz` contiene informes, logs y la instantánea previa
+al informe final. Documentación y plantillas se completan después; los 23 archivos
+funcionales coinciden con los de la matriz. Compruébalo con
+`sha256sum -c doc/validation/runtime.sha256`.
 
-No se han publicado repositorios remotos ni ejecutado los workflows en cuentas
-GitHub/Forgejo. No se ha repetido la matriz sobre ARM. Discos, claves privadas,
-configuraciones activas y credenciales del laboratorio quedan fuera del repositorio.
+No se han publicado repositorios remotos ni ejecutado sus workflows. La matriz no
+se ha repetido sobre ARM. Claves privadas y discos del laboratorio quedan excluidos.
