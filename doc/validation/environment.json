@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-05",
+  "timezone": "Europe/Madrid",
+  "architecture": "amd64",
+  "hypervisor": "QEMU 10.2.2 with KVM",
+  "lab_os": "Debian 13",
+  "cpus": 4,
+  "memory_mib": 4096,
+  "incus": "6.0.4",
+  "target_os": "Debian 12/bookworm",
+  "yunohost": "12.1.41.2",
+  "official_base_image": "91abc4fc4c435cd619e85fb5f9fc173393ceae8b795819107eaf9fceb0985ab7",
+  "final_base_with_checker_preinstalled_dependencies": "950ecf6981aebbb1c84a9d375d2f5b7d998eb4316e3e7412b330f82502cebdce",
+  "package_check_commit": "f7d32cadac3cfced282decede024707fba9e6ec6",
+  "cloud_image_sha512": "d25999de0770d4cde1be72c299ba3ad94eac7ea8fd4d18f8cc86c69df69337e2e8a91d64465a9bfd8f2a78c566fcbcb0842eacc91c09efdef72d719d9f13b535",
+  "tested_package_commit": "77d95c2eca978e0889c0fe36ade9508d75ff8994",
+  "package_check_timestamp_utc": 1793878708,
+  "package_version": "51.1~ynh3",
+  "tested_pre_report_archive_sha256": "cab0d91adbe9f0b814dfb08cd683e834cdcdc0947d0cab5df4d8609629b7ae87",
+  "package_linter_commit": "c1a7491aab2c22d28b220330513e9555a8da3a1d",
+  "native_runtime": {
+    "python": "3.14.10",
+    "mariadb": "11.8.8",
+    "mysqlclient": "2.3.0"
+  },
+  "tested_functional_files": 20,
+  "sso_integration_assertions": 53,
+  "official_quality_level": 0
+}

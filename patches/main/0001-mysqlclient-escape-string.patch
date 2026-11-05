@@ -1,0 +1,26 @@
+--- a/src/asm3/dbms/mysql.py
++++ b/src/asm3/dbms/mysql.py
+@@ -5,6 +5,7 @@
+ 
+ try:
+     import MySQLdb
++    from MySQLdb._mysql import escape_string
+ except:
+     pass
+ 
+@@ -50,13 +51,13 @@
+         """
+         if s is None: return ""
+         if asm3.utils.is_str(s):
+-            s = MySQLdb.escape_string(s)
++            s = escape_string(s)
+             s = asm3.utils.bytes2str(s) # MySQLdb.escape_string can return bytes on python3
+         elif asm3.utils.is_unicode(s):
+             # Encode the string as UTF-8 for MySQL escape_string 
+             # then decode it back into unicode before continuing
+             s = s.encode("utf-8")
+-            s = MySQLdb.escape_string(s)
++            s = escape_string(s)
+             s = s.decode("utf-8")
+         # This is historic - ASM2 switched backticks for apostrophes so we do for compatibility
+         s = s.replace("'", "`")

@@ -1,0 +1,65 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/main/schemas/manifest.v2.schema.json
+packaging_format = 2
+id = "asm3"
+name = "Animal Shelter Manager"
+description.en = "Manage animal shelters, adoptions, veterinary care, volunteers and donations"
+description.es = "Gestiona protectoras, adopciones, atención veterinaria, voluntariado y donaciones"
+version = "51.1~ynh3"
+maintainers = []
+
+[upstream]
+license = "GPL-3.0-only"
+website = "https://sheltermanager.com"
+admindoc = "https://github.com/sheltermanager/asm3/blob/master/README.md"
+userdoc = "https://sheltermanager.com/repo/asm3_help/"
+code = "https://github.com/sheltermanager/asm3"
+
+[integration]
+yunohost = ">= 12.1.17"
+helpers_version = "2.1"
+architectures = "all"
+multi_instance = true
+ldap = true
+sso = true
+disk = "2G"
+ram.build = "512M"
+ram.runtime = "512M"
+
+[install]
+    [install.domain]
+    type = "domain"
+    [install.path]
+    type = "path"
+    default = "/asm3"
+    [install.init_main_permission]
+    type = "group"
+    default = "all_users"
+    [install.admin]
+    type = "user"
+    [install.language]
+    ask.es = "Idioma y región inicial de ASM3"
+    ask.en = "Initial ASM3 language and region"
+    type = "select"
+    choices = ["es", "en", "en_GB", "fr", "de", "it", "pt"]
+    default = "es"
+
+[resources]
+    [resources.sources.main]
+    url = "https://codeload.github.com/sheltermanager/asm3/tar.gz/f55cd1dcd5200efce09309d3aaae361035813316"
+    sha256 = "4003e931450a54d752ca3a7fb6b2188b2bd5015d6cb2b02ea02c0f880cf9cfa5"
+    [resources.system_user]
+    allow_email = true
+    [resources.install_dir]
+    [resources.data_dir]
+    [resources.permissions]
+    main.url = "/"
+    staff.url = "/ynh_sso"
+    staff.allowed = "all_users"
+    staff.show_tile = false
+    staff.label = "ASM3 staff"
+    [resources.ports]
+    main.default = 5000
+    [resources.apt]
+    packages = ["mariadb-server", "python3", "python3-cheroot", "python3-ldap3", "python3-pil", "python3-mysqldb", "python3-psycopg2", "python3-memcache", "python3-lxml", "python3-requests", "python3-reportlab", "python3-boto3", "python3-openpyxl", "python3-qrcode", "python3-stripe", "python3-kombu", "weasyprint", "imagemagick", "ffmpeg"]
+    [resources.database]
+    type = "mysql"

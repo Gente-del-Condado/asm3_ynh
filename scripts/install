@@ -1,0 +1,20 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_script_progression "Preparing ASM3 configuration and maintenance lock..."
+asm3_lock
+asm3_configure
+ynh_script_progression "Installing and building pinned ASM3 source..."
+asm3_sources
+ynh_script_progression "Initializing database and securing default accounts..."
+# Neither a command-line argument nor a persistent settings entry contains the password.
+set +x
+printf '%s' "$rescue_password" | ynh_exec_as_app env ASM3_CONF="$install_dir/asm3.conf" PYTHONDONTWRITEBYTECODE=1 python3 "$install_dir/ynh/manage.py" install "$admin" "$language"
+unset rescue_password
+set -x
+yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/log/nginx/$domain-error.log"
+asm3_start
+ynh_config_add_nginx
+chmod 600 "/etc/nginx/conf.d/$domain.d/$app.conf"
+ynh_script_progression "ASM3 installation completed"

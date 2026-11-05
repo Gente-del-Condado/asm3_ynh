@@ -1,0 +1,9 @@
+{
+  "repository": "sheltermanager/asm3",
+  "channel": "stable",
+  "tag": "51-1",
+  "version": "51.1",
+  "commit": "f55cd1dcd5200efce09309d3aaae361035813316",
+  "url": "https://codeload.github.com/sheltermanager/asm3/tar.gz/f55cd1dcd5200efce09309d3aaae361035813316",
+  "sha256": "4003e931450a54d752ca3a7fb6b2188b2bd5015d6cb2b02ea02c0f880cf9cfa5"
+}

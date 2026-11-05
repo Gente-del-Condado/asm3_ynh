@@ -1,0 +1,55 @@
+name: Track latest stable ASM3
+on:
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: asm3-upstream-update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve release, commit and SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/update_upstream.py
+      - name: Validate updated package before proposing it
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck python3-jsonschema mariadb-server python3-cheroot python3-pil python3-mysqldb python3-psycopg2 python3-lxml python3-requests python3-reportlab python3-openpyxl python3-qrcode python3-boto3 python3-stripe python3-kombu
+          python3 tools/check_package.py
+          python3 -m unittest discover -s tests -v
+          python3 tools/smoke_test.py
+          bash tools/build_release.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: latest-stable-package
+          path: dist/*
+      - name: Create or refresh update pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTO_MERGE: ${{ vars.ASM3_AUTO_MERGE }}
+        run: |
+          if git diff --quiet -- manifest.toml upstream.lock.json; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -B automation/asm3-stable
+          git add manifest.toml upstream.lock.json
+          git commit -m 'Update ASM3 to the latest stable release'
+          old_sha="$(git ls-remote origin refs/heads/automation/asm3-stable | cut -f1)"
+          git push --force-with-lease="refs/heads/automation/asm3-stable:${old_sha}" origin automation/asm3-stable
+          cat > /tmp/update-body.md <<'EOF'
+          Updates the pinned stable ASM3 release, resolved commit, source checksum and YunoHost package version.
+
+          Package checks and the MariaDB lifecycle smoke test passed in the updater workflow. The installable repository archive is attached to that workflow run. Full YunoHost package_check remains a separate validation on a YunoHost/LXC runner.
+          EOF
+          pr="$(gh pr list --head automation/asm3-stable --state open --json number --jq '.[0].number // empty')"
+          if [ -z "$pr" ]; then
+            pr="$(gh pr create --head automation/asm3-stable --title 'Update ASM3 to latest stable' --body-file /tmp/update-body.md)"
+          fi
+          if [ "$AUTO_MERGE" = true ]; then gh pr merge "$pr" --auto --squash; fi

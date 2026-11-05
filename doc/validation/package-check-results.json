@@ -1,0 +1,82 @@
+{
+    "app": "asm3",
+    "app_version": "51.1~ynh3",
+    "commit": "77d95c2eca978e0889c0fe36ade9508d75ff8994",
+    "commit_timestamp": 1793877945,
+    "architecture": "amd64",
+    "yunohost_version": "12.1.41.2",
+    "yunohost_branch": "stable",
+    "timestamp": 1793878708,
+    "tests": [
+        {
+            "test_type": "TEST_PACKAGE_LINTER",
+            "test_arg": "",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "1",
+            "test_notes": [
+                "<style=warning>2 warnings</style>",
+                "2 possible improvements"
+            ]
+        },
+        {
+            "test_type": "TEST_INSTALL",
+            "test_arg": "root",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "149",
+            "test_notes": []
+        },
+        {
+            "test_type": "TEST_INSTALL",
+            "test_arg": "subdir",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "120",
+            "test_notes": []
+        },
+        {
+            "test_type": "TEST_INSTALL",
+            "test_arg": "multi",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "74",
+            "test_notes": []
+        },
+        {
+            "test_type": "TEST_BACKUP_RESTORE",
+            "test_arg": "",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "193",
+            "test_notes": []
+        },
+        {
+            "test_type": "TEST_UPGRADE",
+            "test_arg": "",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "41",
+            "test_notes": []
+        },
+        {
+            "test_type": "TEST_CHANGE_URL",
+            "test_arg": "",
+            "test_serie": "default",
+            "main_result": "success",
+            "test_duration": "138",
+            "test_notes": []
+        }
+    ],
+    "level_results": {
+        "1": false,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": true,
+        "7": false,
+        "8": false
+    },
+    "level": 0
+}

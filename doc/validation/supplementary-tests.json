@@ -1,0 +1,21 @@
+{
+  "package_version": "51.1~ynh3",
+  "target": "Debian 12 / YunoHost 12.1.41.2 / amd64",
+  "tests": {
+    "sso_assertions": 53,
+    "unit_tests": {
+      "passed": 16,
+      "failed": 0
+    },
+    "native_mariadb_smoke": "passed, including failed authentication and debug email/error diagnostic redaction",
+    "smtp_starttls_587_authentication": "passed as service user after restore; Dovecot started in test fixture; no test message sent",
+    "pdf_generation_as_service_user": {
+      "result": "passed",
+      "bytes": 4488
+    },
+    "workflow_yaml_syntax": "passed for GitHub and Forgejo",
+    "SSO_after_backup_remove_restore": "passed; identity UUID mapping and assigned roles preserved"
+  },
+  "remote_ci_executed": false,
+  "remote_repositories_published": false
+}

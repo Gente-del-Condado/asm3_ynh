@@ -1,0 +1,21 @@
+#!/bin/bash
+source ../settings/scripts/_common.sh
+source /usr/share/yunohost/helpers
+
+ynh_script_progression "Restoring ASM3 code, configuration and database..."
+asm3_lock
+ynh_restore "$install_dir"
+chown -R "root:$app" "$install_dir"
+chmod -R u=rwX,g=rX,o= "$install_dir"
+chmod 640 "$install_dir/asm3.conf"
+ynh_mysql_db_shell < db.sql
+ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
+chmod 600 "/etc/nginx/conf.d/$domain.d/$app.conf"
+ynh_restore "/etc/systemd/system/$app.service"
+ynh_restore "/etc/cron.d/$app"
+systemctl daemon-reload
+systemctl enable "$app.service" --quiet
+yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/log/nginx/$domain-error.log"
+asm3_start
+ynh_systemctl --service=nginx --action=reload
+ynh_script_progression "ASM3 restoration completed"

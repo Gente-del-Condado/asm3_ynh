@@ -1,0 +1,19 @@
+name: Full YunoHost package_check (prepared runner)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package-check:
+    # A dedicated disposable runner with Incus/LXD and package_check prerequisites.
+    # Never automatically execute pull-request code on a privileged self-hosted runner.
+    runs-on: [self-hosted, linux, yunohost-package-check]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run official complete lifecycle matrix
+        run: bash tools/run_package_check.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: yunohost-package-check-results
+          path: .package-check/results/

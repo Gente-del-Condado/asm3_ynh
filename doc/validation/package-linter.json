@@ -1,0 +1,19 @@
+{
+  "success": [],
+  "info": [
+    "Configurations.systemd_config_harden_security",
+    "AppCatalog.is_in_github_org"
+  ],
+  "warning": [
+    "App.badges_in_readme",
+    "AppCatalog.has_category"
+  ],
+  "error": [
+    "AppCatalog.state_is_working"
+  ],
+  "critical": [
+    "AppCatalog.is_in_catalog"
+  ],
+  "main_result": "success",
+  "test_duration": "1"
+}

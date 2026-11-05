@@ -1,0 +1,7 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ASM3_CONF=__INSTALL_DIR__/asm3.conf
+PYTHONDONTWRITEBYTECODE=1
+# Same instance lock as install/upgrade/backup: no batch job during a dump/migration.
+17 3 * * * __APP__ flock -n __DATA_DIR__/maintenance.lock /usr/bin/python3 __INSTALL_DIR__/upstream/src/cron.py all
+23 * * * * __APP__ flock -n __DATA_DIR__/maintenance.lock /usr/bin/python3 __INSTALL_DIR__/upstream/src/cron.py reports_email

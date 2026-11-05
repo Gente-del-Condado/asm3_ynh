@@ -1,0 +1,38 @@
+name: Track latest stable ASM3
+on:
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: docker
+    container:
+      image: data.forgejo.org/oci/node:22-bookworm
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+        with:
+          token: ${{ secrets.ASM3_UPDATE_TOKEN }}
+      - name: Install dependencies and resolve upstream release
+        run: |
+          bash tools/install_ci_deps.sh
+          /usr/bin/python3 tools/update_upstream.py
+      - name: Validate the proposed source
+        run: bash tools/run_ci.sh
+      - uses: https://data.forgejo.org/forgejo/upload-artifact@v4
+        with:
+          name: latest-stable-package
+          path: dist/*
+      - name: Push branch and propose update
+        env:
+          FORGEJO_TOKEN: ${{ secrets.ASM3_UPDATE_TOKEN }}
+        run: |
+          if git diff --quiet -- manifest.toml upstream.lock.json; then exit 0; fi
+          test -n "$FORGEJO_TOKEN"
+          git config user.name 'ASM3 update bot'
+          git config user.email 'asm3-update@localhost'
+          git checkout -B automation/asm3-stable
+          git add manifest.toml upstream.lock.json
+          git commit -m 'Update ASM3 to the latest stable release'
+          old_sha="$(git ls-remote origin refs/heads/automation/asm3-stable | cut -f1)"
+          git push --force-with-lease="refs/heads/automation/asm3-stable:${old_sha}" origin automation/asm3-stable
+          /usr/bin/python3 tools/forgejo_pr.py

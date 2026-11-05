@@ -1,0 +1,22 @@
+name: Validate package
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: docker
+    container:
+      image: data.forgejo.org/oci/node:22-bookworm
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install test dependencies in the disposable job
+        run: bash tools/install_ci_deps.sh
+      - name: Validate and exercise MariaDB lifecycle
+        run: bash tools/run_ci.sh
+      - uses: https://data.forgejo.org/forgejo/upload-artifact@v4
+        with:
+          name: asm3-ynh-package
+          path: dist/*

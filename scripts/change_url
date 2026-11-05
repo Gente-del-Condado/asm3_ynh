@@ -1,0 +1,17 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+asm3_lock
+ynh_systemctl --service="$app" --action=stop
+asm3_configure
+asm3_start
+ynh_config_change_url_nginx
+chmod 600 "/etc/nginx/conf.d/$domain.d/$app.conf"
+yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/log/nginx/$domain-error.log"
+if [ "$domain" != "$old_domain" ]; then
+    # Core persists the new domain after this script, whereas the mail maps need
+    # it now to authorize the new app@domain envelope sender.
+    ynh_app_setting_set --key=domain --value="$domain"
+    yunohost tools regen-conf postfix dovecot
+fi

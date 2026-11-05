@@ -1,0 +1,32 @@
+[Unit]
+Description=Animal Shelter Manager (__APP__)
+After=network.target mariadb.service
+Requires=mariadb.service
+
+[Service]
+Type=simple
+User=__APP__
+Group=__APP__
+WorkingDirectory=__INSTALL_DIR__/upstream/src
+Environment=ASM3_CONF=__INSTALL_DIR__/asm3.conf
+Environment=ASM3_SCRIPT_NAME=__URL_PATH__
+Environment=ASM3_PORT=__PORT__
+Environment=ASM3_INSTANCE=__APP__
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 __INSTALL_DIR__/ynh/server.py
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=__DATA_DIR__
+RestrictSUIDSGID=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+dist/
+*.sql
+*.log
+.test-env/
+.package-check/
+.manifest.v2.schema.json
+.tests.v1.schema.json
+.spdx_licenses

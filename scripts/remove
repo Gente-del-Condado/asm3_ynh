@@ -1,0 +1,15 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_print_info "Removing ASM3 services and web configuration..."
+# Stop scheduled tasks before resources (database, user and code) are removed.
+if [ -n "${data_dir:-}" ] && [ -d "$data_dir" ]; then
+    asm3_lock
+fi
+ynh_safe_rm "/etc/cron.d/$app"
+ynh_config_remove_systemd
+yunohost service remove "$app"
+ynh_config_remove_nginx
+# The packaging-v2 resource manager removes DB, system user and install_dir.
+# data_dir follows YunoHost's normal --purge policy.
