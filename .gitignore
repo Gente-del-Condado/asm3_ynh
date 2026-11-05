@@ -9,3 +9,5 @@ dist/
 .manifest.v2.schema.json
 .tests.v1.schema.json
 .spdx_licenses
+/oidc.json
+/oidc-*.pem

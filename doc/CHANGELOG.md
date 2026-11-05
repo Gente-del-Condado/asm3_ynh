@@ -1,5 +1,16 @@
 # Cambios del paquete
 
+## 51.1~ynh4 — 5 de noviembre de 2026
+
+- Cliente OIDC opcional: discovery HTTPS, Authorization Code, PKCE S256 y tokens RS256.
+- State/nonce por sesión, validación de claims y rechazo de callbacks repetidos.
+- Perfiles por emisor/sub, autorización por lista de sujetos o grupos y vínculos LDAP explícitos.
+- SSO nativo, LDAP, TOTP y recuperación local conservados.
+- Configurador root con escritura atómica, validación, espera de arranque y recuperación del archivo previo.
+- Logout OIDC opcional sin tokens en URL; expiración de sesiones y recarga de roles/política.
+- Se destruyen las sesiones parciales si falla la autorización final tras cargar el usuario.
+- Proveedor HTTPS efímero para las pruebas completas de OIDC y restauración.
+
 ## 51.1~ynh3 — 5 de noviembre de 2026
 
 - SSO nativo SSOwat con autorización LDAP por permiso staff y perfiles automáticos.

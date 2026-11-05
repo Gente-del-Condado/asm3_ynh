@@ -4,7 +4,7 @@ Este documento distingue las pruebas locales de la validación integral de YunoH
 
 ## Comprobaciones rápidas
 
-Requieren Bash, ShellCheck, Python ≥ 3.11 y `jsonschema`:
+Requieren Bash, ShellCheck, Python ≥ 3.11, `jsonschema`, PyJWT y `cryptography`:
 
 ```bash
 python3 tools/check_package.py
@@ -17,7 +17,8 @@ problemas ShellCheck. Los esquemas están copiados en `tests/schemas` desde
 [YunoHost/apps](https://github.com/YunoHost/apps/tree/main/schemas) para que las
 comprobaciones funcionen sin red. No son el runtime del gestor de paquetes.
 
-Las pruebas unitarias cubren proxy y cookies por instancia, rechazo de cabeceras
+Las pruebas unitarias cubren validación criptográfica OIDC, configuración, expiry/state,
+proxy y cookies por instancia, rechazo de cabeceras
 falsificadas, permisos LDAP, UUID obligatorio, fallos de directorio, aislamiento
 de endpoints con datos privados y el actualizador de versiones/API Forgejo.
 
@@ -88,9 +89,26 @@ bloqueo, cambio de identidad, logout, TOTP, recuperación, colisiones de UUID,
 contraseñas ausentes en journal/logs de operaciones y conservación tras restaurar.
 El informe se escribe en `/root/asm3-sso-results.json`.
 
+## OpenID Connect con HTTPS real
+
+Dentro del mismo YunoHost desechable, con las dependencias del manifest:
+
+```bash
+python3 tools/test_yunohost_oidc.py --disposable-lab asm3 --lifecycle
+```
+
+Arranca un proveedor efímero HTTPS con RSA 2048, discovery, JWKS, authorization,
+token endpoint y logout. El proveedor exige el verificador PKCE y la misma URI.
+Se prueban callbacks reales contra el servicio instalado, tokens inválidos,
+state/cookie/replay, política, roles, TOTP, elección entre OIDC y portal, vínculo
+LDAP y revocación, recuperación, logs sin tokens y copia/eliminación/restauración.
+El informe queda en `/root/asm3-oidc-results.json`. No usar en producción: cambia
+usuarios, permisos, configuración y, con `--lifecycle`, elimina la aplicación.
+Las claves y secretos del proveedor se generan durante la prueba, no van en Git.
+
 ## Estado de esta entrega
 
-Validación del **5 de noviembre de 2026**, revisión **51.1~ynh3**.
+Validación del **5 de noviembre de 2026**, revisión **51.1~ynh4**.
 La evidencia definitiva está en [validation/README.md](validation/README.md).
 El laboratorio y las imágenes exactas se describen en [LAB.md](LAB.md).
 

@@ -49,6 +49,8 @@ class ProxyApplication:
                     cookie_name, sep, rest = value.partition("=")
                     if cookie_name in self.cookies:
                         value = self.cookies[cookie_name] + sep + rest
+                        if not re.search(r"(?i);\s*samesite=", value):
+                            value += "; SameSite=Lax"
                         cookie_path = (self.prefix or "") + "/"
                         if re.search(r"(?i);\s*path=", value):
                             value = re.sub(r"(?i)(;\s*path=)[^;]*", lambda m: m[1] + cookie_path, value)

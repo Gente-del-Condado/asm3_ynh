@@ -25,6 +25,11 @@ asm3_configure() {
     ynh_config_add --template=asm3.conf --destination="$install_dir/asm3.conf"
     chown "root:$app" "$install_dir/asm3.conf"
     chmod 640 "$install_dir/asm3.conf"
+    if [ ! -e "$install_dir/oidc.json" ]; then
+        cp ../conf/oidc.json.example "$install_dir/oidc.json"
+    fi
+    chown "root:$app" "$install_dir/oidc.json"
+    chmod 640 "$install_dir/oidc.json"
     set -x
     ynh_config_add --template=cron --destination="/etc/cron.d/$app"
     chmod 644 "/etc/cron.d/$app"
@@ -34,8 +39,8 @@ asm3_configure() {
 asm3_sources() {
     ynh_setup_source --dest_dir="$install_dir/upstream" --full_replace
     mkdir -p "$install_dir/ynh"
-    cp ../conf/{server,build,manage}.py "$install_dir/ynh/"
-    cp ../conf/ynh_auth.py "$install_dir/upstream/src/ynh_auth.py"
+    cp ../conf/{server,build,manage,manage_oidc}.py "$install_dir/ynh/"
+    cp ../conf/ynh_{auth,oidc}.py "$install_dir/upstream/src/"
     # Build as root before making application code read-only to the service.
     ASM3_CONF="$install_dir/asm3.conf" python3 "$install_dir/ynh/build.py" "$install_dir/upstream"
     chown -R "root:$app" "$install_dir"

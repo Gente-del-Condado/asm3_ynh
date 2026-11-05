@@ -61,7 +61,7 @@ def identity_row(dbo, subject):
 
 
 def is_managed(dbo, username):
-    return bool(dbo.query("SELECT i.UserID FROM ynh_auth_identity i INNER JOIN users u ON u.ID=i.UserID WHERE LOWER(u.UserName)=LOWER(?)", [username]))
+    return bool(dbo.query("SELECT i.UserID FROM ynh_auth_identity i INNER JOIN users u ON u.ID=i.UserID WHERE LOWER(u.UserName)=LOWER(?)", [username]) or dbo.query("SELECT i.UserID FROM ynh_oidc_identity i INNER JOIN users u ON u.ID=i.UserID WHERE LOWER(u.UserName)=LOWER(?)", [username]))
 
 
 def new_user(dbo, username, name, email, password, superuser=False, roles=""):
@@ -77,6 +77,8 @@ def setup(dbo, admin, rescue_password):
     """Run only during install/upgrade, with the service stopped."""
     from asm3.sitedefs import get_string
     import asm3.users
+    import ynh_oidc
+    ynh_oidc.setup(dbo)
     dbo.execute("CREATE TABLE IF NOT EXISTS ynh_auth_identity (Subject VARCHAR(64) PRIMARY KEY, UserID INTEGER NOT NULL UNIQUE)")
     dbo.execute("CREATE TABLE IF NOT EXISTS ynh_auth_config (Name VARCHAR(64) PRIMARY KEY, Value VARCHAR(255) NOT NULL)")
     if not dbo.query("SELECT Value FROM ynh_auth_config WHERE Name='default_role'"):
@@ -161,6 +163,9 @@ def authenticate_challenge(dbo, username, password):
         return None
     if not session or not session.get("ynh_login_token") or session.get("ynh_challenge_expires", 0) < time.time():
         return None
+    if session.get("ynh_pending_provider") == "oidc":
+        import ynh_oidc
+        return ynh_oidc.authenticate_challenge(dbo, session, username, password)
     uid = web.ctx.env.get("asm3.ynh_user", "")
     if not uid or uid.lower() != username.lower() or not hmac.compare_digest(str(password), session.ynh_login_token):
         return None
@@ -175,6 +180,9 @@ def authenticate_challenge(dbo, username, password):
 
 def mark_login(dbo, session, username):
     """Called by web_login only after all native password/TOTP/IP checks pass."""
+    if session.get("ynh_pending_provider") == "oidc":
+        import ynh_oidc
+        return ynh_oidc.mark_login(dbo, session, username)
     if is_managed(dbo, username):
         import web070 as web
         person = directory_user(web.ctx.env.get("asm3.ynh_user", ""))
@@ -224,11 +232,14 @@ def processor(session, installpath):
             raise web.seeother(BASE_URL + "/login?loggedout=1")
         # Local recovery is intentional and separate from externally managed users.
         if path in ("/login", "/mobile_login") and params.get("local") == "1":
-            if session.get("ynh_source") == "sso":
+            if session.get("ynh_source") in ("sso", "oidc") or session.get("ynh_pending_provider") == "oidc":
                 reset_session(session)
             session.ynh_local_mode = True
             return handler()
         if path in ("/login", "/mobile_login") and web.ctx.method == "POST":
+            return handler()
+        import ynh_oidc
+        if ynh_oidc.dispatch(session, installpath):
             return handler()
         if session.get("ynh_logged_out"):
             if path in ("/", "/ynh_sso"):

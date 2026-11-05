@@ -10,3 +10,5 @@ Como root, consulta la contraseña con `yunohost app setting __APP__ rescue_pass
 No la compartas ni la incluyas en registros. Las cuentas de ejemplo están deshabilitadas.
 
 Configura organización, zona horaria y correo en ASM3. El SMTP local ya está configurado.
+
+OpenID Connect opcional: configura un cliente registrado siguiendo `doc/OIDC.md`. El SSO nativo permanece disponible.

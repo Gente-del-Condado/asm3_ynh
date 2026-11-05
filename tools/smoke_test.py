@@ -78,7 +78,8 @@ def main():
         for patch in sorted((ROOT / "patches/main").glob("*.patch")):
             subprocess.run(["patch", "--batch", "--forward", "--strip=1", "--input", str(patch)], cwd=upstream, check=True)
         shutil.copytree(ROOT / "conf", install / "ynh")
-        shutil.copy(ROOT / "conf/ynh_auth.py", upstream / "src/ynh_auth.py")
+        for module in ("ynh_auth", "ynh_oidc"):
+            shutil.copy(ROOT / f"conf/{module}.py", upstream / f"src/{module}.py")
         cache = work / "cache"
         cache.mkdir()
         sql_dir = work / "mysql"
@@ -138,8 +139,28 @@ web.ctx.headers = []
 assert marker not in str(main.asm_500_email().data)
 assert marker not in repr(mail)
 assert marker not in str(main.asm_500().data)
+# Failure after native update_session must discard partially assembled privileges.
+import sys, secrets, ynh_auth
+password = sys.stdin.read()
+main.session.update(main.session._initializer)
+main.session.session_id = secrets.token_hex(20)
+main.session.ip = '127.0.0.1'
+web.ctx.ip = '127.0.0.1'
+previous_id = main.session.session_id
+ynh_auth.enabled = lambda: True
+ynh_auth.is_managed = lambda *a: False
+reached = []
+def reject_after_session(*args):
+    reached.append(True)
+    raise ynh_auth.AccessDenied('forced_session_failure')
+ynh_auth.mark_login = reject_after_session
+post = asm3.utils.PostedData({'username':'shelteradmin','password':password}, 'es')
+result = asm3.users.web_login(post, main.session, '127.0.0.1', 'test', main.PATH)
+assert reached and result == 'FAIL'
+assert main.session.get('user') is None and main.session.get('superuser') is None
+assert main.session.session_id != previous_id
 """
-            probe = subprocess.run([sys.executable, '-c', redaction_probe], cwd=upstream / 'src', env=env, capture_output=True, text=True)
+            probe = subprocess.run([sys.executable, '-c', redaction_probe], cwd=upstream / 'src', env=env, input=password, capture_output=True, text=True)
             assert probe.returncode == 0, probe.stderr
             assert 'SECRET_BODY_AND_HEADER_SENTINEL' not in probe.stdout + probe.stderr
             for prefix in ("", "/refugio"):

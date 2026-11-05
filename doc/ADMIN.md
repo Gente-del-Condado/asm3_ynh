@@ -42,3 +42,9 @@ publishers, payment processors and S3 storage need your own accounts/settings.
 YunoHost removes the service, cron job, Nginx config, database, system user and
 application code. `--purge` also removes the disposable data directory. Make a
 backup before removal.
+
+## Optional OpenID Connect
+
+See [OIDC.md](OIDC.md). Configuration is `__INSTALL_DIR__/oidc.json`, root:__APP__ 0640.
+Use `python3 __INSTALL_DIR__/ynh/manage_oidc.py --app __APP__ --config /root/oidc.json`.
+OIDC is disabled until you register and configure your identity provider client.

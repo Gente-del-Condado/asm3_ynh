@@ -97,4 +97,5 @@ La restauración conserva las vinculaciones y permisos. Si se restaura en otro
 servidor cuyo LDAP tiene UUID diferentes, no se enlazan por nombre: requiere
 una migración explícita, usando primero el administrador de recuperación.
 
-Esta fase implementa SSO nativo de YunoHost. No introduce un proveedor OpenID Connect.
+Desde `51.1~ynh4` también hay un cliente OpenID Connect opcional, sin sustituir
+este SSO nativo ni LDAP. Consulta [OIDC.md](OIDC.md). El paquete no instala un IdP.

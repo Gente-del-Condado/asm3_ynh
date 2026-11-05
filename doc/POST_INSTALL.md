@@ -10,3 +10,5 @@ As root, retrieve its password with `yunohost app setting __APP__ rescue_passwor
 Do not share it or place it in logs. Default upstream accounts are disabled.
 
 Set organisation, timezone and email in ASM3. Local authenticated SMTP is configured.
+
+Optional OpenID Connect: configure a registered client following `doc/OIDC.md`. Native SSO stays available.

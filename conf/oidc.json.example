@@ -1,0 +1,13 @@
+{
+  "enabled": false,
+  "issuer": "https://identity.example.org",
+  "client_id": "asm3",
+  "client_secret": "",
+  "token_endpoint_auth_method": "client_secret_basic",
+  "scopes": ["openid", "profile", "email"],
+  "allowed_subjects": [],
+  "allowed_groups": [],
+  "groups_claim": "groups",
+  "ldap_links": {},
+  "session_max_age": 3600
+}

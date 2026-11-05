@@ -13,6 +13,7 @@ import secrets
 import subprocess
 import sys
 import time
+import tomllib
 
 
 def main():
@@ -219,7 +220,7 @@ def main():
             cfg = get(restored, '/config.js')
             config = json.loads(cfg.text[len('const asm = '):].rstrip(';'))
             check('roles and non-admin profile survive restore', config['user'] == uid and config['superuser'] == 0 and 'vp ' in config['securitymap'])
-        report = {'package_version': '51.1~ynh3', 'checks': passed, 'result': 'success'}
+        report = {'package_version': tomllib.loads(Path('/etc/yunohost/apps/' + app + '/manifest.toml').read_text())['version'], 'checks': passed, 'result': 'success'}
         Path('/root/asm3-sso-results.json').write_text(json.dumps(report, indent=2) + '\n')
     finally:
         # Keep only the fictitious SQL profile as evidence; remove its directory grant.

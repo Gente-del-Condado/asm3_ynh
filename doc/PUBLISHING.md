@@ -12,7 +12,7 @@ El mismo repositorio funciona en ambas forjas. Contiene workflows independientes
 Puedes partir del archivo Git autocontenido generado en `dist/`:
 
 ```bash
-git clone 'asm3_ynh-51.1~ynh3.bundle' asm3_ynh
+git clone 'asm3_ynh-51.1~ynh4.bundle' asm3_ynh
 cd asm3_ynh
 git remote remove origin
 git remote add github https://github.com/TU_USUARIO/asm3_ynh.git

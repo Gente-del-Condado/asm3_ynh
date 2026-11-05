@@ -1,7 +1,7 @@
 # Animal Shelter Manager para YunoHost
 
 Paquete nativo de **ASM3** para **YunoHost ≥ 12.1.17**, formato de empaquetado 2 y
-helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh3`), última publicación estable
+helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh4`), última publicación estable
 consultada el **5 de noviembre de 2026**. El código se descarga del repositorio
 oficial, fijado por commit y SHA-256; no depende de una imagen Docker.
 
@@ -20,7 +20,7 @@ Si usas el archivo de entrega, descomprímelo antes:
 
 ```bash
 mkdir asm3_ynh
-tar -xzf 'asm3_ynh-51.1~ynh3.tar.gz' -C asm3_ynh
+tar -xzf 'asm3_ynh-51.1~ynh4.tar.gz' -C asm3_ynh
 sudo yunohost app install "$PWD/asm3_ynh"
 ```
 
@@ -62,6 +62,18 @@ La recuperación local está en `/login?local=1`. Como root puedes consultar su
 usuario `ynh_rescue_asm3` y contraseña con `yunohost app setting asm3 rescue_password`.
 Consulta [la integración SSO y su administración](doc/SSO.md), incluyendo 2FA,
 revocación, cierre de sesión y migración desde `~ynh2`.
+
+## OpenID Connect opcional
+
+También puedes usar un proveedor OpenID Connect conservando SSO nativo y LDAP.
+Incluye Authorization Code con PKCE S256, firma RS256, perfiles de solo lectura,
+listas explícitas de sujetos/grupos y vinculación LDAP controlada por root.
+El acceso OIDC es `/oidc/login`; el acceso nativo sigue siendo `/ynh_sso`.
+
+OIDC se entrega desactivado hasta registrar tu cliente y configurar su emisor y
+credenciales. El configurador valida discovery y aplica el archivo sin imprimir
+secretos. Consulta [la guía OIDC](doc/OIDC.md), con URI exactas, configuración,
+logout, copias y límites de revocación.
 
 ## Actualizaciones automáticas del paquete
 
@@ -136,7 +148,7 @@ ASM3 se descarga al instalar y se comprueba contra el SHA-256 del manifest. No e
 instalador sin conexión. También se genera un repositorio Git autocontenido:
 
 ```bash
-git clone 'dist/asm3_ynh-51.1~ynh3.bundle' asm3_ynh
+git clone 'dist/asm3_ynh-51.1~ynh4.bundle' asm3_ynh
 ```
 
 Copia **también `.github/`** al publicar para activar CI y
