@@ -2,12 +2,12 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-ynh_script_progression "Preparing ASM3 configuration and maintenance lock..."
+ynh_script_progression "Preparando la configuración de ASM3 y activando el bloqueo de mantenimiento…"
 asm3_lock
 asm3_configure
-ynh_script_progression "Installing and building pinned ASM3 source..."
+ynh_script_progression "Descargando y preparando la versión de ASM3 fijada en el paquete…"
 asm3_sources
-ynh_script_progression "Initializing database and securing default accounts..."
+ynh_script_progression "Inicializando la base de datos y protegiendo las cuentas predeterminadas…"
 # Neither a command-line argument nor a persistent settings entry contains the password.
 set +x
 printf '%s' "$rescue_password" | ynh_exec_as_app env ASM3_CONF="$install_dir/asm3.conf" PYTHONDONTWRITEBYTECODE=1 python3 "$install_dir/ynh/manage.py" install "$admin" "$language"
@@ -19,4 +19,4 @@ set +x
 ynh_config_add_nginx > >(asm3_redact_config_log) 2>&1
 set -x
 chmod 600 "/etc/nginx/conf.d/$domain.d/$app.conf"
-ynh_script_progression "ASM3 installation completed"
+ynh_script_progression "Instalación de ASM3 completada"

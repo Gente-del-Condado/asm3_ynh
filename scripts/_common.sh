@@ -79,7 +79,7 @@ asm3_start() {
         sleep 1
     done
     journalctl -u "$app" -n 50 --no-pager >&2
-    ynh_die "ASM3 did not become ready on its local port"
+    ynh_die "ASM3 no respondió a tiempo en su puerto local"
 }
 
 asm3_identity_reconcile() {

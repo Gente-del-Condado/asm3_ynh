@@ -2,7 +2,7 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-ynh_print_info "Removing ASM3 services and web configuration..."
+ynh_print_info "Eliminando los servicios y la configuración web de ASM3…"
 # Stop scheduled tasks before resources (database, user and code) are removed.
 if [ -n "${data_dir:-}" ] && [ -d "$data_dir" ]; then
     asm3_lock

@@ -2,7 +2,7 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_print_info "Backing up ASM3, documents and database..."
+ynh_print_info "Creando una copia de seguridad de ASM3, sus documentos y su base de datos…"
 asm3_lock
 # SQL contains both records and media. No live file-store/SQL consistency window.
 ynh_mysql_dump_db > db.sql

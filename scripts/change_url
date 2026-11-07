@@ -2,6 +2,7 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+ynh_script_progression "Cambiando la URL de ASM3…"
 asm3_lock
 ynh_systemctl --service="$app" --action=stop
 asm3_configure
@@ -17,3 +18,4 @@ if [ "$domain" != "$old_domain" ]; then
 fi
 
 asm3_identity_reconcile
+ynh_script_progression "Cambio de URL de ASM3 completado"

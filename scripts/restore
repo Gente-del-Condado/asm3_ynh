@@ -2,7 +2,7 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_script_progression "Restoring ASM3 code, configuration and database..."
+ynh_script_progression "Restaurando el código, la configuración y la base de datos de ASM3…"
 asm3_lock
 ynh_restore "$install_dir"
 chown -R "root:$app" "$install_dir"
@@ -23,4 +23,4 @@ yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/l
 asm3_start
 asm3_identity_reconcile
 ynh_systemctl --service=nginx --action=reload
-ynh_script_progression "ASM3 restoration completed"
+ynh_script_progression "Restauración de ASM3 completada"

@@ -1,7 +1,7 @@
 # Animal Shelter Manager para YunoHost
 
 Paquete nativo de **ASM3** para **YunoHost ≥ 12.1.17**, formato de empaquetado 2 y
-helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh6`), última publicación estable
+helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh7`), última publicación estable
 consultada el **5 de noviembre de 2026**. El código se descarga del repositorio
 oficial, fijado por commit y SHA-256; no depende de una imagen Docker.
 
@@ -20,7 +20,7 @@ Si usas el archivo de entrega, descomprímelo antes:
 
 ```bash
 mkdir asm3_ynh
-tar -xzf 'asm3_ynh-51.1~ynh6.tar.gz' -C asm3_ynh
+tar -xzf 'asm3_ynh-51.1~ynh7.tar.gz' -C asm3_ynh
 sudo yunohost app install "$PWD/asm3_ynh"
 ```
 
@@ -29,10 +29,9 @@ Puedes instalar en `/` o en `/asm3`, usar español y desplegar varias instancias
 Entra desde el portal de YunoHost: el usuario elegido será administrador de ASM3.
 El esquema, las plantillas, los informes y los formularios se preparan automáticamente.
 
-Para instalar desde una URL de GitHub, publica **el contenido de este directorio en
-la raíz** de tu repositorio `asm3_ynh` y usa su URL en “Instalar una aplicación
-personalizada” de YunoHost. No se ha creado ningún repositorio remoto ni se ha
-publicado este proyecto en el catálogo oficial.
+Puedes instalar desde la URL del repositorio en “Instalar una aplicación
+personalizada” de YunoHost si el servidor puede clonarlo. Si el repositorio
+requiere autenticación, clónalo en el servidor y usa la ruta local.
 
 ## Qué incluye
 
@@ -169,13 +168,13 @@ ASM3 se descarga al instalar y se comprueba contra el SHA-256 del manifest. No e
 instalador sin conexión. También se genera un repositorio Git autocontenido:
 
 ```bash
-git clone 'dist/asm3_ynh-51.1~ynh6.bundle' asm3_ynh
+git clone 'dist/asm3_ynh-51.1~ynh7.bundle' asm3_ynh
 ```
 
 Copia **también `.github/`** al publicar para activar CI y
 el seguimiento de versiones. La licencia del paquete y de ASM3 es GPL-3.0-only.
 
-La matriz completa de `package_check` se ha ejecutado sobre Debian 12 y YunoHost
+La matriz completa de `package_check` para `51.1~ynh6` se ejecutó sobre Debian 12 y YunoHost
 12.1.41.2: los siete resultados de prueba son `success`. Se han verificado además
 SMTP con STARTTLS, PDF y la copia automática previa a actualizar. La nota del
 catálogo sigue en 0 por no estar publicado allí; no se presenta como una aplicación
