@@ -1,5 +1,7 @@
 # Administrar Animal Shelter Manager
 
+Consulta el [manual web de ASM3 para YunoHost](https://gente-del-condado.github.io/asm3_ynh/) para ver los pasos de instalación, ejemplos y capturas.
+
 ## Primer día
 
 - Abre https://__DOMAIN____PATH__ desde el portal YunoHost con **__ADMIN__**.

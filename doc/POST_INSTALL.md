@@ -17,6 +17,8 @@ TOTP is required for every private login. Enroll your factor when prompted.
 For Google/GitHub/Microsoft, install Dex and configure its clients through the ASM3
 YunoHost configuration panel. The same panel can reset a lost factor. See `doc/DEX.md`.
 
+[Manual en español de ASM3 para YunoHost](https://gente-del-condado.github.io/asm3_ynh/).
+
 After verifying the first login, create a backup through the YunoHost panel.
 See the [administration guide](ADMIN.md) and the optional
 [Home Assistant monitoring example](HOME_ASSISTANT.md).

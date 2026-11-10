@@ -9,7 +9,7 @@ ambas plataformas. Consulta [la guía de publicación](doc/PUBLISHING.md).
 
 ## Documentación
 
-- [Manual web en español](docs/index.html). Consulta cómo [publicarlo con GitHub Pages](doc/PUBLISHING.md#publicar-el-manual-con-github-pages).
+- [Manual web en español](https://gente-del-condado.github.io/asm3_ynh/). Consulta cómo [publicarlo con GitHub Pages](doc/PUBLISHING.md#publicar-el-manual-con-github-pages).
 - [Administración en YunoHost](doc/ADMIN_es.md), [SSO y LDAP](doc/SSO.md), [Dex](doc/DEX.md) y [OIDC](doc/OIDC.md).
 - [Monitorización con Home Assistant](doc/HOME_ASSISTANT.md).
 - [Desarrollo](CONTRIBUTING.md) e [instrucciones para agentes](AGENTS.md).
