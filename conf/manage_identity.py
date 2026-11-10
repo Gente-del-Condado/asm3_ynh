@@ -148,7 +148,7 @@ def render_connectors(app,data,head):
                 if data['github_team']:org['teams']=[data['github_team']]
                 config['orgs']=[org]
         elif provider=='microsoft':
-            # Dex's Microsoft connector uses Graph /me, requiring its default user.read scope.
+            # El conector Microsoft de Dex usa Graph /me y necesita su permiso predeterminado user.read.
             config.update(tenant=data['microsoft_tenant'])
         connectors.append({'type':provider,'id':ident,'name':provider.title()+' ('+app+')','config':config})
         allowed.append(ident)
@@ -156,14 +156,14 @@ def render_connectors(app,data,head):
 
 
 def dump_head(head):
-    # The official generator concatenates client lists after this final key.
+    # El generador oficial concatena las listas de clientes tras esta última clave.
     data=dict(head)
     clients=data.pop("staticClients",None)
     return (yaml.safe_dump(data,sort_keys=False)+"staticClients:\n"+(yaml.safe_dump(clients,sort_keys=False) if clients else "")).encode()
 
 
 def env_file(values):
-    # systemd EnvironmentFile does not expand $, unlike a shell script.
+    # EnvironmentFile de systemd conserva el signo $ literalmente.
     return ''.join(key+'="'+value.replace('\\','\\\\').replace('"','\\"')+'"\n' for key,value in sorted(values.items())).encode()
 
 
@@ -202,7 +202,7 @@ def configure(app,root,data,previous,detach=False,reconcile=False):
     import ynh_oidc
     tx=Transaction();instance=None;monitor=False;visitor_delta=0
     owner=pwd.getpwnam(app).pw_gid
-    # An installation without managed Dex must not disturb generic OIDC settings.
+    # Si Dex no está gestionado aquí, conserva la configuración genérica de OIDC.
     if not data['dex_enabled'] and not previous.get('dex_enabled'):
         atomic(root/'identity_admin.json',(json.dumps(data,indent=2)+'\n').encode())
         return
@@ -221,7 +221,7 @@ def configure(app,root,data,previous,detach=False,reconcile=False):
         head=yaml.safe_load(head_path.read_text())
         ynh_oidc.https_url(head['issuer'])
         if urlsplit(head['issuer']).query:raise ConfigError('El issuer Dex no es válido.')
-        # Never replace another app's root settings or another app's connectors.
+        # Conserva los ajustes globales y conectores gestionados por otras aplicaciones.
         fragment=dexroot/'config.yaml.d'/('asm3-'+app+'.yaml')
         environment=dexroot/('asm3-'+app+'.env')
         dropin=Path('/etc/systemd/system')/(instance+'.service.d')/('asm3-'+app+'.conf')
@@ -327,7 +327,7 @@ def main():
             if not username or len(username)>100 or any(ord(c)<32 for c in username):
                 raise ConfigError('Indica el nombre exacto del usuario ASM3.')
             import asm3.db,ynh_mfa
-            # Stop the web worker to make epoch reset atomic with in-flight logins.
+            # Detén el proceso web para que el reinicio del factor no compita con accesos en curso.
             command('systemctl','stop',args.app)
             try:
                 ynh_mfa.reset_user(asm3.db.get_database(),username)
@@ -359,7 +359,7 @@ def main():
 if __name__=='__main__':
     try:main()
     except Exception as error:
-        # Only our fixed validation messages can reach the UI, never upstream data.
+        # Muestra solo mensajes de validación predefinidos para proteger datos del proveedor.
         message=str(error) if isinstance(error,ConfigError) else 'La integración no se aplicó. Comprueba Dex y los datos introducidos; la configuración previa se conserva.'
         print(json.dumps({'validation_errors':{'dex_enabled':message}}))
         if len(sys.argv)>1 and sys.argv[1]=='apply':raise SystemExit(0)

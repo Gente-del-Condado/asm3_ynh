@@ -1,8 +1,8 @@
 test_format = 1.0
 [default]
 args.language = "es"
-# package_check automatically exercises root, subdir, multi-instance,
-# upgrade, backup/restore and change_url for this manifest.
+# package_check prueba raíz, subruta, varias instancias, actualización,
+# copia, restauración y cambio de URL a partir del manifest.
 
 [default.curl_tests]
 home.path = "/login?local=1"

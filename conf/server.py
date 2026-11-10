@@ -25,7 +25,7 @@ class ProxyApplication:
             start_response("403 Forbidden", [("Content-Type", "text/plain")])
             return [b"Trusted proxy required"]
         environ["asm3.ynh_user"] = environ.get("HTTP_YNH_USER", "") if self.secret else ""
-        # The sole listener is loopback and the only intended proxy is local Nginx.
+        # El servidor escucha en loopback y su único proxy previsto es Nginx local.
         environ["SCRIPT_NAME"] = self.prefix
         environ["wsgi.url_scheme"] = "https"
         environ["SERVER_PORT"] = "443"

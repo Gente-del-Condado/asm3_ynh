@@ -52,7 +52,7 @@ def directory_user(uid, require_permission=True):
     except AccessDenied:
         raise
     except Exception:
-        # Deliberately do not include library exceptions, LDAP values or secrets.
+        # Excluye las excepciones de bibliotecas, los valores LDAP y los secretos de este registro.
         raise AccessDenied("YunoHost directory is unavailable") from None
 
 
@@ -89,8 +89,8 @@ def setup(dbo, admin, rescue_password):
     rescue = "ynh_rescue_" + get_string("ynh_instance")
     if not dbo.query("SELECT ID FROM users WHERE UserName=?", [rescue]):
         new_user(dbo, rescue, "Local recovery administrator", "", rescue_password, superuser=True)
-    # Only the administrator explicitly selected in the installer is linked to an
-    # existing account. Other collisions are denied instead of silently claimed.
+    # Solo el administrador elegido al instalar puede vincular una cuenta existente.
+    # Una colisión de nombre de otro usuario se rechaza para evitar apropiaciones.
     if not dbo.query("SELECT UserID FROM ynh_auth_identity WHERE UserID=1"):
         existing = dbo.query("SELECT UserName FROM users WHERE ID=1")
         if not existing or existing[0].USERNAME.lower() != admin.lower():
@@ -190,7 +190,7 @@ def mark_login(dbo, session, username):
         person = directory_user(web.ctx.env.get("asm3.ynh_user", ""))
         if person["subject"] != session.get("ynh_pending_subject"):
             raise AccessDenied("SSO challenge identity changed")
-        # Rotate the identifier without discarding the session assembled by ASM3.
+        # Rota el identificador sin perder la sesión que acaba de preparar ASM3.
         try:
             del session.store[session.session_id]
         except KeyError:
@@ -234,7 +234,7 @@ def processor(session, installpath):
             reset_session(session)
             session.ynh_logged_out = True
             raise web.seeother(BASE_URL + "/login?loggedout=1")
-        # Local recovery is intentional and separate from externally managed users.
+        # La recuperación local usa un flujo separado de las identidades externas.
         if path in ("/login", "/mobile_login") and params.get("local") == "1":
             if session.get("ynh_source") in ("sso", "oidc") or session.get("ynh_pending_provider") == "oidc":
                 reset_session(session)
@@ -267,7 +267,7 @@ def processor(session, installpath):
             if path in ("/login", "/mobile_login") and web.ctx.method == "GET":
                 raise web.seeother(BASE_URL + "/ynh_sso")
             return handler()
-        # A deliberately authenticated local recovery account keeps its own session.
+        # La cuenta local de recuperación conserva su propia sesión autenticada.
         if session.get("user") and session.get("ynh_source") != "sso" and path != "/ynh_sso":
             return handler()
         try:
@@ -296,8 +296,8 @@ def processor(session, installpath):
                     return handler()
                 start_session(dbo, session, user, person, installpath)
             else:
-                # Fresh DB state on every private request: role changes and local
-                # DisableLogin take effect without waiting for ASM3's username cache.
+                # Lee el estado de la base en cada petición privada para aplicar cambios
+                # de roles y DisableLogin de inmediato, incluso con la caché de ASM3 activa.
                 asm3.users.update_session(dbo, session, user.USERNAME)
             if path in ("/ynh_sso", "/login", "/mobile_login"):
                 raise web.seeother(BASE_URL + ("/mobile" if path == "/mobile_login" else "/main"))

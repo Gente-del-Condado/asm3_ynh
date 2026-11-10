@@ -61,3 +61,9 @@ configure Google, GitHub and Microsoft. Register the cloud clients yourself and
 use the Dex callback displayed in the panel. Empty allowlists deny external access.
 Only a YunoHost administrator/root can reset a lost MFA factor from this panel;
 resetting invalidates existing and pending sessions. See [DEX.md](DEX.md).
+
+## Monitoring from Home Assistant
+
+The [Home Assistant guide](HOME_ASSISTANT.md) includes an optional REST monitor
+for an instance that already permits visitors. Private instances can keep
+their existing permissions and use server-level monitoring.

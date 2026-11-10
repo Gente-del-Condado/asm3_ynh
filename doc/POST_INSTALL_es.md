@@ -16,3 +16,7 @@ OpenID Connect opcional: configura un cliente registrado siguiendo `doc/OIDC.md`
 TOTP es obligatorio en todos los accesos privados. Inscribe el factor al entrar.
 Google/GitHub/Microsoft: instala Dex y configura sus clientes en el panel de ASM3
 de YunoHost. El mismo panel permite restablecer un factor perdido. Guía: `doc/DEX.md`.
+
+Después de probar el acceso, crea una primera copia desde el panel de YunoHost.
+La [guía de administración](ADMIN_es.md) reúne el mantenimiento y el diagnóstico.
+La [guía de Home Assistant](HOME_ASSISTANT.md) incluye un sensor opcional.

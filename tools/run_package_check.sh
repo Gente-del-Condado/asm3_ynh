@@ -1,12 +1,12 @@
 #!/bin/bash
-# Run on an isolated Incus/LXD host, not on the production YunoHost server.
+# Ejecuta en un laboratorio Incus/LXD aislado de producción.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 package_root=$PWD
 work_dir=${ASM3_PACKAGE_CHECK_DIR:-$package_root/.package-check}
 mkdir -p "$work_dir/results"
-# Test exactly the distributable tree, excluding local disks, checker clones,
-# caches and credentials. package_check copies folders, including ignored files.
+# Prueba el contenido distribuible sin discos locales, copias de la herramienta,
+# cachés ni credenciales. package_check copia incluso los archivos ignorados por Git.
 bash tools/build_release.sh
 version=$(python3 -c 'import tomllib; print(tomllib.load(open("manifest.toml", "rb"))["version"])')
 source_dir=$(mktemp -d "$work_dir/source.XXXXXX")
@@ -21,8 +21,8 @@ if command -v incus >/dev/null && [ "${YNHDEV_BACKEND:-incus}" = incus ]; then
     branch=${YNH_BRANCH:-stable}
     arch=${ARCH:-$(dpkg --print-architecture)}
     legacy_alias="yunohost-$dist-$branch-appci"
-    # The current official simplestreams server uses slash-separated aliases,
-    # while package_check still looks for this legacy local alias.
+    # El repositorio oficial separa los alias con barras.
+    # package_check busca este alias local con el formato anterior.
     if ! incus image info "$legacy_alias" >/dev/null 2>&1; then
         if ! incus remote list --format json | python3 -c 'import json,sys; sys.exit("yunohost" not in json.load(sys.stdin))'; then
             incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
@@ -40,7 +40,7 @@ for file in "results_$WORKER_ID.json" "full_log_$WORKER_ID.log" "summary_$WORKER
 done
 git -C "$work_dir/upstream" rev-parse HEAD > "$work_dir/results/package-check-commit.txt"
 if [ "$status" -ne 0 ]; then exit "$status"; fi
-# The official launcher can exit 0 even when individual tests fail.
+# El lanzador oficial puede terminar con 0 aunque falle algún escenario.
 python3 - "$work_dir/results/results_$WORKER_ID.json" <<'PY'
 import json, sys
 from pathlib import Path

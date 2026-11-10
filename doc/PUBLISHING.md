@@ -9,23 +9,19 @@ El mismo repositorio funciona en ambas forjas. Contiene workflows independientes
 
 ## Subir el repositorio
 
-Puedes partir del archivo Git autocontenido generado en `dist/`:
+Publica desde el checkout Git para conservar su historial. Configura solo los
+remotos que vayas a usar y sustituye las URLs de ejemplo:
 
 ```bash
-git clone 'asm3_ynh-51.1~ynh6.bundle' asm3_ynh
-cd asm3_ynh
-git remote remove origin
 git remote add github https://github.com/TU_USUARIO/asm3_ynh.git
 git remote add forgejo https://TU_FORGEJO/TU_USUARIO/asm3_ynh.git
 git push -u github main
 git push forgejo main
 ```
 
-Crea primero los repositorios vacíos en tus cuentas; no añadas README ni licencia
-desde sus interfaces. Los destinos anteriores son ejemplos: sustitúyelos por tus
-URLs reales. No se han creado repositorios remotos ni configurado tokens en esta
-entrega. No publiques `.test-env/`: contiene discos y claves privadas del laboratorio
-local y ya está excluido de Git y de los archivos de distribución.
+Si Forgejo ya está configurado como `origin`, usa `git push origin main`.
+Los bundles de `dist/` sirven para instalar o transportar el paquete. Mantén
+discos de laboratorio, credenciales y copias de producción fuera del checkout.
 
 Una vez publicado, YunoHost acepta la URL del repositorio de cualquiera de las dos
 forjas como aplicación personalizada. La raíz debe contener `manifest.toml` y
@@ -37,6 +33,19 @@ Activa Actions. Permite que los workflows creen PRs en Settings → Actions → 
 La validación funciona en un runner Ubuntu alojado. El seguimiento de versiones usa
 `GITHUB_TOKEN` del propio repositorio. `ASM3_AUTO_MERGE=true` es opcional y requiere
 configurar auto-merge y las protecciones de rama correspondientes.
+
+### Publicar el manual con GitHub Pages
+
+El manual es un sitio estático en `docs/`. Incluye `index.html`, los recursos
+con rutas relativas y `.nojekyll`, así que funciona también bajo una subruta.
+Tras replicar el repositorio en GitHub, abre **Settings → Pages**, selecciona
+**Deploy from a branch**, elige **main /docs** y guarda. La URL la muestra
+GitHub cuando el despliegue termina. Revisa que la página y las imágenes se
+carguen bajo la URL publicada.
+
+El manual solo contiene ejemplos y capturas de laboratorio. No copies datos
+privados a `docs/`, que se sirve como sitio público en la configuración habitual.
+Consulta la [guía oficial de GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 
 ## Forgejo
 

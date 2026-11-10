@@ -12,8 +12,8 @@ def import_forms(dbo):
     import asm3.onlineform
     for path in sorted((SRC / "media/onlineform").glob("*.json")):
         data = json.loads(path.read_text())
-        # 51-1 contains a duplicate 'reaction' field in an RSPCA form.
-        # Keep every field, assigning a unique name to repeated occurrences.
+        # Un formulario RSPCA de 51-1 repite el campo reaction.
+        # Conserva todos los campos asignando nombres únicos a los repetidos.
         used = set()
         for field in data["fields"]:
             base = field["name"]
@@ -47,18 +47,18 @@ def manage(mode, admin=None, locale=None):
         if not password or not admin:
             raise ValueError("Administrator and password are required")
         dbo.locale = locale
-        # Initialize even when sheltermanager.com's online catalogue is unavailable.
-        # Runtime keeps the default online catalogue for future report updates.
+        # Permite inicializar la base sin acceso al catálogo en línea.
+        # ASM3 conserva el catálogo en línea para actualizar informes después.
         reports.URL_REPORTS = (SRC.parent / "reports/reports.txt").as_uri()
-        # Same phases as dbupdate.install(), with explicit error checks and
-        # fixes for bundled forms on MariaDB's default strict SQL mode.
+        # Reproduce las fases de dbupdate.install() con comprobación de errores
+        # y adapta los formularios al modo estricto predeterminado de MariaDB.
         updates.install_db_structure(dbo)
         dbo.execute("ALTER TABLE onlineformfield MODIFY Label TEXT NOT NULL")
         if updates.install_db_views(dbo):
             raise RuntimeError("Could not initialize database views")
         updates.install_default_data(dbo)
-        # configuration.get_map merges upstream defaults, including Locale=en;
-        # setting only asm3.conf or dbo.locale does not persist the UI language.
+        # configuration.get_map incorpora Locale=en de la configuración original.
+        # Persiste el idioma en la base para que se conserve en la interfaz.
         configuration.cset(dbo, "Locale", locale)
         if updates.install_db_sequences(dbo):
             raise RuntimeError("Could not initialize database sequences")
@@ -66,7 +66,7 @@ def manage(mode, admin=None, locale=None):
         updates.install_default_templates(dbo)
         import_forms(dbo)
         updates.install_default_reports(dbo)
-        # Disable both upstream default accounts before the listener is started.
+        # Deshabilita las cuentas predeterminadas antes de arrancar el servicio.
         dbo.execute("UPDATE users SET DisableLogin = 1, Password = ?", [users.hash_password(secrets.token_urlsafe(48))])
         dbo.execute(
             "UPDATE users SET UserName = ?, RealName = ?, Password = ?, DisableLogin = 0 WHERE ID = 1",
@@ -93,7 +93,7 @@ def manage(mode, admin=None, locale=None):
         if not rescue_password or not admin:
             raise ValueError("Recovery secret and selected administrator are required")
         ynh_auth.setup(dbo, admin, rescue_password)
-    # Verify every expected table, including the 51 -> 51-1 salesreceipt fix.
+    # Verifica todas las tablas, incluida salesreceipt tras la migración de 51 a 51-1.
     for table in updates.TABLES:
         dbo.query(f"SELECT * FROM {table} WHERE 1 = 0")
     print(f"ASM3 {mode}: schema {configuration.dbv(dbo)} verified")

@@ -5,8 +5,8 @@ permissions:
   contents: read
 jobs:
   package-check:
-    # A dedicated disposable runner with Incus/LXD and package_check prerequisites.
-    # Never automatically execute pull-request code on a privileged self-hosted runner.
+    # Runner desechable con Incus/LXD y las dependencias de package_check.
+    # Mantén la ejecución manual para que los PR no se ejecuten en un runner privilegiado.
     runs-on: [self-hosted, linux, yunohost-package-check]
     steps:
       - uses: actions/checkout@v4

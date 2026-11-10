@@ -1,5 +1,5 @@
 #!/bin/bash
-# YunoHost injects these variables; url_path is consumed by its template helper.
+# YunoHost inyecta estas variables. Su helper de plantillas usa url_path.
 # shellcheck disable=SC2154,SC2034
 
 asm3_lock() {
@@ -17,8 +17,8 @@ asm3_url_path() {
     url_path="${path%/}"
 }
 
-# Configuration helpers may print unified diffs before YunoHost redacts values.
-# Filter credential-bearing lines before they reach either the console or log.
+# Los helpers de configuración pueden mostrar diffs antes de que YunoHost oculte los valores.
+# Filtra las líneas con credenciales antes de enviarlas a consola o a los registros.
 asm3_redact_config_log() {
     python3 -u -c 'import re,sys
 for line in sys.stdin:
@@ -58,7 +58,7 @@ asm3_sources() {
     mkdir -p "$install_dir/ynh"
     cp ../conf/{server,build,manage,manage_oidc,manage_identity}.py "$install_dir/ynh/"
     cp ../conf/ynh_{auth,oidc,mfa}.py "$install_dir/upstream/src/"
-    # Build as root before making application code read-only to the service.
+    # Genera los recursos como root antes de dejar el código en solo lectura para el servicio.
     ASM3_CONF="$install_dir/asm3.conf" python3 "$install_dir/ynh/build.py" "$install_dir/upstream"
     chown -R "root:$app" "$install_dir"
     chmod -R u=rwX,g=rX,o= "$install_dir"
@@ -66,7 +66,7 @@ asm3_sources() {
         chown root:root "$install_dir/identity_admin.json"
         chmod 600 "$install_dir/identity_admin.json"
     fi
-    # Nginx proxies all requests; no web-server access to source or credentials.
+    # Nginx reenvía las peticiones. No necesita acceso al código ni a las credenciales.
 }
 
 asm3_start() {

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Dependencies for disposable Debian/Ubuntu CI workers, not production hosts.
+# Instala dependencias en un runner desechable Debian o Ubuntu.
 set -euo pipefail
 script_path=$(realpath "$0")
 cd "$(dirname "$0")/.."

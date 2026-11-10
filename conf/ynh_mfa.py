@@ -126,7 +126,7 @@ def complete(dbo,session,user,path):
 def check_submission(dbo,session,user,code,path):
     import ynh_auth as auth
     with auth._lock:
-        # Reload under the lock: parallel enrollment cannot replace an activated seed.
+        # Relee bajo el bloqueo para impedir que dos altas en paralelo reemplacen una semilla activa.
         user=pending_user(dbo,session)
         row=state(dbo,user)
         now=time.time()

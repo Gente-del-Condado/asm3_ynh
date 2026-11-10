@@ -13,9 +13,9 @@ Incus ni YunoHost en el sistema Fedora del usuario:
 - Herramienta oficial `YunoHost/package_check`, commit
   `f7d32cadac3cfced282decede024707fba9e6ec6`.
 
-Los discos y las claves del laboratorio quedan en `.test-env/`, excluido del Git y
-de los archivos de distribución. SSH se limita al puerto 22227 de 127.0.0.1. No se
-publican servicios ni se cambian las instalaciones Podman existentes del host.
+Guarda los discos y las claves del laboratorio en un directorio privado fuera
+del repositorio. En el laboratorio de referencia, SSH solo escucha en
+127.0.0.1:22227. Las pruebas usan una máquina aislada.
 
 La configuración inicial de snapshots sobre un archivo loopback provocó una
 ralentización de E/S; se sustituyó por el disco dedicado antes de realizar la matriz

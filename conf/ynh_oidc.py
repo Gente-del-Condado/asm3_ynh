@@ -88,7 +88,7 @@ def fingerprint(cfg):
 def request_json(cfg, url, data=None, basic=None):
     import requests
     https_url(url)
-    # No environment proxies, redirect following, token logging or unbounded bodies.
+    # Evita proxies del entorno, redirecciones, registro de tokens y respuestas sin límite.
     try:
         with requests.Session() as client:
             client.trust_env = False
@@ -163,7 +163,7 @@ def verify_token(cfg, metadata, token, nonce):
             raise ValueError()
         claims = jwt.decode(token, key, algorithms=[algorithm], audience=cfg['client_id'], issuer=cfg['issuer'],
                             options={'require': ['iss', 'sub', 'aud', 'exp', 'iat', 'nonce']}, leeway=15)
-        # PyJWT 2.6 (Debian 12) does not validate subject/azp types itself.
+        # PyJWT 2.6 (Debian 12) deja al llamador la validación de los tipos de subject y azp.
         if claims['iss'] != cfg['issuer'] or claims['iat'] > time.time() + 15:
             raise ValueError()
         sub = claims['sub']
@@ -173,7 +173,7 @@ def verify_token(cfg, metadata, token, nonce):
             raise ValueError()
         aud = claims['aud']
         if aud != cfg['client_id'] and aud != [cfg['client_id']]:
-            # Deliberately support one registered audience; no cross-client tokens.
+            # Acepta solo la audiencia registrada para evitar tokens de otros clientes.
             raise ValueError()
         if 'azp' in claims and claims['azp'] != cfg['client_id']:
             raise ValueError()
@@ -331,7 +331,7 @@ def callback(session, cfg, query, dbo, path):
     basic = None
     method = cfg['token_endpoint_auth_method']
     if method == 'client_secret_basic':
-        # OAuth basic credentials use application/x-www-form-urlencoded encoding.
+        # OAuth exige codificar las credenciales Basic como application/x-www-form-urlencoded.
         from urllib.parse import quote_plus
         basic = (quote_plus(cfg['client_id']), quote_plus(cfg['client_secret']))
     else:
@@ -340,7 +340,7 @@ def callback(session, cfg, query, dbo, path):
             body['client_secret'] = cfg['client_secret']
     tokens = request_json(cfg, metadata['token_endpoint'], data=body, basic=basic)
     claims = verify_token(cfg, metadata, tokens.get('id_token'), transaction['nonce'])
-    # Store only verified identity attributes; never store access/refresh/ID tokens.
+    # Conserva solo atributos de identidad verificados. Descarta todos los tokens.
     keep = {k: claims[k] for k in ('iss', 'sub', 'iat', 'exp', 'name', 'email', 'email_verified', 'federated_claims', cfg['groups_claim']) if k in claims}
     identity = {'claims': keep, 'fingerprint': fingerprint(cfg), 'key': identity_key(cfg['issuer'], claims['sub']),
                 'deadline': min(claims['exp'], time.time() + cfg['session_max_age'])}

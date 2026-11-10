@@ -4,10 +4,10 @@ source /usr/share/yunohost/helpers
 
 ynh_print_info "Creando una copia de seguridad de ASM3, sus documentos y su base de datos…"
 asm3_lock
-# SQL contains both records and media. No live file-store/SQL consistency window.
+# MariaDB guarda registros y documentos en la misma base. La copia SQL incluye ambos.
 ynh_mysql_dump_db > db.sql
 ynh_backup "$install_dir"
 ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_backup "/etc/systemd/system/$app.service"
 ynh_backup "/etc/cron.d/$app"
-# data_dir contains only disposable cache and a lock, recreated on restore.
+# La caché y el bloqueo de data_dir se regeneran al restaurar.

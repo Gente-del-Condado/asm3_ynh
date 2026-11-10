@@ -11,8 +11,8 @@ asm3_safe_config ynh_config_change_url_nginx
 chmod 600 "/etc/nginx/conf.d/$domain.d/$app.conf"
 yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/log/nginx/$domain-error.log"
 if [ "$domain" != "$old_domain" ]; then
-    # Core persists the new domain after this script, whereas the mail maps need
-    # it now to authorize the new app@domain envelope sender.
+    # YunoHost guardaría el nuevo dominio al terminar este script.
+    # Los mapas de correo lo necesitan ahora para autorizar el remitente app@dominio.
     ynh_app_setting_set --key=domain --value="$domain"
     yunohost tools regen-conf postfix dovecot
 fi

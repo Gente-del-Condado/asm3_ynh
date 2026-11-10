@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manual de instalación, acceso y mantenimiento de Animal Shelter Manager en YunoHost.">
+  <title>Manual de ASM3 para YunoHost</title>
+  <link rel="stylesheet" href="assets/manual.css">
+</head>
+<body>
+  <a class="skip" href="#inicio">Saltar al contenido</a>
+  <header class="top">
+    <div class="shell">
+      <a class="brand" href="#inicio">ASM3 <span>· YunoHost</span></a>
+      <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh">Repositorio en Forgejo</a>
+    </div>
+  </header>
+  <div class="shell layout">
+    <nav aria-label="Índice del manual">
+      <p>En este manual</p>
+      <ol>
+        <li><a href="#instalar">Instalación</a></li>
+        <li><a href="#acceso">Primer acceso y MFA</a></li>
+        <li><a href="#uso">Trabajo diario</a></li>
+        <li><a href="#publicar">Acceso público</a></li>
+        <li><a href="#home-assistant">Home Assistant</a></li>
+        <li><a href="#mantener">Mantenimiento</a></li>
+        <li><a href="#diagnostico">Diagnóstico</a></li>
+        <li><a href="#contribuir">Desarrollo</a></li>
+      </ol>
+    </nav>
+    <main>
+      <div class="hero">
+        <p class="eyebrow">Guía para protectoras y administración</p>
+        <h1 id="inicio" tabindex="-1">Animal Shelter Manager en YunoHost</h1>
+        <p>Instala ASM3, organiza el acceso del equipo y protege los datos de animales, adopciones y acogidas.</p>
+        <ul class="facts" aria-label="Requisitos mínimos">
+          <li>YunoHost ≥ 12.1.17</li><li>512 MiB de RAM disponible</li><li>2 GiB más documentos</li>
+        </ul>
+        <a class="button" href="#instalar">Ir a la instalación</a>
+      </div>
+
+      <section id="instalar">
+        <p class="eyebrow">01 / Preparación</p>
+        <h2>Instalación</h2>
+        <ol>
+          <li>Prepara un dominio con HTTPS válido y crea la cuenta de YunoHost que administrará ASM3.</li>
+          <li>En el panel de YunoHost abre <strong>Aplicaciones → Instalar una aplicación personalizada</strong>. Introduce la URL del repositorio si YunoHost puede clonarlo.</li>
+          <li>Elige dominio, ruta, grupo inicial, administrador e idioma. Por ejemplo, para usar <code>https://refugio.example.org/asm3/</code>, selecciona <code>refugio.example.org</code> y <code>/asm3</code>.</li>
+          <li>Abre el mosaico de ASM3 en el portal de usuarios. Empieza con un grupo privado si solo va a entrar el equipo.</li>
+        </ol>
+        <div class="note"><strong>Repositorio privado</strong><p>Clona el repositorio en el servidor con tus credenciales de Git e instala desde la ruta de la copia. El ejemplo supone que ya existe <code>/ruta/absoluta/asm3_ynh</code>.</p>
+        <pre><code>sudo yunohost app install /ruta/absoluta/asm3_ynh</code></pre></div>
+      </section>
+
+      <section id="acceso">
+        <p class="eyebrow">02 / Identidad</p>
+        <h2>Primer acceso y segundo factor</h2>
+        <p>Entra desde YunoHost. ASM3 vincula la cuenta mediante LDAP, crea su perfil y conserva los roles de aplicación. La cuenta elegida durante la instalación tiene acceso completo. El resto del personal empieza con permiso de lectura de animales.</p>
+        <ol>
+          <li>Abre el mosaico de ASM3 desde el portal de usuarios.</li>
+          <li>Escanea el QR con una aplicación TOTP y confirma el código de seis cifras.</li>
+          <li>Desde ASM3 asigna solo los roles que necesita cada persona. Limita el permiso <code>staff</code> en YunoHost al grupo correspondiente.</li>
+        </ol>
+        <figure>
+          <img src="assets/mfa.webp" alt="Pantalla de ASM3 que solicita un código de seis cifras del autenticador" width="1100" height="740" loading="lazy">
+          <figcaption>Segundo factor de ASM3 capturado en un laboratorio con una cuenta ficticia.</figcaption>
+        </figure>
+        <h3>Dex, OpenID Connect y recuperación</h3>
+        <p>Para usar Google, GitHub o Microsoft, instala Dex en YunoHost. En el panel de configuración de ASM3 selecciona Dex, registra los clientes usando el callback indicado y define los usuarios autorizados. Las listas vacías deniegan el acceso externo. El SSO nativo sigue disponible.</p>
+        <p>Un proveedor OIDC propio requiere un cliente registrado y el algoritmo de firma que corresponda, <code>RS256</code> o <code>RS512</code>. El código TOTP se sigue pidiendo en ASM3. Consulta las guías de <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh/src/branch/main/doc/DEX.md">Dex</a> y <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh/src/branch/main/doc/OIDC.md">OIDC</a>.</p>
+        <p>Si alguien pierde su factor, el administrador de YunoHost puede restablecerlo desde la configuración de ASM3. La operación revoca las sesiones. La recuperación local en <code>/login?local=1</code> también requiere TOTP.</p>
+      </section>
+
+      <section id="uso">
+        <p class="eyebrow">03 / Operación</p>
+        <h2>Trabajo diario</h2>
+        <figure>
+          <img src="assets/asm3.webp" alt="Bienvenida de ASM3 con accesos a opciones, datos auxiliares, usuarios e informes" width="1280" height="850" loading="lazy">
+          <figcaption>Bienvenida de ASM3 en una instalación de laboratorio. Desde aquí puedes revisar las opciones de la organización.</figcaption>
+        </figure>
+        <ol>
+          <li>Configura los datos de la organización, la zona horaria y el remitente.</li>
+          <li>Da de alta una persona de contacto y registra la entrada del animal. Añade ficha veterinaria, ubicación y documentos según corresponda.</li>
+          <li>Para una acogida o adopción, registra el movimiento en ASM3. Revisa qué datos se mostrarán si publicas una ficha.</li>
+          <li>Usa los informes de ASM3 para revisar pendientes e inventario. Prueba primero con datos ficticios.</li>
+        </ol>
+        <figure>
+          <img src="assets/panel.webp" alt="Panel de ASM3 con los menús y los accesos directos a acogidas y adopciones" width="1280" height="850" loading="lazy">
+          <figcaption>Panel de trabajo sin registros reales. Los menús visibles dependen de los roles de la cuenta.</figcaption>
+        </figure>
+        <p>El manual oficial detalla los módulos y el significado de cada campo. <a href="https://sheltermanager.com/repo/asm3_help/">Manual de Shelter Manager</a>.</p>
+      </section>
+
+      <section id="publicar">
+        <p class="eyebrow">04 / Visibilidad</p>
+        <h2>Adopciones y formularios públicos</h2>
+        <p>Si el refugio necesita exponer servicios públicos, permite visitantes en el permiso <code>main</code> de YunoHost y configura en ASM3 qué servicios se ofrecen. Mantén <code>staff</code> limitado a tu equipo. Prueba el formulario y la ficha en una ventana privada y comprueba que el panel de trabajo sigue solicitando identificación.</p>
+      </section>
+
+      <section id="home-assistant">
+        <p class="eyebrow">05 / Monitorización opcional</p>
+        <h2>Home Assistant</h2>
+        <p>Si la instancia ya admite visitantes, un sensor REST puede comprobar la respuesta del backend a través del proxy de YunoHost. El ejemplo no usa cuentas ni lee fichas de animales. Para una instancia privada, conserva sus permisos y usa un monitor de red como Ping para comprobar el servidor.</p>
+        <ol>
+          <li><a href="assets/home-assistant.yaml" download>Descarga el ejemplo YAML</a> y sustituye el dominio y la ruta.</li>
+          <li>Añádelo a <code>configuration.yaml</code>. Si ya existe <code>binary_sensor:</code>, añade solo el elemento a la lista.</li>
+          <li>Valida la configuración, reinicia Home Assistant y localiza la entidad «ASM3 responde». <code>on</code> indica que el backend respondió <code>ready</code>. Puedes alertar si el sensor pasa a <code>off</code> o <code>unavailable</code> durante cinco minutos. El sondeo no comprueba la base de datos.</li>
+        </ol>
+        <p>Consulta las opciones del sensor y cómo interpretar sus estados. <a href="https://www.home-assistant.io/integrations/binary_sensor.rest/">Documentación oficial del sensor REST</a>.</p>
+      </section>
+
+      <section id="mantener">
+        <p class="eyebrow">06 / Ciclo de vida</p>
+        <h2>Copias, actualizaciones y cambio de URL</h2>
+        <p>Usa las copias de YunoHost para guardar configuración, registros, documentos e imágenes. Los archivos permanentes se guardan en MariaDB. Conserva una copia fuera del servidor y prueba su restauración en un servidor de pruebas antes de depender de ella.</p>
+        <pre><code>sudo yunohost backup create --apps asm3
+sudo yunohost app upgrade asm3 -u /ruta/absoluta/asm3_ynh</code></pre>
+        <p>Si cambias el dominio o la ruta desde YunoHost, comprueba HTTPS, el acceso del personal, formularios y monitorización. Si usas un proveedor OIDC externo, revisa las URLs de retorno registradas. Para una segunda instalación, sustituye <code>asm3</code> por el ID que asignó YunoHost.</p>
+      </section>
+
+      <section id="diagnostico">
+        <p class="eyebrow">07 / Incidencias</p>
+        <h2>Diagnóstico rápido</h2>
+        <dl>
+          <dt>Vuelve continuamente al portal de YunoHost</dt><dd>Comprueba el dominio, la ruta y el permiso del usuario en <code>main</code> y <code>staff</code>.</dd>
+          <dt>El autenticador genera códigos que no funcionan</dt><dd>Comprueba la hora del dispositivo y del servidor. Si se perdió el factor, restablécelo desde el panel.</dd>
+          <dt>La aplicación devuelve 502</dt><dd>Revisa el estado del servicio y los errores de Nginx. El registro puede contener información privada. Comparte solo fragmentos revisados.</dd>
+          <dt>El sensor REST devuelve apagado o no disponible</dt><dd>Comprueba HTTPS, la URL de salud y si YunoHost devuelve su propia pantalla de acceso.</dd>
+        </dl>
+        <pre><code>sudo systemctl status asm3
+sudo journalctl -u asm3 -n 60 --no-pager</code></pre>
+      </section>
+
+      <section id="contribuir">
+        <p class="eyebrow">08 / Código</p>
+        <h2>Desarrollo y validación</h2>
+        <p><code>AGENTS.md</code> y <code>CONTRIBUTING.md</code> explican cómo encontrar el código, actualizar el origen y ejecutar pruebas. <code>docs/</code> contiene este manual; <code>doc/</code> contiene los textos que consume YunoHost y la documentación técnica.</p>
+        <p><code>51.1~ynh7</code> completó los siete escenarios de <code>package_check</code> en Debian 12 y YunoHost 12.1.41.2. El resultado oficial global fue nivel 0 por los hallazgos relativos al catálogo comunitario. <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh/src/branch/main/doc/validation/package-check-51.1~ynh7.json">Consulta el informe original</a>.</p>
+      </section>
+    </main>
+  </div>
+  <footer class="footer"><div class="shell"><p>Manual del paquete ASM3 para YunoHost · GPL-3.0-only</p><a href="#inicio">Volver al inicio</a></div></footer>
+</body>
+</html>

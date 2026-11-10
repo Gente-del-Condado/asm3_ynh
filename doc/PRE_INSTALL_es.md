@@ -6,3 +6,7 @@ Los demás usuarios autorizados reciben perfiles automáticos de solo lectura.
 Los roles se administran en ASM3. No se solicita una contraseña inicial separada.
 
 El paquete sigue versiones estables. Aplica las actualizaciones desde YunoHost.
+
+Ten a mano una aplicación de autenticación TOTP. Se pedirá un código de seis
+cifras tras iniciar sesión por primera vez. Si solo accede el equipo, elige un
+grupo privado en el asistente.

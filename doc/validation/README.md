@@ -1,4 +1,18 @@
-# Evidencia de validación — 51.1~ynh6
+# Evidencia de validación
+
+## Paquete 51.1~ynh7
+
+La matriz completa del 7 de noviembre de 2026 probó el commit
+`4f4d3b34869b168e593258021ddae98110f0cdc1`, clonado de Forgejo. Los siete
+escenarios pasaron en Debian 12, YunoHost 12.1.41.2 y amd64. Incluyen una
+actualización sobre la misma versión y un cambio de URL que duró 145 segundos.
+El nivel global es 0 por los hallazgos de catálogo. Consulta el
+[informe original](package-check-51.1~ynh7.json).
+
+Los hashes y resultados que siguen corresponden a la versión anterior.
+Compruébalos desde la revisión probada si necesitas reproducirlos.
+
+## Paquete 51.1~ynh6
 
 Validación del 5 de noviembre de 2026, Debian 12 / YunoHost 12.1.41.2 / amd64.
 

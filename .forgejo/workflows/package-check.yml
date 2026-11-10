@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 jobs:
   package-check:
-    # Host runner with this label, Incus and package_check prerequisites installed.
+    # Runner de host con esta etiqueta, Incus y las dependencias de package_check.
     runs-on: yunohost-package-check
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4

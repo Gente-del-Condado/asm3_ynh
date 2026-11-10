@@ -15,7 +15,7 @@ REPO = "sheltermanager/asm3"
 def request(url):
     headers = {"User-Agent": "asm3-yunohost-updater", "Accept": "application/vnd.github+json"}
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
-    # Never forward GitHub API credentials to archive hosts.
+    # Envía las credenciales solo a la API de GitHub.
     if token and url.startswith("https://api.github.com/"):
         headers["Authorization"] = f"Bearer {token}"
     return urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=120)
@@ -60,7 +60,7 @@ def resolve_release():
 
 
 def update_manifest(text, previous, current):
-    # Limit substitutions to the main source, not future optional resources.
+    # Limita los reemplazos a la fuente principal para conservar otros recursos.
     start = text.index("    [resources.sources.main]")
     end = text.index("\n    [resources.", start + 1)
     block = text[start:end]
@@ -94,7 +94,7 @@ def main():
         raise SystemExit(1)
     manifest = ROOT / "manifest.toml"
     text = update_manifest(manifest.read_text(), previous, current)
-    # Validate before writing either tracked file.
+    # Valida ambos contenidos antes de escribirlos.
     import tomllib
     tomllib.loads(text)
     manifest.write_text(text)

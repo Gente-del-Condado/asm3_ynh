@@ -1,12 +1,18 @@
 # Animal Shelter Manager para YunoHost
 
 Paquete nativo de **ASM3** para **YunoHost ≥ 12.1.17**, formato de empaquetado 2 y
-helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh7`), última publicación estable
-consultada el **5 de noviembre de 2026**. El código se descarga del repositorio
+helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh7`), con origen fijado al **5 de noviembre de 2026**. El código se descarga del repositorio
 oficial, fijado por commit y SHA-256; no depende de una imagen Docker.
 
 Preparado para publicarse en **GitHub o Forgejo**, con workflows propios para
 ambas plataformas. Consulta [la guía de publicación](doc/PUBLISHING.md).
+
+## Documentación
+
+- [Manual web en español](docs/index.html). Consulta cómo [publicarlo con GitHub Pages](doc/PUBLISHING.md#publicar-el-manual-con-github-pages).
+- [Administración en YunoHost](doc/ADMIN_es.md), [SSO y LDAP](doc/SSO.md), [Dex](doc/DEX.md) y [OIDC](doc/OIDC.md).
+- [Monitorización con Home Assistant](doc/HOME_ASSISTANT.md).
+- [Desarrollo](CONTRIBUTING.md) e [instrucciones para agentes](AGENTS.md).
 
 ## Instalación
 
@@ -171,11 +177,10 @@ instalador sin conexión. También se genera un repositorio Git autocontenido:
 git clone 'dist/asm3_ynh-51.1~ynh7.bundle' asm3_ynh
 ```
 
-Copia **también `.github/`** al publicar para activar CI y
+Publica el checkout Git completo para incluir los workflows de CI, el manual y
 el seguimiento de versiones. La licencia del paquete y de ASM3 es GPL-3.0-only.
 
-La matriz completa de `package_check` para `51.1~ynh6` se ejecutó sobre Debian 12 y YunoHost
-12.1.41.2: los siete resultados de prueba son `success`. Se han verificado además
-SMTP con STARTTLS, PDF y la copia automática previa a actualizar. La nota del
-catálogo sigue en 0 por no estar publicado allí; no se presenta como una aplicación
-certificada por el catálogo. Consulta el [informe y sus límites](doc/TESTING.md).
+La matriz completa de `package_check` para `51.1~ynh7` obtuvo 7 resultados
+`success` en Debian 12 y YunoHost 12.1.41.2. El nivel oficial sigue en 0 por los
+hallazgos del catálogo comunitario. Consulta el [JSON original del commit probado](doc/validation/package-check-51.1~ynh7.json)
+y la [guía de pruebas](doc/TESTING.md).

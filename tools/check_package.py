@@ -33,7 +33,7 @@ def main():
     for script in scripts:
         subprocess.run(["bash", "-n", script], check=True)
         assert Path(script).stat().st_mode & 0o111, f"Not executable: {script}"
-    # These variables are supplied by YunoHost; some are read by its template engine.
+    # YunoHost inyecta estas variables. Algunas las consume su motor de plantillas.
     subprocess.run(["shellcheck", "-S", "warning", "-e", "SC1091,SC2154,SC2034", *scripts], check=True)
     for directory in ("conf", "tools", "tests"):
         for file in (ROOT / directory).glob("*.py"):

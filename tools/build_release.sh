@@ -5,9 +5,9 @@ package_root=$PWD
 version=$(python3 -c 'import tomllib; print(tomllib.load(open("manifest.toml", "rb"))["version"])')
 mkdir -p dist
 tar --exclude='__pycache__' --exclude='*.pyc' -czf "dist/asm3_ynh-${version}.tar.gz" \
-    manifest.toml upstream.lock.json tests.toml config_panel.toml scripts conf patches hooks doc tools tests .github .forgejo README.md LICENSE .gitignore
+    manifest.toml upstream.lock.json tests.toml config_panel.toml scripts conf patches hooks doc docs tools tests .github .forgejo README.md AGENTS.md CONTRIBUTING.md LICENSE .gitignore
 (cd dist && sha256sum "asm3_ynh-${version}.tar.gz") > "dist/asm3_ynh-${version}.tar.gz.sha256"
-# A self-contained Git repository is useful when no remote has been published yet.
+# Crea un bundle autocontenido a partir del contenido que se instala.
 staging=$(mktemp -d)
 trap 'rm -rf "$staging"' EXIT
 tar -xzf "dist/asm3_ynh-${version}.tar.gz" -C "$staging"

@@ -16,7 +16,7 @@ def complete(session, base, dbo, check=lambda label,ok: None):
     seed=re.search(r'<code id="setup-key">([^<]+)</code>',r.text)
     seed=seed.group(1) if seed else user.OTPSECRET
     csrf=re.search(r'name="csrf" value="([^"]+)"',r.text).group(1)
-    # Test isolation only. Production never resets replay counters on login.
+    # Aísla los casos del laboratorio. En producción los accesos conservan el contador.
     dbo.execute('UPDATE ynh_mfa_state SET LastCounter=-1,Failures=0,LockUntil=0 WHERE UserID=?',[user.ID])
     r=session.post(base+'/auth/mfa',data={'csrf':csrf,'code':ynh_mfa.totp(seed,int(__import__('time').time())//30)},allow_redirects=False,timeout=20)
     assert r.status_code==303 and r.headers['Location']==base+'/main',(r.status_code,r.text[:150])

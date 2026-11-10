@@ -1,0 +1,12 @@
+# Añade este elemento a binary_sensor: si la clave ya existe.
+# Ejemplo para una instalación en /asm3 que ya admite visitantes.
+binary_sensor:
+  - platform: rest
+    name: ASM3 responde
+    unique_id: asm3_responde
+    resource: https://refugio.example.org/asm3/_ynh_health
+    scan_interval: 120
+    timeout: 10
+    verify_ssl: true
+    # Una redirección al portal no devuelve la respuesta esperada.
+    value_template: "{{ (value | trim) == 'ready' }}"

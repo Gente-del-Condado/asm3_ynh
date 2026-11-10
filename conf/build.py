@@ -16,7 +16,7 @@ def build(root):
     version_file.write_text(
         f"VERSION = {json.dumps(version)}\nBUILD = {json.dumps(version)}\n"
     )
-    # Upstream's report collection is included in the same verified source archive.
+    # El archivo de origen verificado también incluye la colección de informes.
     reports = root / "reports"
     (reports / "reports.txt").write_text(
         "&&&\n".join(p.read_text() for p in sorted(reports.glob("*.rep")))
