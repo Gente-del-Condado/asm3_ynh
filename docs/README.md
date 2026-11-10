@@ -14,3 +14,6 @@ datos personales ni registros de producción.
 Consulta [CONTRIBUTING.md](../CONTRIBUTING.md) para previsualizar el manual y
 [la guía de publicación](../doc/PUBLISHING.md#publicar-el-manual-con-github-pages)
 para activar GitHub Pages. `.nojekyll` indica que los archivos se sirven tal cual.
+
+En este repositorio, publica los cambios del manual en Forgejo. Su espejo replica
+`main` y GitHub Actions despliega automáticamente la carpeta `docs/`.

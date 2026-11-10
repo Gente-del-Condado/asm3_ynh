@@ -38,10 +38,9 @@ configurar auto-merge y las protecciones de rama correspondientes.
 
 El manual es un sitio estático en `docs/`. Incluye `index.html`, los recursos
 con rutas relativas y `.nojekyll`, así que funciona también bajo una subruta.
-Tras replicar el repositorio en GitHub, abre **Settings → Pages**, selecciona
-**Deploy from a branch**, elige **main /docs** y guarda. La URL la muestra
-GitHub cuando el despliegue termina. Revisa que la página y las imágenes se
-carguen bajo la URL publicada.
+En GitHub, selecciona **Settings → Pages → Source → GitHub Actions**.
+El workflow `.github/workflows/pages.yml` publica `docs/` cuando cambia el
+manual en `main`. También se puede ejecutar manualmente desde Actions.
 
 El manual solo contiene ejemplos y capturas de laboratorio. No copies datos
 privados a `docs/`, que se sirve como sitio público en la configuración habitual.
@@ -66,19 +65,14 @@ configuración de Actions.
 
 ## Sincronizar main y actualizar Pages
 
-En este despliegue, Forgejo es el origen de `main`. El temporizador de usuario
-`asm3-forgejo-github-sync.timer` comprueba Forgejo cada cinco minutos y envía
-los avances a GitHub. El servicio requiere que el equipo esté encendido, que
-el gestor systemd de usuario esté activo y que las dos claves estén cargadas
-en el agente SSH de la sesión. GitHub Pages publica `main /docs` tras el envío.
+Forgejo es el origen de `main`. El espejo de salida del repositorio envía
+esa rama a GitHub mediante SSH cuando recibe cambios y vuelve a comprobarla
+cada diez minutos. GitHub autoriza la clave pública del espejo como clave de
+despliegue con escritura solo en `Gente-del-Condado/asm3_ynh`.
 
-Sube los cambios a Forgejo. El servicio rechaza ramas divergentes para
-proteger los cambios que pudiera haber en GitHub. Para revisar su estado:
-
-```bash
-systemctl --user list-timers asm3-forgejo-github-sync.timer
-journalctl --user -u asm3-forgejo-github-sync.service -n 20 --no-pager
-```
+Sube los cambios a Forgejo. El espejo puede sobrescribir cambios divergentes
+en `main` de GitHub. Para diagnosticar una actualización, revisa el espejo en
+los ajustes del repositorio de Forgejo y el workflow de Pages en GitHub.
 
 ## Matriz integral de YunoHost en CI
 
