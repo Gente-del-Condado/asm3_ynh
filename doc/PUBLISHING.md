@@ -64,6 +64,22 @@ Si mantienes un espejo en ambas forjas, activa el seguimiento diario en una sola
 para evitar propuestas duplicadas. Replicar Git no replica secretos, runners ni
 configuración de Actions.
 
+## Sincronizar main y actualizar Pages
+
+En este despliegue, Forgejo es el origen de `main`. El temporizador de usuario
+`asm3-forgejo-github-sync.timer` comprueba Forgejo cada cinco minutos y envía
+los avances a GitHub. El servicio requiere que el equipo esté encendido, que
+el gestor systemd de usuario esté activo y que las dos claves estén cargadas
+en el agente SSH de la sesión. GitHub Pages publica `main /docs` tras el envío.
+
+Sube los cambios a Forgejo. El servicio rechaza ramas divergentes para
+proteger los cambios que pudiera haber en GitHub. Para revisar su estado:
+
+```bash
+systemctl --user list-timers asm3-forgejo-github-sync.timer
+journalctl --user -u asm3-forgejo-github-sync.service -n 20 --no-pager
+```
+
 ## Matriz integral de YunoHost en CI
 
 Los workflows `package-check.yml` son manuales. Usa un runner de laboratorio con
