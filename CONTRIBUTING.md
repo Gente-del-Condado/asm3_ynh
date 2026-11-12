@@ -62,3 +62,18 @@ instrucciones de [publicación](doc/PUBLISHING.md) para GitHub Pages y Forgejo.
 `bash tools/build_release.sh` genera el tar y el bundle en `dist/`. El bundle
 generado es una instantánea instalable. Para conservar todo el historial al
 publicar, parte del repositorio Git y empuja su rama.
+
+## Logo del paquete
+
+`doc/logo.svg` procede de `src/static/images/logo/icon.svg` del origen ASM3
+fijado en `upstream.lock.json`. `doc/logo.png` es su versión RGBA de 500 × 500
+para YunoHost. Se puede regenerar con ImageMagick:
+
+```bash
+magick -background none -density 192 doc/logo.svg -resize 480x480 -gravity center -extent 500x500 PNG32:doc/logo.png
+```
+
+El instalador registra el PNG mediante la API de permisos de YunoHost. El helper
+`asm3_logo` conserva los logos personalizados y recupera el predeterminado al
+restaurar. Los parches del mapa se aplican al descargar el origen y conservan la
+atribución visible de OpenStreetMap.

@@ -1,5 +1,33 @@
 # Evidencia de validación
 
+## Paquete 51.1~ynh8
+
+Validación del 12 de noviembre de 2026 en Debian 12, YunoHost 12.1.41.2 y amd64.
+
+- Los siete escenarios oficiales de [package_check](package-check-51.1~ynh8.json)
+  terminaron con `success`. El nivel global permanece en 0 por los hallazgos del catálogo.
+- Pasaron 70 pruebas unitarias en local y otras 70 en Debian 12.
+- Pasó el smoke test con MariaDB temporal como usuario sin privilegios en Debian.
+- En Chrome, el mapa de Opciones → Detalles del refugio cargó seis teselas reales
+  de OpenStreetMap con HTTP 200. El Referer contenía solo el origen HTTPS ficticio.
+- La respuesta de la página mantiene `strict-origin-when-cross-origin` y la
+  pantalla MFA mantiene `no-referrer`.
+- El PNG se sirvió desde el portal y su hash apareció en la API de administración.
+  Un logo personalizado sobrevivió a una actualización completa.
+  La restauración del predeterminado se comprobó retirando su PNG y recuperándolo.
+- [Comprobaciones detalladas del mapa y del logo](mapa-logo-51.1~ynh8.json).
+- [Captura del mapa con datos ficticios](mapa-51.1~ynh8.webp).
+
+La matriz probó `aff1da328048449f2abc1ff01bb14d068f0a9bdb`.
+Durante la publicación se aplicaron las correcciones al historial actualizado de
+Forgejo. Se verificó que el árbol completo de fuentes de
+`245b21e` coincide byte a byte con el probado. El JSON conserva la revisión
+original de package_check. Los informes y esta documentación se añadieron después.
+
+```bash
+sha256sum -c doc/validation/runtime-51.1~ynh8.sha256
+```
+
 ## Paquete 51.1~ynh7
 
 La matriz completa del 7 de noviembre de 2026 probó el commit

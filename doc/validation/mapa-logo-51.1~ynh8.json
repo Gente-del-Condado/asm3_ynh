@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-12",
+  "package_version": "51.1~ynh8",
+  "tested_package_commit": "aff1da328048449f2abc1ff01bb14d068f0a9bdb",
+  "published_source_commit": "245b21e61423f1664d442ad2bd831f6b1db5659f",
+  "identical_source_tree": "d2df5fc5e59d063c4fe700cc58f8e8fe2fd0f097",
+  "unit_tests": {
+    "local": 70,
+    "debian12": 70
+  },
+  "native_mariadb_smoke": "success on Debian 12 as unprivileged asm3 user",
+  "https": {
+    "package_version": "51.1~ynh8",
+    "map_referrer": "strict-origin-when-cross-origin",
+    "mfa_referrer": "no-referrer",
+    "tile_url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "logo_hash": "636d015d633bc9a44e805f25b433b92f4ff4535cd9494f0c94352c250ea4b918",
+    "logo_http_status": 200
+  },
+  "browser": {
+    "browser": "Chrome",
+    "page": "/options",
+    "tiles_loaded": 6,
+    "tile_statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "tile_referers": [
+      "https://domain.tld/"
+    ],
+    "attribution_visible": true
+  },
+  "custom_logo_after_full_upgrade": "success",
+  "default_png_recreated_after_removal": "success",
+  "admin_api_logo": "success"
+}
