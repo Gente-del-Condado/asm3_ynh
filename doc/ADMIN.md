@@ -78,3 +78,12 @@ a tile policy 403. Network-level or provider blocks may still need investigation
 
 The package supplies the ASM3 logo when none is configured. Existing custom
 logos are preserved. You can change the logo through YunoHost tiles and permissions.
+
+## Installation messages
+
+MariaDB's `found previous version` line reports the version found in its data
+directory. ASM3's `INFO` messages describe schema, data, template and report
+initialization. A separate schema is also built for the SQL editor.
+
+Package `51.1~ynh9` makes deletion of an absent disk-cache entry silent.
+Permission errors and other cache failures remain visible in the logs.

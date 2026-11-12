@@ -141,6 +141,22 @@ def main():
 import asm3.db, asm3.utils, asm3.al
 import main
 import web070 as web
+# Una invalidación repetida debe ser silenciosa, pero los errores de permisos deben registrarse.
+from unittest.mock import patch
+import asm3.cachedisk as cachedisk
+cache_key = 'ynh-cache-invalidation-probe'
+with patch.object(asm3.al, 'error') as report:
+    cachedisk.delete(cache_key, 'ynh_cache_probe')
+    report.assert_not_called()
+    cachedisk.put(cache_key, 'ynh_cache_probe', 'test-value', 60)
+    assert cachedisk.exists(cache_key, 'ynh_cache_probe')
+    cachedisk.delete(cache_key, 'ynh_cache_probe')
+    cachedisk.delete(cache_key, 'ynh_cache_probe')
+    assert not cachedisk.exists(cache_key, 'ynh_cache_probe')
+    report.assert_not_called()
+    with patch.object(cachedisk.os, 'unlink', side_effect=PermissionError('permission probe')):
+        cachedisk.delete(cache_key, 'ynh_cache_probe')
+    report.assert_called_once_with('permission probe', 'cachedisk.delete')
 marker = 'SECRET_BODY_AND_HEADER_SENTINEL'
 asm3.al.LOG_DEBUG = True
 sent = []

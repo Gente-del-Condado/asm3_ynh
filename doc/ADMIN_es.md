@@ -72,3 +72,15 @@ nueva política. Un bloqueo de red o del proveedor puede requerir revisión adic
 El logo de ASM3 se asigna al instalar o actualizar si la instancia no tiene uno.
 Puedes elegir otro en el apartado de mosaicos y permisos de YunoHost. Las
 actualizaciones conservan ese logo personalizado.
+
+## Mensajes durante la instalación
+
+`/var/lib/mysql: found previous version 10.11` informa de la versión encontrada
+en el directorio de MariaDB. Los mensajes `INFO` de creación de esquema, datos,
+plantillas e informes describen el avance normal de la instalación. El esquema
+se prepara primero para el editor SQL de ASM3 y después en la base de la instancia.
+
+YunoHost puede indicar que la carpeta `upstream` todavía no existe antes de su
+primera descarga. Desde `51.1~ynh9`, invalidar una entrada de caché inexistente
+ya no genera un `CRITICAL cachedisk.delete`. Los fallos de permisos y otros errores
+de caché siguen apareciendo en los registros para poder diagnosticarlos.

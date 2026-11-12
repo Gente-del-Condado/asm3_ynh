@@ -1,5 +1,10 @@
 # Cambios del paquete
 
+## 51.1~ynh9 — 12 de noviembre de 2026
+
+- Invalidación silenciosa de entradas de caché inexistentes durante instalación y uso.
+- Los errores de permisos y los demás fallos de caché siguen registrándose.
+
 ## 51.1~ynh8 — 12 de noviembre de 2026
 
 - Mapa OpenStreetMap con Referer limitado al origen y URL oficial de teselas.

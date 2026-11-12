@@ -1,0 +1,12 @@
+--- a/src/asm3/cachedisk.py
++++ b/src/asm3/cachedisk.py
+@@ -81,6 +81,9 @@
+     try:
+         fname = _getfilename(key, path)
+         os.unlink(fname)
++    except FileNotFoundError:
++        # Invalidar una entrada ausente es normal al instalar y entre procesos.
++        pass
+     except Exception as err:
+         asm3.al.error(str(err), "cachedisk.delete")
+ 
