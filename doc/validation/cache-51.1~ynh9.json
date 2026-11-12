@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-12",
+  "package_version": "51.1~ynh9",
+  "tested_commit": "c261b5dc73fd08baa615333056181c87d8e26a2d",
+  "unit_tests": {
+    "local": 70,
+    "debian12": 70
+  },
+  "native_mariadb_smoke": "success",
+  "missing_entry_invalidation": "success without error log",
+  "repeated_invalidation": "success without error log",
+  "permission_error": "logged through the existing error handler",
+  "false_cache_critical_messages": 0,
+  "examined_logs": [
+    "Debian native smoke",
+    "package_check console",
+    "package_check full log"
+  ]
+}

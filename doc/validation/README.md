@@ -1,5 +1,20 @@
 # Evidencia de validación
 
+## Paquete 51.1~ynh9
+
+Validación del 12 de noviembre de 2026 en Debian 12 / YunoHost 12.1.41.2 / amd64.
+El [JSON original](package-check-51.1~ynh9.json) registra siete escenarios correctos
+sobre el commit `c261b5dc73fd08baa615333056181c87d8e26a2d`. El nivel oficial sigue en 0 por los hallazgos del catálogo.
+
+Pasaron 70 pruebas unitarias en local y otras 70 en Debian 12, además del smoke
+test con MariaDB temporal como usuario sin privilegios. La prueba de regresión
+ejercita el módulo real de caché y verifica la invalidación de una entrada ausente,
+el borrado repetido y el registro de un error de permisos. En los registros del
+smoke test y de la matriz completa no aparece el falso `CRITICAL cachedisk.delete`.
+
+- [Resultados de caché](cache-51.1~ynh9.json).
+- [Hashes de los archivos funcionales](runtime-51.1~ynh9.sha256).
+
 ## Paquete 51.1~ynh8
 
 Validación del 12 de noviembre de 2026 en Debian 12, YunoHost 12.1.41.2 y amd64.
