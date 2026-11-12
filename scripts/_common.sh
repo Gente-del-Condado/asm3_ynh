@@ -54,11 +54,14 @@ asm3_configure() {
 }
 
 asm3_logo() {
-    local logo_hash
+    local logo_hash package_logo_hash
     logo_hash=$(yunohost user permission info "$app.main" --output-as=json |
         python3 -c 'import json,sys; print(json.load(sys.stdin).get("logo_hash") or "")') || return 1
+    package_logo_hash=$(sha256sum "$install_dir/ynh/logo.png")
+    package_logo_hash="${package_logo_hash%% *}"
+    # Vuelve a registrar el predeterminado para restaurar también su PNG en otro servidor.
     # Conserva el logo que el administrador haya elegido para esta instancia.
-    if [ -z "$logo_hash" ]; then
+    if [ -z "$logo_hash" ] || [ "$logo_hash" = "$package_logo_hash" ]; then
         yunohost user permission update "$app.main" --logo="$install_dir/ynh/logo.png"
     fi
 }

@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import json
 import os
@@ -89,9 +90,12 @@ class LogoTests(unittest.TestCase):
             )
             command.chmod(0o755)
             log = root / "updates"
+            logo = root / "ynh/logo.png"
+            logo.parent.mkdir()
+            logo.write_bytes(b"test-logo")
             result = subprocess.run(
-                ["bash", "-c", 'source "$1"; app=asm3__2; install_dir=/var/www/asm3__2; asm3_logo',
-                 "test", str(ROOT / "scripts/_common.sh")],
+                ["bash", "-c", 'source "$1"; app=asm3__2; install_dir="$2"; asm3_logo',
+                 "test", str(ROOT / "scripts/_common.sh"), str(root)],
                 env={**os.environ, "PATH": str(root) + os.pathsep + os.environ["PATH"],
                      "FAIL_INFO": str(fail).lower(),
                      "PERMISSION_INFO": json.dumps({"logo_hash": logo_hash}),
@@ -103,7 +107,13 @@ class LogoTests(unittest.TestCase):
     def test_initial_logo_is_assigned_to_instance(self):
         result, update = self.run_logo(None)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("update asm3__2.main --logo=/var/www/asm3__2/ynh/logo.png", update)
+        self.assertIn("update asm3__2.main --logo=", update)
+        self.assertTrue(update.strip().endswith("/ynh/logo.png"))
+
+    def test_default_logo_is_registered_again_on_restore(self):
+        result, update = self.run_logo(hashlib.sha256(b"test-logo").hexdigest())
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("update asm3__2.main --logo=", update)
 
     def test_custom_logo_survives_upgrade(self):
         result, update = self.run_logo("custom-logo-hash")
