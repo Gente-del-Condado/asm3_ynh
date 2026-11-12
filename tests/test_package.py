@@ -1,4 +1,8 @@
 import importlib.util
+import json
+import os
+import subprocess
+import tempfile
 from pathlib import Path
 import unittest
 
@@ -67,6 +71,49 @@ class ProxyTests(unittest.TestCase):
                 for _, cookie in got["headers"]:
                     self.assertIn("Path=" + prefix.rstrip("/") + "/", cookie)
                     self.assertIn("Secure", cookie)
+
+
+class LogoTests(unittest.TestCase):
+    def run_logo(self, logo_hash, fail=False):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = root / "yunohost"
+            command.write_text(
+                "#!/bin/sh\n"
+                'if [ "$3" = info ]; then\n'
+                '  [ "$FAIL_INFO" = true ] && exit 1\n'
+                '  printf "%s" "$PERMISSION_INFO"\n'
+                "else\n"
+                '  printf "%s\\n" "$*" > "$UPDATE_LOG"\n'
+                "fi\n"
+            )
+            command.chmod(0o755)
+            log = root / "updates"
+            result = subprocess.run(
+                ["bash", "-c", 'source "$1"; app=asm3__2; install_dir=/var/www/asm3__2; asm3_logo',
+                 "test", str(ROOT / "scripts/_common.sh")],
+                env={**os.environ, "PATH": str(root) + os.pathsep + os.environ["PATH"],
+                     "FAIL_INFO": str(fail).lower(),
+                     "PERMISSION_INFO": json.dumps({"logo_hash": logo_hash}),
+                     "UPDATE_LOG": str(log)},
+                capture_output=True, text=True,
+            )
+            return result, log.read_text() if log.exists() else None
+
+    def test_initial_logo_is_assigned_to_instance(self):
+        result, update = self.run_logo(None)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("update asm3__2.main --logo=/var/www/asm3__2/ynh/logo.png", update)
+
+    def test_custom_logo_survives_upgrade(self):
+        result, update = self.run_logo("custom-logo-hash")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIsNone(update)
+
+    def test_failed_lookup_does_not_replace_logo(self):
+        result, update = self.run_logo(None, fail=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIsNone(update)
 
 
 class UpdaterTests(unittest.TestCase):

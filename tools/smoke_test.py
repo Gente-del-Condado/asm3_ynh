@@ -214,8 +214,9 @@ assert main.session.session_id != previous_id
                 cookies = [v for k, v in headers if k.lower() == "set-cookie"]
                 assert cookies and any("asm_session_id_asm3__2=" in v for v in cookies), cookies
                 assert all("secure" in v.lower() and f"path={prefix}/" in v.lower() for v in cookies), cookies
-                status, _, body = http_request("/main", cookie="; ".join(v.split(";")[0] for v in cookies))
+                status, headers, body = http_request("/main", cookie="; ".join(v.split(";")[0] for v in cookies))
                 assert status == 200 and b"controller" in body, (status, body[:200])
+                assert dict(headers)["Referrer-Policy"] == "strict-origin-when-cross-origin"
                 assert http_request("/static/js/bundle/schema.js")[0] == 200
                 marker = "PASSWORD_LOG_SENTINEL_" + secrets.token_hex(12)
                 for endpoint in ("/login", "/mobile_login"):

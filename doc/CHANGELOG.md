@@ -1,5 +1,10 @@
 # Cambios del paquete
 
+## 51.1~ynh8 — 12 de noviembre de 2026
+
+- Mapa OpenStreetMap con Referer limitado al origen y URL oficial de teselas.
+- Logo de ASM3 incluido y asignado a YunoHost sin sustituir los logos personalizados.
+
 ## 51.1~ynh6 — 5 de noviembre de 2026
 
 - Integración gestionada de Dex oficial con Google, GitHub y Microsoft desde el panel YunoHost.

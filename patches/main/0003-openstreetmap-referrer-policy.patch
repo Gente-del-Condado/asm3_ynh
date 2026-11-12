@@ -1,0 +1,12 @@
+--- a/src/main.py
++++ b/src/main.py
+@@ -525,7 +525,8 @@
+             self.header("X-Frame-Options", "SAMEORIGIN") 
+             self.header("X-Content-Type-Options", "nosniff") 
+             self.header("X-XSS-Protection", "1; mode=block") 
+-            self.header("Referrer-Policy", "same-origin") 
++            # OSM necesita el origen como Referer, sin rutas ni parámetros privados.
++            self.header("Referrer-Policy", "strict-origin-when-cross-origin")
+             self.header("Strict-Transport-Security", "max-age=%s" % CACHE_ONE_MONTH) 
+             nonce = asm3.utils.uuid_str()
+             # CSP is not applied to users of the mobile app as we still have users with

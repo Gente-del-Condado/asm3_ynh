@@ -1,0 +1,2 @@
+# Los parches conservan los espacios del contexto del código original.
+patches/**/*.patch -whitespace

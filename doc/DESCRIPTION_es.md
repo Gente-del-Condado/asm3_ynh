@@ -1,3 +1,5 @@
+![Animal Shelter Manager](https://raw.githubusercontent.com/Gente-del-Condado/asm3_ynh/main/doc/logo.png)
+
 Animal Shelter Manager (ASM3) permite gestionar animales, adopciones, acogidas,
 atención veterinaria, personas, voluntariado, donaciones, documentos, informes y
 formularios en línea.

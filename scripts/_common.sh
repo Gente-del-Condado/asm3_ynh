@@ -53,11 +53,22 @@ asm3_configure() {
     ynh_config_add_systemd
 }
 
+asm3_logo() {
+    local logo_hash
+    logo_hash=$(yunohost user permission info "$app.main" --output-as=json |
+        python3 -c 'import json,sys; print(json.load(sys.stdin).get("logo_hash") or "")') || return 1
+    # Conserva el logo que el administrador haya elegido para esta instancia.
+    if [ -z "$logo_hash" ]; then
+        yunohost user permission update "$app.main" --logo="$install_dir/ynh/logo.png"
+    fi
+}
+
 asm3_sources() {
     ynh_setup_source --dest_dir="$install_dir/upstream" --full_replace
     mkdir -p "$install_dir/ynh"
     cp ../conf/{server,build,manage,manage_oidc,manage_identity}.py "$install_dir/ynh/"
     cp ../conf/ynh_{auth,oidc,mfa}.py "$install_dir/upstream/src/"
+    cp ../doc/logo.png "$install_dir/ynh/logo.png"
     # Genera los recursos como root antes de dejar el código en solo lectura para el servicio.
     ASM3_CONF="$install_dir/asm3.conf" python3 "$install_dir/ynh/build.py" "$install_dir/upstream"
     chown -R "root:$app" "$install_dir"
@@ -66,6 +77,7 @@ asm3_sources() {
         chown root:root "$install_dir/identity_admin.json"
         chmod 600 "$install_dir/identity_admin.json"
     fi
+    asm3_logo
     # Nginx reenvía las peticiones. No necesita acceso al código ni a las credenciales.
 }
 

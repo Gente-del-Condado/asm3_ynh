@@ -60,3 +60,15 @@ a `http://127.0.0.1:PUERTO/_ynh_health` debe responder `ready`.
 Las tareas diarias se lanzan a las 03:17 y los informes por correo al minuto 23 de
 cada hora, según el reloj del servidor. Consulta [Home Assistant](HOME_ASSISTANT.md)
 si quieres añadir una comprobación externa de disponibilidad.
+
+## Mapa y logo
+
+Desde `51.1~ynh8`, el mapa identifica el origen HTTPS del refugio ante
+OpenStreetMap. Las peticiones de teselas no incluyen la ruta ni los parámetros
+de las páginas privadas. Si aparece un 403 con el aviso de política de uso,
+actualiza el paquete y recarga la página para que el navegador aplique la
+nueva política. Un bloqueo de red o del proveedor puede requerir revisión adicional.
+
+El logo de ASM3 se asigna al instalar o actualizar si la instancia no tiene uno.
+Puedes elegir otro en el apartado de mosaicos y permisos de YunoHost. Las
+actualizaciones conservan ese logo personalizado.

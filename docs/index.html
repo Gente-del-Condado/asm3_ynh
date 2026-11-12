@@ -126,6 +126,8 @@ sudo yunohost app upgrade asm3 -u /ruta/absoluta/asm3_ynh</code></pre>
           <dt>Vuelve continuamente al portal de YunoHost</dt><dd>Comprueba el dominio, la ruta y el permiso del usuario en <code>main</code> y <code>staff</code>.</dd>
           <dt>El autenticador genera códigos que no funcionan</dt><dd>Comprueba la hora del dispositivo y del servidor. Si se perdió el factor, restablécelo desde el panel.</dd>
           <dt>La aplicación devuelve 502</dt><dd>Revisa el estado del servicio y los errores de Nginx. El registro puede contener información privada. Comparte solo fragmentos revisados.</dd>
+          <dt>El mapa devuelve un 403 de OpenStreetMap</dt><dd>Actualiza a <code>51.1~ynh8</code> o posterior y recarga la página. El paquete envía el origen del refugio al solicitar las teselas. Si persiste, revisa la conectividad y el bloqueo indicado por el proveedor.</dd>
+          <dt>YunoHost muestra un mosaico sin logo</dt><dd>Actualiza a <code>51.1~ynh8</code> o posterior. El paquete asigna el logo de ASM3 si no hay uno configurado y conserva los personalizados. Puedes cambiarlo en los mosaicos y permisos de la aplicación.</dd>
           <dt>El sensor REST devuelve apagado o no disponible</dt><dd>Comprueba HTTPS, la URL de salud y si YunoHost devuelve su propia pantalla de acceso.</dd>
         </dl>
         <pre><code>sudo systemctl status asm3

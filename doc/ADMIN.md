@@ -69,3 +69,12 @@ resetting invalidates existing and pending sessions. See [DEX.md](DEX.md).
 The [Home Assistant guide](HOME_ASSISTANT.md) includes an optional REST monitor
 for an instance that already permits visitors. Private instances can keep
 their existing permissions and use server-level monitoring.
+
+## Map tiles and application logo
+
+Package `51.1~ynh8` sends the HTTPS origin as the map tile referrer and uses the
+official OpenStreetMap tile URL. Upgrade and reload the page if the map reports
+a tile policy 403. Network-level or provider blocks may still need investigation.
+
+The package supplies the ASM3 logo when none is configured. Existing custom
+logos are preserved. You can change the logo through YunoHost tiles and permissions.

@@ -5,7 +5,7 @@ package_root=$PWD
 version=$(python3 -c 'import tomllib; print(tomllib.load(open("manifest.toml", "rb"))["version"])')
 mkdir -p dist
 tar --exclude='__pycache__' --exclude='*.pyc' -czf "dist/asm3_ynh-${version}.tar.gz" \
-    manifest.toml upstream.lock.json tests.toml config_panel.toml scripts conf patches hooks doc docs tools tests .github .forgejo README.md AGENTS.md CONTRIBUTING.md LICENSE .gitignore
+    manifest.toml upstream.lock.json tests.toml config_panel.toml scripts conf patches hooks doc docs tools tests .github .forgejo README.md AGENTS.md CONTRIBUTING.md LICENSE .gitignore .gitattributes
 (cd dist && sha256sum "asm3_ynh-${version}.tar.gz") > "dist/asm3_ynh-${version}.tar.gz.sha256"
 # Crea un bundle autocontenido a partir del contenido que se instala.
 staging=$(mktemp -d)

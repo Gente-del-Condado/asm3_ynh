@@ -20,6 +20,7 @@ ynh_restore "/etc/cron.d/$app"
 systemctl daemon-reload
 systemctl enable "$app.service" --quiet
 yunohost service add "$app" --description="Animal Shelter Manager" --log="/var/log/nginx/$domain-error.log"
+asm3_logo
 asm3_start
 asm3_identity_reconcile
 ynh_systemctl --service=nginx --action=reload
