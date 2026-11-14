@@ -7,7 +7,7 @@ asm3_lock
 ynh_systemctl --service="$app" --action=stop
 asm3_configure
 asm3_sources
-ynh_script_progression "Aplicando y verificando las migraciones de la base de datos…"
+ynh_script_progression "Aplicando y verificando las migraciones de la base MariaDB de ASM3…"
 set +x
 printf '%s' "$rescue_password" | ynh_exec_as_app env ASM3_CONF="$install_dir/asm3.conf" PYTHONDONTWRITEBYTECODE=1 python3 "$install_dir/ynh/manage.py" upgrade "$admin"
 unset rescue_password

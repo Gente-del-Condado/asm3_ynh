@@ -74,6 +74,7 @@ asm3_sources() {
     cp ../conf/ynh_{auth,oidc,mfa}.py "$install_dir/upstream/src/"
     cp ../doc/logo.png "$install_dir/ynh/logo.png"
     # Genera los recursos como root antes de dejar el código en solo lectura para el servicio.
+    ynh_print_info "Preparando el esquema SQLite temporal y los recursos del editor SQL de ASM3…"
     ASM3_CONF="$install_dir/asm3.conf" python3 "$install_dir/ynh/build.py" "$install_dir/upstream"
     chown -R "root:$app" "$install_dir"
     chmod -R u=rwX,g=rX,o= "$install_dir"

@@ -80,7 +80,8 @@ mensajes en español. Primero aparece «Preparando el esquema SQLite temporal de
 editor SQL de ASM3…». Después se prepara la base MariaDB de la instancia y se
 cargan datos, plantillas, formularios e informes.
 
-Los mensajes `INFO` del mantenimiento salen por stdout. Las advertencias y errores
+Las fases principales aparecen en la vista normal de YunoHost. Los mensajes
+`INFO` internos del mantenimiento salen por stdout y quedan en el registro detallado. Las advertencias y errores
 salen por stderr, con sus detalles de diagnóstico y sus códigos de salida. La
 generación del JavaScript del editor SQL conserva su salida separada de los mensajes.
 
