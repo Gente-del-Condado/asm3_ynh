@@ -81,9 +81,11 @@ logos are preserved. You can change the logo through YunoHost tiles and permissi
 
 ## Installation messages
 
-MariaDB's `found previous version` line reports the version found in its data
-directory. ASM3's `INFO` messages describe schema, data, template and report
-initialization. A separate schema is also built for the SQL editor.
+Package `51.1~ynh10` displays ASM3 maintenance messages in Spanish, distinguishing
+the temporary SQLite schema for the SQL editor from the instance MariaDB schema.
+Maintenance INFO records use stdout. Warnings, errors, diagnostic details and
+failure exit codes remain available through stderr. JavaScript generation uses
+a separate output stream.
 
-Package `51.1~ynh9` makes deletion of an absent disk-cache entry silent.
-Permission errors and other cache failures remain visible in the logs.
+YunoHost, APT and MariaDB use the system language for their own messages.
+MariaDB's `found previous version` line reports its existing data-directory version.

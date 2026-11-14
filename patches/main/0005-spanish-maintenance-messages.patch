@@ -1,0 +1,142 @@
+--- a/src/asm3/al.py
++++ b/src/asm3/al.py
+@@ -4,6 +4,8 @@
+ 
+ import logging
+ import logging.handlers
++import os
++import sys
+ import traceback
+ 
+ logger = logging.getLogger("ASM3")
+@@ -13,6 +15,13 @@
+     handler = logging.StreamHandler()
+     formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s", "%Y-%m-%d %H:%M:%S")
+     handler.setFormatter(formatter)
++    if os.environ.get("ASM3_YNH_MAINTENANCE_LOG") == "1":
++        # En mantenimiento, YunoHost recibe INFO por stdout y los avisos y errores por stderr.
++        handler.setLevel(logging.WARNING)
++        info_handler = logging.StreamHandler(sys.stdout)
++        info_handler.addFilter(lambda record: record.levelno < logging.WARNING)
++        info_handler.setFormatter(formatter)
++        logger.addHandler(info_handler)
+     logger.addHandler(handler)
+ elif LOG_LOCATION == "syslog":
+     handler = logging.handlers.SysLogHandler(address = "/dev/log", facility = logging.handlers.SysLogHandler.LOG_LOCAL3)
+--- a/src/asm3/dbupdate.py
++++ b/src/asm3/dbupdate.py
+@@ -2923,7 +2923,7 @@
+     """
+     Creates the db structure in the target database
+     """
+-    asm3.al.info("creating default database schema", "dbupdate.install_default_data", dbo)
++    asm3.al.info("Creando las tablas del esquema de base de datos", "dbupdate.install_db_structure", dbo)
+     sql = sql_structure(dbo)
+     for s in sql.split(";"):
+         if (s.strip() != ""):
+@@ -2941,7 +2941,7 @@
+             execute(dbo, dbo.ddl_add_view(viewname, sql) )
+         except Exception as err:
+             errors += 1
+-            asm3.al.error("error creating view %s: %s" % (viewname, err), "dbupdate.install_db_views", dbo)
++            asm3.al.error("Error al crear la vista %s: %s" % (viewname, err), "dbupdate.install_db_views", dbo)
+ 
+     # Set us upto date to stop race condition/other clients trying to install
+     asm3.configuration.db_view_seq_version(dbo, str(_dbupdates_latest_ver(dbo)))
+@@ -2993,7 +2993,7 @@
+     Installs the default dataset into the database.
+     skip_config: If true, does not insert default data into: configuration, role, userrole, users 
+     """
+-    asm3.al.info("creating default data", "dbupdate.install_default_data", dbo)
++    asm3.al.info("Cargando los datos iniciales", "dbupdate.install_default_data", dbo)
+     sql = sql_default_data(dbo, skip_config)
+     for s in sql.split("|="):
+         if s.strip() != "":
+@@ -3003,7 +3003,7 @@
+     """
+     Installs the recommended/default reports
+     """
+-    asm3.al.info("installing recommended reports", "dbupdate.install_default_reports", dbo)
++    asm3.al.info("Instalando los informes recomendados", "dbupdate.install_default_reports", dbo)
+     asm3.reports.install_recommended_smcom_reports(dbo, "install")
+ 
+ def reinstall_default_data(dbo: Database) -> None:
+@@ -3023,9 +3023,9 @@
+     removeFirst: if True, deletes existing online forms first.
+     """
+     path = dbo.installpath + "media/onlineform/"
+-    asm3.al.info("creating default online forms", "dbupdate.install_default_onlineforms", dbo)
++    asm3.al.info("Instalando los formularios incluidos", "dbupdate.install_default_onlineforms", dbo)
+     if removeFirst:
+-        asm3.al.info("removing existing forms from onlineform, onlineformfield", "dbupdate.install_default_onlineforms", dbo)
++        asm3.al.info("Retirando los formularios anteriores de onlineform y onlineformfield", "dbupdate.install_default_onlineforms", dbo)
+         execute(dbo, "DELETE FROM onlineform")
+         execute(dbo, "DELETE FROM onlineformfield")
+     for o in os.listdir(path):
+@@ -3033,7 +3033,7 @@
+             try:
+                 asm3.onlineform.import_onlineform_json(dbo, asm3.utils.read_text_file(path + o))
+             except Exception as err:
+-                asm3.al.error("error importing form: %s" % str(err), "dbupdate.install_default_onlineformms", dbo)
++                asm3.al.error("Error al importar el formulario: %s" % str(err), "dbupdate.install_default_onlineformms", dbo)
+ 
+ def install_default_templates(dbo: Database, removeFirst: bool = False) -> None:
+     """
+@@ -3046,10 +3046,10 @@
+         install_html_template(dbo, name)
+     path = dbo.installpath
+     if removeFirst:
+-        asm3.al.info("removing templates from templatehtml and templatedocument", "dbupdate.install_default_templates", dbo)
++        asm3.al.info("Retirando las plantillas anteriores de templatehtml y templatedocument", "dbupdate.install_default_templates", dbo)
+         execute(dbo, "DELETE FROM templatedocument")
+         execute(dbo, "DELETE FROM templatehtml")
+-    asm3.al.info("creating default templates", "dbupdate.install_default_templates", dbo)
++    asm3.al.info("Instalando las plantillas incluidas", "dbupdate.install_default_templates", dbo)
+     add_html_template_from_files("animalview")
+     add_html_template_from_files("lostanimalview")
+     add_html_template_from_files("foundanimalview")
+@@ -3102,7 +3102,7 @@
+             "Content":  asm3.utils.base64encode(content)
+         }, generateID = False)
+     except FileNotFoundError:
+-        asm3.al.warn(f"FileNotFound: {filename}", "dbupdate.install_document_template")
++        asm3.al.warn(f"No se encontró el archivo de plantilla: {filename}", "dbupdate.install_document_template")
+ 
+ def install_html_template(dbo: Database, name: str, use_max_id: bool = False) -> None:
+     """ Install an HTML template from a folder """
+@@ -3120,7 +3120,7 @@
+             "IsBuiltIn": 0
+         }, generateID = False)
+     except FileNotFoundError:
+-        asm3.al.warn(f"FileNotFound: {name}", "dbupdate.install_html_template")
++        asm3.al.warn(f"No se encontró la plantilla: {name}", "dbupdate.install_html_template")
+ 
+ def install(dbo: Database) -> None:
+     """
+@@ -3551,7 +3551,7 @@
+     batch = []
+     for r in dbo.query("SELECT LinkType, LinkID, AdditionalFieldID, Value FROM additional WHERE Value LIKE '%&#%'"):
+         batch.append(( asm3.utils.decode_html(r.VALUE), r.LINKTYPE, r.LINKID, r.ADDITIONALFIELDID ))
+-    asm3.al.info(f"additional ({len(batch)} rows)", "dbupdate.replace_html_entities", dbo)
++    asm3.al.info(f"Lote adicional ({len(batch)} filas)", "dbupdate.replace_html_entities", dbo)
+     dbo.execute_many("UPDATE additional SET Value=? WHERE LinkType=? AND LinkID=? AND AdditionalFieldID=?", batch)
+     for table, fields in cols.items():
+         batch = []
+@@ -3564,7 +3564,7 @@
+             ibatch.append(r.ID)
+             batch.append(ibatch)
+         dbo.execute_many(batchq, batch)
+-        asm3.al.info(f"{table} ({len(batch)} rows)", "dbupdate.replace_html_entities", dbo)
++        asm3.al.info(f"{table} ({len(batch)} filas)", "dbupdate.replace_html_entities", dbo)
+     if asm3.smcom.active(): asm3.smcom.vacuum_full(dbo)
+ 
+ def check_for_updates(dbo: Database) -> bool:
+@@ -3632,7 +3632,7 @@
+     for i in _dbupdates_list(dbo):
+         if i not in alreadyrun:
+             try:
+-                msg = f"applying database update {i}"
++                msg = f"Aplicando la migración de base de datos {i}"
+                 if stdout:
+                     print(msg)
+                 else:

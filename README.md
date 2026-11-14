@@ -3,7 +3,7 @@
 ![Animal Shelter Manager](https://raw.githubusercontent.com/Gente-del-Condado/asm3_ynh/main/doc/logo.png)
 
 Paquete nativo de **ASM3** para **YunoHost ≥ 12.1.17**, formato de empaquetado 2 y
-helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh9`), con origen fijado al **5 de noviembre de 2026**. El código se descarga del repositorio
+helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh10`), con origen fijado al **5 de noviembre de 2026**. El código se descarga del repositorio
 oficial, fijado por commit y SHA-256; no depende de una imagen Docker.
 
 Preparado para publicarse en **GitHub o Forgejo**, con workflows propios para
@@ -28,7 +28,7 @@ Si usas el archivo de entrega, descomprímelo antes:
 
 ```bash
 mkdir asm3_ynh
-tar -xzf 'asm3_ynh-51.1~ynh9.tar.gz' -C asm3_ynh
+tar -xzf 'asm3_ynh-51.1~ynh10.tar.gz' -C asm3_ynh
 sudo yunohost app install "$PWD/asm3_ynh"
 ```
 
@@ -176,7 +176,7 @@ ASM3 se descarga al instalar y se comprueba contra el SHA-256 del manifest. No e
 instalador sin conexión. También se genera un repositorio Git autocontenido:
 
 ```bash
-git clone 'dist/asm3_ynh-51.1~ynh9.bundle' asm3_ynh
+git clone 'dist/asm3_ynh-51.1~ynh10.bundle' asm3_ynh
 ```
 
 Publica el checkout Git completo para incluir los workflows de CI, el manual y

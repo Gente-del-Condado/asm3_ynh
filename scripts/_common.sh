@@ -67,6 +67,7 @@ asm3_logo() {
 }
 
 asm3_sources() {
+    mkdir -p "$install_dir/upstream"
     ynh_setup_source --dest_dir="$install_dir/upstream" --full_replace
     mkdir -p "$install_dir/ynh"
     cp ../conf/{server,build,manage,manage_oidc,manage_identity}.py "$install_dir/ynh/"

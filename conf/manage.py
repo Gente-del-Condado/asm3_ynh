@@ -1,5 +1,6 @@
-"""Offline schema setup and upgrade, using ASM3 APIs. Password arrives on stdin."""
+"""Instala y actualiza el esquema con las API de ASM3. Recibe la contraseña por stdin."""
 import secrets
+import os
 import json
 import sys
 from pathlib import Path
@@ -27,7 +28,7 @@ def import_forms(dbo):
         form_id = asm3.onlineform.import_onlineform_json(dbo, json.dumps(data))
         actual = dbo.query_int("SELECT COUNT(*) FROM onlineformfield WHERE OnlineFormID=?", [form_id])
         if actual != len(data["fields"]):
-            raise RuntimeError(f"Incomplete online form: {path.name}")
+            raise RuntimeError(f"No se importaron todos los campos del formulario {path.name}")
 
 
 def manage(mode, admin=None, locale=None):
@@ -41,11 +42,13 @@ def manage(mode, admin=None, locale=None):
     dbo = asm3.db.get_database()
     dbo.installpath = str(SRC) + "/"
     if mode == "install":
+        operation = "Instalación"
         if dbo.query_int("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE()"):
-            raise RuntimeError("Refusing to initialize an existing database")
+            raise RuntimeError("Se ha detenido la instalación porque la base de datos ya contiene tablas")
         password = sys.stdin.read()
         if not password or not admin:
-            raise ValueError("Administrator and password are required")
+            raise ValueError("Se requiere el administrador y su contraseña de recuperación")
+        print("Preparando la base MariaDB de esta instancia de ASM3…", flush=True)
         dbo.locale = locale
         # Permite inicializar la base sin acceso al catálogo en línea.
         # ASM3 conserva el catálogo en línea para actualizar informes después.
@@ -55,15 +58,16 @@ def manage(mode, admin=None, locale=None):
         updates.install_db_structure(dbo)
         dbo.execute("ALTER TABLE onlineformfield MODIFY Label TEXT NOT NULL")
         if updates.install_db_views(dbo):
-            raise RuntimeError("Could not initialize database views")
+            raise RuntimeError("No se pudieron crear las vistas de la base de datos")
         updates.install_default_data(dbo)
         # configuration.get_map incorpora Locale=en de la configuración original.
         # Persiste el idioma en la base para que se conserve en la interfaz.
         configuration.cset(dbo, "Locale", locale)
         if updates.install_db_sequences(dbo):
-            raise RuntimeError("Could not initialize database sequences")
+            raise RuntimeError("No se pudieron inicializar las secuencias de la base de datos")
         updates.install_db_stored_procedures(dbo)
         updates.install_default_templates(dbo)
+        print("Cargando los formularios incluidos en ASM3…", flush=True)
         import_forms(dbo)
         updates.install_default_reports(dbo)
         # Deshabilita las cuentas predeterminadas antes de arrancar el servicio.
@@ -74,30 +78,33 @@ def manage(mode, admin=None, locale=None):
         )
         import ynh_auth
         if not ynh_auth.enabled() and not users.authenticate(dbo, admin, password):
-            raise RuntimeError("Administrator verification failed")
+            raise RuntimeError("Falló la comprobación de la cuenta de administrador")
     elif mode == "upgrade":
+        operation = "Actualización"
+        print("Comprobando las migraciones de la base MariaDB de ASM3…", flush=True)
         _, errors = updates.perform_updates(dbo)
         if errors:
-            raise RuntimeError(f"ASM3 database migration failed ({errors} errors)")
+            raise RuntimeError(f"Falló la migración de la base de datos de ASM3 ({errors} errores)")
         if updates.install_db_views(dbo):
-            raise RuntimeError("ASM3 database view update failed")
+            raise RuntimeError("Falló la actualización de las vistas de la base de datos de ASM3")
         if updates.install_db_sequences(dbo):
-            raise RuntimeError("ASM3 database sequence update failed")
+            raise RuntimeError("Falló la actualización de las secuencias de la base de datos de ASM3")
         if not dbo.query_int("SELECT COUNT(*) FROM configuration WHERE ItemName='Locale'"):
             configuration.cset(dbo, "Locale", LOCALE)
     else:
-        raise ValueError("Expected install or upgrade")
+        raise ValueError("La operación debe ser install o upgrade")
     import ynh_auth
     if ynh_auth.enabled():
         rescue_password = password if mode == "install" else sys.stdin.read()
         if not rescue_password or not admin:
-            raise ValueError("Recovery secret and selected administrator are required")
+            raise ValueError("Se requiere la contraseña de recuperación y el administrador seleccionado")
         ynh_auth.setup(dbo, admin, rescue_password)
     # Verifica todas las tablas, incluida salesreceipt tras la migración de 51 a 51-1.
     for table in updates.TABLES:
         dbo.query(f"SELECT * FROM {table} WHERE 1 = 0")
-    print(f"ASM3 {mode}: schema {configuration.dbv(dbo)} verified")
+    print(f"{operation} de ASM3 verificada. Versión del esquema: {configuration.dbv(dbo)}.", flush=True)
 
 
 if __name__ == "__main__":
+    os.environ["ASM3_YNH_MAINTENANCE_LOG"] = "1"
     manage(*sys.argv[1:])

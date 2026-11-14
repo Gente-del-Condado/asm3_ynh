@@ -1,5 +1,12 @@
 # Cambios del paquete
 
+## 51.1~ynh10 — 14 de noviembre de 2026
+
+- Mensajes de preparación, instalación y actualización de ASM3 en español.
+- Etapas diferenciadas para el esquema SQLite temporal y la base MariaDB de la instancia.
+- INFO por stdout durante el mantenimiento; advertencias y errores por stderr.
+- Pruebas de conservación de diagnósticos y del código de salida ante fallos.
+
 ## 51.1~ynh9 — 12 de noviembre de 2026
 
 - Invalidación silenciosa de entradas de caché inexistentes durante instalación y uso.

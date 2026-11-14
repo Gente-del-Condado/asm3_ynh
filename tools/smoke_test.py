@@ -122,6 +122,35 @@ def main():
             config.write_text(f"db_type = MYSQL\ndb_host = 127.0.0.1\ndb_port = {db_port}\ndb_username = asm3test\ndb_password = {db_password}\ndb_name = asm3_smoke\nlocale = es\nlog_location = stderr\nlog_debug = false\ndisk_cache = {cache}\nsession_secure_cookie = true\n")
             env = {**os.environ, "ASM3_CONF": str(config), "PYTHONDONTWRITEBYTECODE": "1"}
             subprocess.run([sys.executable, str(install / "ynh/build.py"), str(upstream)], check=True, env=env)
+            # Comprueba los canales del logger real y conserva también diagnósticos desconocidos.
+            logging_probe = (
+                "import asm3.al; "
+                "asm3.al.info('Información de prueba', 'maintenance_probe'); "
+                "asm3.al.warn('Advertencia de prueba', 'maintenance_probe'); "
+                "asm3.al.error('untranslated diagnostic sentinel', 'maintenance_probe')"
+            )
+            for maintenance in (False, True):
+                probe_env = {**env}
+                probe_env.pop("ASM3_YNH_MAINTENANCE_LOG", None)
+                if maintenance:
+                    probe_env["ASM3_YNH_MAINTENANCE_LOG"] = "1"
+                result = subprocess.run(
+                    [sys.executable, "-c", logging_probe], cwd=upstream / "src",
+                    env=probe_env, capture_output=True, text=True, check=True,
+                )
+                assert ("Información de prueba" in result.stdout) == maintenance
+                assert ("Información de prueba" in result.stderr) != maintenance
+                assert "Advertencia de prueba" in result.stderr
+                assert "untranslated diagnostic sentinel" in result.stderr
+                assert "Advertencia de prueba" not in result.stdout
+                assert "untranslated diagnostic sentinel" not in result.stdout
+            failed_process = subprocess.run(
+                [sys.executable, "-c", logging_probe + "; raise RuntimeError('fatal diagnostic sentinel')"],
+                cwd=upstream / "src", env={**env, "ASM3_YNH_MAINTENANCE_LOG": "1"},
+                capture_output=True, text=True,
+            )
+            assert failed_process.returncode != 0
+            assert "fatal diagnostic sentinel" in failed_process.stderr
             password = secrets.token_urlsafe(24)
             manage = [sys.executable, str(install / "ynh/manage.py")]
             subprocess.run([*manage, "install", "shelteradmin", "es"], input=password, text=True, check=True, env=env)
@@ -262,7 +291,8 @@ assert main.session.session_id != previous_id
             failure = update_dir / f"{latest + 2}.py"
             failure.write_text('raise RuntimeError("intentional migration failure for smoke test")\n')
             rejected = subprocess.run([*manage, "upgrade"], env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            assert rejected.returncode != 0 and b"database migration failed" in rejected.stderr
+            assert rejected.returncode != 0 and "Falló la migración de la base de datos de ASM3".encode() in rejected.stderr
+            assert b"intentional migration failure for smoke test" in rejected.stderr
             failure.unlink()
             dump = subprocess.check_output(["mariadb-dump", "--no-defaults", f"--socket={db_socket}", "-uroot", "--single-transaction", "asm3_smoke"])
             sql("DROP DATABASE asm3_smoke; CREATE DATABASE asm3_smoke CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")

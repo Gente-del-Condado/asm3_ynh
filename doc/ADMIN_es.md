@@ -75,12 +75,17 @@ actualizaciones conservan ese logo personalizado.
 
 ## Mensajes durante la instalación
 
-`/var/lib/mysql: found previous version 10.11` informa de la versión encontrada
-en el directorio de MariaDB. Los mensajes `INFO` de creación de esquema, datos,
-plantillas e informes describen el avance normal de la instalación. El esquema
-se prepara primero para el editor SQL de ASM3 y después en la base de la instancia.
+Desde `51.1~ynh10`, la preparación y el mantenimiento de ASM3 muestran sus
+mensajes en español. Primero aparece «Preparando el esquema SQLite temporal del
+editor SQL de ASM3…». Después se prepara la base MariaDB de la instancia y se
+cargan datos, plantillas, formularios e informes.
 
-YunoHost puede indicar que la carpeta `upstream` todavía no existe antes de su
-primera descarga. Desde `51.1~ynh9`, invalidar una entrada de caché inexistente
-ya no genera un `CRITICAL cachedisk.delete`. Los fallos de permisos y otros errores
-de caché siguen apareciendo en los registros para poder diagnosticarlos.
+Los mensajes `INFO` del mantenimiento salen por stdout. Las advertencias y errores
+salen por stderr, con sus detalles de diagnóstico y sus códigos de salida. La
+generación del JavaScript del editor SQL conserva su salida separada de los mensajes.
+
+YunoHost, APT y MariaDB generan sus propios mensajes según el idioma del sistema.
+Por ejemplo, `/var/lib/mysql: found previous version 10.11` informa de la versión
+detectada en su directorio. No se traducen mediante filtros de texto. Desde
+`51.1~ynh9`, invalidar una entrada de caché inexistente tampoco genera un falso
+`CRITICAL cachedisk.delete`.
