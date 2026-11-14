@@ -182,7 +182,7 @@ git clone 'dist/asm3_ynh-51.1~ynh10.bundle' asm3_ynh
 Publica el checkout Git completo para incluir los workflows de CI, el manual y
 el seguimiento de versiones. La licencia del paquete y de ASM3 es GPL-3.0-only.
 
-La matriz completa de `package_check` para `51.1~ynh9` obtuvo 7 resultados
+La matriz completa de `package_check` para `51.1~ynh10` obtuvo 7 resultados
 `success` en Debian 12 y YunoHost 12.1.41.2. El nivel oficial sigue en 0 por los
-hallazgos del catálogo comunitario. Consulta el [JSON original del commit probado](doc/validation/package-check-51.1~ynh9.json)
+hallazgos del catálogo comunitario. Consulta el [JSON original del commit probado](doc/validation/package-check-51.1~ynh10.json)
 y la [guía de pruebas](doc/TESTING.md).

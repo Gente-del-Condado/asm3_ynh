@@ -87,5 +87,5 @@ Maintenance INFO records use stdout. Warnings, errors, diagnostic details and
 failure exit codes remain available through stderr. JavaScript generation uses
 a separate output stream.
 
-YunoHost, APT and MariaDB use the system language for their own messages.
+YunoHost, APT and MariaDB generate their own diagnostics, which may appear in English.
 MariaDB's `found previous version` line reports its existing data-directory version.

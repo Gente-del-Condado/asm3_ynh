@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-14",
+  "package_version": "51.1~ynh10",
+  "tested_commit": "c7a29694fa5fa3b7b968663760a321e0a8543411",
+  "unit_tests": {
+    "local": 72,
+    "debian12": 72
+  },
+  "native_mariadb_smoke": "success",
+  "maintenance_info_stdout": true,
+  "maintenance_warning_stderr": true,
+  "maintenance_error_stderr": true,
+  "unrecognized_diagnostic_preserved": true,
+  "fatal_process_exit_nonzero": true,
+  "failed_migration_exit_nonzero": true,
+  "schema_generation_failure_exit_code_preserved": 23,
+  "javascript_output_isolated_from_progress_messages": true,
+  "runtime_info_stderr": true,
+  "sqlite_and_mariadb_stages_visible": true,
+  "missing_upstream_directory_notice_removed": true,
+  "infrastructure_messages": "YunoHost, APT and MariaDB retain their original diagnostics"
+}

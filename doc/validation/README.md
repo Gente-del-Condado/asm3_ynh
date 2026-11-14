@@ -1,5 +1,27 @@
 # Evidencia de validación
 
+## Paquete 51.1~ynh10
+
+Validación del 14 de noviembre de 2026 en Debian 12 / YunoHost 12.1.41.2 / amd64.
+Los siete escenarios del [JSON original](package-check-51.1~ynh10.json) terminaron
+con `success` sobre el commit `c7a29694fa5fa3b7b968663760a321e0a8543411`.
+El nivel oficial permanece en 0 por los hallazgos de catálogo.
+
+Pasaron 72 pruebas unitarias en local y otras 72 en Debian 12, además del smoke
+test con MariaDB temporal. Las pruebas verifican INFO por stdout en mantenimiento,
+advertencias y errores por stderr, conservación de diagnósticos desconocidos y
+salida distinta de cero ante un fallo fatal o una migración fallida. Un fallo del
+generador de esquema conserva su código de error. La generación del JavaScript
+separa los datos y los mensajes de progreso.
+
+La vista normal de YunoHost mostró las fases SQLite y MariaDB en español.
+Los INFO internos aparecen traducidos en el registro detallado y desapareció el
+aviso de retirada de una carpeta upstream inexistente. Los diagnósticos propios
+de YunoHost, APT y MariaDB se conservan con su texto original.
+
+- [Resultados de mensajes y errores](messages-51.1~ynh10.json).
+- [Hashes de los archivos funcionales](runtime-51.1~ynh10.sha256).
+
 ## Paquete 51.1~ynh9
 
 Validación del 12 de noviembre de 2026 en Debian 12 / YunoHost 12.1.41.2 / amd64.

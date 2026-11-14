@@ -85,7 +85,7 @@ Las fases principales aparecen en la vista normal de YunoHost. Los mensajes
 salen por stderr, con sus detalles de diagnóstico y sus códigos de salida. La
 generación del JavaScript del editor SQL conserva su salida separada de los mensajes.
 
-YunoHost, APT y MariaDB generan sus propios mensajes según el idioma del sistema.
+YunoHost, APT y MariaDB generan sus propios mensajes, que pueden aparecer en inglés.
 Por ejemplo, `/var/lib/mysql: found previous version 10.11` informa de la versión
 detectada en su directorio. No se traducen mediante filtros de texto. Desde
 `51.1~ynh9`, invalidar una entrada de caché inexistente tampoco genera un falso
