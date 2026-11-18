@@ -1,0 +1,87 @@
+name: Publicar ASM3 desde espejo privado
+on:
+  schedule:
+    - cron: '43 * * * *'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publicar después de validar (requiere ENABLE_MIRROR_PUBLICATION)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: asm-private-mirror
+  cancel-in-progress: false
+jobs:
+  quality:
+    if: github.repository == 'Gente-del-Condado/asm3_ynh' && github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || vars.ENABLE_MIRROR_PUBLICATION == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      changed: ${{ steps.download.outputs.changed }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Probar el controlador
+        run: python3 -m unittest discover -s .github/asm-publication -p 'test_*.py' -v
+      - name: Descargar referencias exactas del privado
+        id: download
+        env:
+          MIRROR_READ_TOKEN: ${{ secrets.MIRROR_READ_TOKEN }}
+        run: python3 .github/asm-publication/publish_mirror.py download --source "$RUNNER_TEMP/source"
+      - name: Exportar únicamente archivos revisados sin credenciales
+        if: steps.download.outputs.changed == 'true'
+        run: python3 .github/asm-publication/publish_mirror.py prepare --source "$RUNNER_TEMP/source" --prepared "$RUNNER_TEMP/prepared"
+      - name: Validar el paquete exportado sin credenciales
+        if: steps.download.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          cp -a "$RUNNER_TEMP/prepared/main" "$RUNNER_TEMP/quality"
+          cp -a .github "$RUNNER_TEMP/quality/.github"
+          cd "$RUNNER_TEMP/quality"
+          sudo apt-get update -qq
+          sudo apt-get install -y shellcheck python3-jsonschema mariadb-server python3-cheroot python3-jwt python3-cryptography python3-yaml python3-pil python3-mysqldb python3-psycopg2 python3-lxml python3-requests python3-reportlab python3-openpyxl python3-qrcode python3-boto3 python3-stripe python3-kombu
+          python3 tools/check_package.py
+          python3 -m unittest discover -s tests -v
+          python3 tools/smoke_test.py
+          bash tools/build_release.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: steps.download.outputs.changed == 'true'
+        with:
+          name: asm-reviewed-public-files
+          path: ${{ runner.temp }}/prepared/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+  publish:
+    needs: quality
+    if: needs.quality.outputs.changed == 'true' && vars.ENABLE_MIRROR_PUBLICATION == 'true' && (github.event_name == 'schedule' || inputs.publish)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: asm-reviewed-public-files
+          path: ${{ runner.temp }}/prepared
+      - name: Verificar referencias y recibo antes de publicar
+        env:
+          MIRROR_READ_TOKEN: ${{ secrets.MIRROR_READ_TOKEN }}
+        run: python3 .github/asm-publication/publish_mirror.py check --prepared "$RUNNER_TEMP/prepared"
+      - name: Publicar únicamente en el repositorio público de ASM3
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/asm-publication/publish_mirror.py publish --prepared "$RUNNER_TEMP/prepared"
+  manual:
+    needs: publish
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

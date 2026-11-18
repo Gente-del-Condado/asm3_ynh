@@ -1,28 +1,36 @@
 # Publicar en GitHub y Forgejo
 
-## Preparación del espejo privado (transición)
+## Recorrido con espejo privado
 
-La ruta objetivo es Forgejo → `asm3_ynh-private` (Actions desactivado) →
-`asm3_ynh` público → instalación personalizada de YunoHost. No hace falta otro
-repositorio por tienda: la raíz pública ya es el paquete YunoHost. La aceptación
-por el catálogo oficial continúa siendo independiente.
+La ruta es Forgejo → `asm3_ynh-private` (Actions desactivado) → `asm3_ynh`
+público → instalación personalizada de YunoHost. La raíz pública ya es el paquete;
+no hace falta otro repositorio por tienda. La aceptación en el catálogo oficial
+es independiente de esta automatización.
 
-El diagnóstico manual `mirror-read-check.yml` se ejecuta solo en el público.
-Usa `MIRROR_READ_TOKEN`, limitado a Contents/Metadata de lectura del único privado,
-y exige el SHA completo de Forgejo. Comprueba identidad y privacidad del espejo,
-rutas seguras del archivo y coherencia del origen fijado. No ejecuta código del
-privado ni publica su archivo completo como artefacto.
+Forgejo escribe en el privado con una clave SSH exclusiva. El público lee ese
+espejo mediante `MIRROR_READ_TOKEN`, limitado a Contents/Metadata de lectura del
+único privado. El diagnóstico manual exige el SHA completo de Forgejo y comprueba
+identidad, privacidad, rutas y origen upstream fijado sin ejecutar las fuentes.
 
-Esta preparación no activa aún la publicación desde el privado. El espejo directo
-público descrito más abajo sigue vigente hasta validar y activar el reemplazo.
-La nueva clave SSH de Forgejo debe autorizar escritura solo en el privado; no se
-retira la clave del recorrido anterior durante esta preparación.
+`publish-mirror.yml` comprueba cada hora el main privado. Exporta únicamente las
+rutas revisadas de `.github/asm-publication/public-files.txt`, valida el paquete,
+las pruebas unitarias, MariaDB y su empaquetado en un job sin credenciales de
+publicación. Otro job verifica SHA, hashes y permisos, y escribe solo en el público
+con su propio `GITHUB_TOKEN`. Después publica Pages. No importa workflows del
+privado automáticamente, no reescribe el historial ni copia ramas privadas.
+Esta primera versión publica main; no crea ni mueve etiquetas.
 
+La activación requiere `ENABLE_MIRROR_PUBLICATION=true` en el público y, en una
+ejecución manual, seleccionar publicar. Sin esa variable solo se valida. Antes
+de activarla se aísla el espejo directo público antiguo: intervalo `0s`, filtro
+`migration-disabled/no-direct-publication`. No crear esa rama reservada. Su clave
+se conserva temporalmente para reversión; no es necesaria en la ruta nueva.
+El espejo privado conserva sincronización al recibir commits e intervalo 10m.
 
-Forgejo conserva el origen y replica hacia GitHub. Solo `.github/workflows/`
-ejecuta la validación, el seguimiento upstream, la matriz YunoHost manual y Pages.
-Actions permanece desactivado en Forgejo; sus antiguos workflows específicos se
-han retirado para evitar dos recorridos de CI. Los cambios se preparan en Forgejo.
+Los cambios del controlador y la lista pública se revisan primero en Forgejo y
+se trasladan expresamente al público. Los cambios del producto siguen la ruta
+anterior. Si aparece un archivo nuevo bajo los directorios del paquete, la
+publicación se detiene hasta revisar la lista permitida.
 
 ## Subir el repositorio
 
@@ -34,7 +42,7 @@ git remote add origin ssh://forgejo@TU_FORGEJO/TU_USUARIO/asm3_ynh.git
 git push origin HEAD:refs/for/main/mantenimiento
 ```
 
-Revisa y fusiona la propuesta en Forgejo; su espejo lleva main a GitHub.
+Revisa y fusiona la propuesta en Forgejo; su espejo lleva main al privado de GitHub.
 Los bundles de `dist/` sirven para instalar o transportar el paquete. Mantén
 discos de laboratorio, credenciales y copias de producción fuera del checkout.
 
@@ -44,7 +52,7 @@ forjas como aplicación personalizada. La raíz debe contener `manifest.toml` y
 
 ## GitHub
 
-Activa Actions. Permite que los workflows creen PRs en Settings → Actions → General.
+Solo en `asm3_ynh` público, activa Actions. Permite que los workflows creen PRs en Settings → Actions → General.
 La validación funciona en un runner Ubuntu alojado. El seguimiento de versiones usa
 `GITHUB_TOKEN` del propio repositorio. Las propuestas upstream se revisan y se trasladan al origen Forgejo antes de
 fusionar allí; no se fusionan automáticamente sobre el espejo GitHub.
@@ -61,27 +69,14 @@ El manual solo contiene ejemplos y capturas de laboratorio. No copies datos
 privados a `docs/`, que se sirve como sitio público en la configuración habitual.
 Consulta la [guía oficial de GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 
-## Forgejo
+## Forgejo y comprobación del recorrido
 
-Mantén activo el espejo de salida hacia GitHub y desactiva Actions en Forgejo. No se necesita un token de CI
-Forgejo ni un runner en YunoHost para los flujos de este paquete. Se conservan las
-herramientas de laboratorio y `tools/run_package_check.sh` para pruebas explícitas.
-
-## Sincronizar main y actualizar Pages
-
-Forgejo es el origen de `main`. El espejo de salida del repositorio envía
-esa rama a GitHub mediante SSH cuando recibe cambios y vuelve a comprobarla
-cada diez minutos. GitHub autoriza la clave pública del espejo como clave de
-despliegue con escritura solo en `Gente-del-Condado/asm3_ynh`.
-
-Sube los cambios a Forgejo. El espejo puede sobrescribir cambios divergentes
-en `main` de GitHub. Para diagnosticar una actualización, revisa el espejo en
-los ajustes del repositorio de Forgejo y el workflow de Pages en GitHub.
-
-Para comprobar la sincronización, compara el identificador del commit de `main`
-en ambas forjas. Cada push replicado activa `Validate package` en GitHub. Pages
-solo se publica cuando cambia `docs/` o su propio workflow; un cambio únicamente
-en `doc/` no necesita volver a publicar el manual.
+Mantén el espejo privado activo y Actions desactivado en Forgejo y GitHub privado.
+Compara main de Forgejo con main del privado. El público lleva commits propios:
+consulta `.publication/asm3.json` para su `source_sha` y hashes de archivos.
+No compares directamente el SHA del commit público con el privado tras activar
+la exportación. Sin cambios de origen el workflow termina sin repetir pruebas
+costosas ni publicar de nuevo. La matriz del laboratorio sigue siendo manual.
 
 ## Matriz integral de YunoHost en CI
 
