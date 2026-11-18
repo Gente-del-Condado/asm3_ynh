@@ -1,5 +1,24 @@
 # Publicar en GitHub y Forgejo
 
+## Preparación del espejo privado (transición)
+
+La ruta objetivo es Forgejo → `asm3_ynh-private` (Actions desactivado) →
+`asm3_ynh` público → instalación personalizada de YunoHost. No hace falta otro
+repositorio por tienda: la raíz pública ya es el paquete YunoHost. La aceptación
+por el catálogo oficial continúa siendo independiente.
+
+El diagnóstico manual `mirror-read-check.yml` se ejecuta solo en el público.
+Usa `MIRROR_READ_TOKEN`, limitado a Contents/Metadata de lectura del único privado,
+y exige el SHA completo de Forgejo. Comprueba identidad y privacidad del espejo,
+rutas seguras del archivo y coherencia del origen fijado. No ejecuta código del
+privado ni publica su archivo completo como artefacto.
+
+Esta preparación no activa aún la publicación desde el privado. El espejo directo
+público descrito más abajo sigue vigente hasta validar y activar el reemplazo.
+La nueva clave SSH de Forgejo debe autorizar escritura solo en el privado; no se
+retira la clave del recorrido anterior durante esta preparación.
+
+
 Forgejo conserva el origen y replica hacia GitHub. Solo `.github/workflows/`
 ejecuta la validación, el seguimiento upstream, la matriz YunoHost manual y Pages.
 Actions permanece desactivado en Forgejo; sus antiguos workflows específicos se
