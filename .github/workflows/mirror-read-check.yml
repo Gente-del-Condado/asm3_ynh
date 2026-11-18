@@ -1,0 +1,28 @@
+name: Comprobar espejo privado de ASM3
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: SHA completo de main comprobado en Forgejo
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  read-check:
+    if: github.repository == 'Gente-del-Condado/asm3_ynh' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Probar el lector con archivos ficticios
+        run: python3 -m unittest discover -s .github/asm-publication -p 'test_*.py' -v
+      - name: Leer el espejo privado por identidad y SHA exactos
+        env:
+          MIRROR_READ_TOKEN: ${{ secrets.MIRROR_READ_TOKEN }}
+          EXPECTED_SHA: ${{ inputs.source_sha }}
+        run: python3 .github/asm-publication/check_mirror.py download --archive "$RUNNER_TEMP/asm-source.tar.gz"
+      - name: Comprobar distribuciones y sumas sin credenciales
+        run: python3 .github/asm-publication/check_mirror.py check --archive "$RUNNER_TEMP/asm-source.tar.gz"
