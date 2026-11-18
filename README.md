@@ -115,14 +115,10 @@ creen pull requests en Settings → Actions → General. El workflow
 4. Ejecuta las validaciones y el ciclo real de MariaDB; genera un archivo instalable.
 5. Abre o actualiza una PR en `automation/asm3-stable`.
 
-Por defecto se revisa y fusiona la PR. Para fusionar automáticamente, habilita
-auto-merge en el repositorio y crea la variable Actions **`ASM3_AUTO_MERGE=true`**.
-Configura las protecciones de rama que desees antes de activarlo. Los workflows
-ejecutados con `GITHUB_TOKEN` no desencadenan nuevos workflows al crear la PR; por
-eso el actualizador ejecuta sus propias pruebas antes de publicarla. Si impones un
-check de PR adicional obligatorio, necesitarás adaptar el token/permisos para que
-ese check se dispare. Las tareas programadas de GitHub requieren un repositorio
-activo y Actions habilitado; su ejecución puede retrasarse.
+La propuesta y su artefacto se revisan y se trasladan al origen Forgejo antes
+de fusionar allí. El actualizador no fusiona automáticamente sobre el espejo
+GitHub. Sus propias pruebas validan la propuesta; la programación puede
+retrasarse y requiere Actions habilitado.
 
 También puedes actualizar el paquete manualmente con Python ≥ 3.11:
 
