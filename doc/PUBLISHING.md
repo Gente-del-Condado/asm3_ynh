@@ -44,7 +44,7 @@ Consulta la [guía oficial de GitHub Pages](https://docs.github.com/en/pages/get
 
 ## Forgejo
 
-Mantén el espejo de salida y Actions desactivado. No se necesita un token de CI
+Mantén activo el espejo de salida hacia GitHub y desactiva Actions en Forgejo. No se necesita un token de CI
 Forgejo ni un runner en YunoHost para los flujos de este paquete. Se conservan las
 herramientas de laboratorio y `tools/run_package_check.sh` para pruebas explícitas.
 

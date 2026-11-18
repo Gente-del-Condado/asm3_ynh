@@ -12,7 +12,7 @@
   <header class="top">
     <div class="shell">
       <a class="brand" href="#inicio">ASM3 <span>· YunoHost</span></a>
-      <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh">Repositorio en Forgejo</a>
+      <a href="https://gentedelcondado.es/forgejo/wolfbelmi88/asm3_ynh">Repositorio en Forgejo</a>
     </div>
   </header>
   <div class="shell layout">
@@ -68,7 +68,7 @@
         </figure>
         <h3>Dex, OpenID Connect y recuperación</h3>
         <p>Para usar Google, GitHub o Microsoft, instala Dex en YunoHost. En el panel de configuración de ASM3 selecciona Dex, registra los clientes usando el callback indicado y define los usuarios autorizados. Las listas vacías deniegan el acceso externo. El SSO nativo sigue disponible.</p>
-        <p>Un proveedor OIDC propio requiere un cliente registrado y el algoritmo de firma que corresponda, <code>RS256</code> o <code>RS512</code>. El código TOTP se sigue pidiendo en ASM3. Consulta las guías de <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh/src/branch/main/doc/DEX.md">Dex</a> y <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh/src/branch/main/doc/OIDC.md">OIDC</a>.</p>
+        <p>Un proveedor OIDC propio requiere un cliente registrado y el algoritmo de firma que corresponda, <code>RS256</code> o <code>RS512</code>. El código TOTP se sigue pidiendo en ASM3. Consulta las guías de <a href="https://gentedelcondado.es/forgejo/wolfbelmi88/asm3_ynh/src/branch/main/doc/DEX.md">Dex</a> y <a href="https://gentedelcondado.es/forgejo/wolfbelmi88/asm3_ynh/src/branch/main/doc/OIDC.md">OIDC</a>.</p>
         <p>Si alguien pierde su factor, el administrador de YunoHost puede restablecerlo desde la configuración de ASM3. La operación revoca las sesiones. La recuperación local en <code>/login?local=1</code> también requiere TOTP.</p>
       </section>
 
@@ -139,7 +139,7 @@ sudo journalctl -u asm3 -n 60 --no-pager</code></pre>
         <p class="eyebrow">08 / Código</p>
         <h2>Desarrollo y validación</h2>
         <p><code>AGENTS.md</code> y <code>CONTRIBUTING.md</code> explican cómo encontrar el código, actualizar el origen y ejecutar pruebas. <code>docs/</code> contiene este manual; <code>doc/</code> contiene los textos que consume YunoHost y la documentación técnica.</p>
-        <p><code>51.1~ynh10</code> completó los siete escenarios de <code>package_check</code> en Debian 12 y YunoHost 12.1.41.2. El resultado oficial global fue nivel 0 por los hallazgos relativos al catálogo comunitario. <a href="https://gentedelcondado.es/wolfbelmi88/asm3_ynh/src/branch/main/doc/validation/package-check-51.1~ynh10.json">Consulta el informe original</a>.</p>
+        <p><code>51.1~ynh10</code> completó los siete escenarios de <code>package_check</code> en Debian 12 y YunoHost 12.1.41.2. El resultado oficial global fue nivel 0 por los hallazgos relativos al catálogo comunitario. <a href="https://gentedelcondado.es/forgejo/wolfbelmi88/asm3_ynh/src/branch/main/doc/validation/package-check-51.1~ynh10.json">Consulta el informe original</a>.</p>
       </section>
     </main>
   </div>

@@ -140,6 +140,8 @@ sha256sum -c doc/validation/test-tools.sha256
 
 La vista del navegador emplea una cuenta y semilla ficticias en loopback y el HTML
 del módulo entregado; no es una sesión real ni una prueba de viewport móvil.
-No se ha probado ARM ni se han ejecutado workflows remotos o publicado forjas.
+En aquella validación no se había probado ARM ni se habían ejecutado workflows
+remotos o publicado las forjas. Para el estado posterior de CI y publicación,
+consulta [TESTING.md](../TESTING.md) y [PUBLISHING.md](../PUBLISHING.md).
 Discos, claves privadas, bases de datos y credenciales del laboratorio se excluyen
 por completo del Git y de los artefactos de distribución.

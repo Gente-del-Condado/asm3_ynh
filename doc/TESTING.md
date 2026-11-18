@@ -130,30 +130,41 @@ login. Solo el harness root desechable reinicia el contador TOTP entre logins pa
 no esperar 30 segundos por cada caso; el código de producción nunca lo reinicia
 al autenticar. Los casos específicos Dex prueban replay y bloqueo sin ese ajuste.
 
-## Estado de esta entrega
+## Estado de la validación
 
-Validación del **5 de noviembre de 2026**, revisión **51.1~ynh6**.
-Las suites incluyen ahora la puerta MFA obligatoria y el Dex real; los recuentos
-actuales y sus límites se detallan en la evidencia.
-La evidencia definitiva está en [validation/README.md](validation/README.md).
+La última matriz completa corresponde a **51.1~ynh10**, ejecutada el **14 de
+noviembre de 2026** sobre el commit `c7a29694fa5fa3b7b968663760a321e0a8543411`.
+Los siete escenarios terminaron con `main_result=success` en Debian 12 /
+YunoHost 12.1.41.2 / amd64, dentro de Incus en una VM. No se ha ejecutado
+la matriz sobre ARM.
+
+La evidencia por versión está en [validation/README.md](validation/README.md).
+Los resultados SSO, OIDC y Dex de `51.1~ynh6` se conservan como pruebas históricas
+con sus fechas y límites; no son nuevas ejecuciones sobre cada commit posterior.
 El laboratorio y las imágenes exactas se describen en [LAB.md](LAB.md).
 
-La matriz se ejecuta en Debian 12 / YunoHost 12.1.41.2 / amd64 dentro de Incus
-en una VM. El smoke test adicional usa Python 3.14, MariaDB 11.8.8 y mysqlclient
-2.3.0. No se ha ejecutado la matriz sobre ARM.
+La revisión del **18 de noviembre de 2026**, sobre `69da1de`, pasó el verificador
+del paquete y 73 pruebas unitarias locales. La prueba adicional comprueba que
+una copia limpia genera el archivo instalable y el bundle sin los workflows
+retirados de Forgejo. La CI de GitHub también completó las pruebas con MariaDB,
+la construcción y la subida de artefactos en esa revisión. Estos resultados no
+sustituyen una nueva matriz completa de YunoHost.
 
 La nota oficial depende también del catálogo comunitario. El wrapper devuelve
 error de calidad si es 0, aunque los escenarios funcionales pasen; conserva el
 JSON original. No simula pertenencia al catálogo ni altera las pruebas oficiales.
 La instalación personalizada desde un repositorio no requiere su alta editorial.
 
-Los hashes de [runtime.sha256](validation/runtime.sha256) permiten comprobar
+Los hashes de [runtime-51.1~ynh10.sha256](validation/runtime-51.1~ynh10.sha256) permiten comprobar
 que el código funcional coincide con el probado, aunque se añadan después los
 informes o documentación:
 
 ```bash
-sha256sum -c doc/validation/runtime.sha256
+sha256sum -c doc/validation/runtime-51.1~ynh10.sha256
 ```
 
-Los workflows se verifican en sintaxis y la API Forgejo tiene pruebas unitarias.
-No se han ejecutado en cuentas remotas ni se han configurado tokens o runners.
+Forgejo mantiene el origen de `main` y lo replica hacia GitHub. La validación,
+el seguimiento upstream y la publicación de Pages se ejecutan en GitHub Actions;
+los workflows de Forgejo se retiraron. La matriz completa sigue siendo manual y
+requiere un runner de laboratorio preparado. Consulta la
+[guía de publicación](PUBLISHING.md) para el flujo de propuestas y del espejo.
