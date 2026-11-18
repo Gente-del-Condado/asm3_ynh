@@ -6,8 +6,8 @@ Paquete nativo de **ASM3** para **YunoHost ≥ 12.1.17**, formato de empaquetado
 helpers 2.1. La versión empaquetada es **51-1** (`51.1~ynh10`), con origen fijado al **5 de noviembre de 2026**. El código se descarga del repositorio
 oficial, fijado por commit y SHA-256; no depende de una imagen Docker.
 
-Preparado para publicarse en **GitHub o Forgejo**, con workflows propios para
-ambas plataformas. Consulta [la guía de publicación](doc/PUBLISHING.md).
+El origen se mantiene en **Forgejo**, con espejo en GitHub. Las comprobaciones
+y la publicación del manual se ejecutan únicamente en GitHub Actions. Consulta [la guía de publicación](doc/PUBLISHING.md).
 
 ## Documentación
 
