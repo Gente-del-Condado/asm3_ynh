@@ -59,6 +59,11 @@ Sube los cambios a Forgejo. El espejo puede sobrescribir cambios divergentes
 en `main` de GitHub. Para diagnosticar una actualización, revisa el espejo en
 los ajustes del repositorio de Forgejo y el workflow de Pages en GitHub.
 
+Para comprobar la sincronización, compara el identificador del commit de `main`
+en ambas forjas. Cada push replicado activa `Validate package` en GitHub. Pages
+solo se publica cuando cambia `docs/` o su propio workflow; un cambio únicamente
+en `doc/` no necesita volver a publicar el manual.
+
 ## Matriz integral de YunoHost en CI
 
 El workflow `.github/workflows/package-check.yml` es manual. Usa un runner de laboratorio con
