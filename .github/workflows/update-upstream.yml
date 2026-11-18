@@ -33,7 +33,6 @@ jobs:
       - name: Create or refresh update pull request
         env:
           GH_TOKEN: ${{ github.token }}
-          AUTO_MERGE: ${{ vars.ASM3_AUTO_MERGE }}
         run: |
           if git diff --quiet -- manifest.toml upstream.lock.json; then exit 0; fi
           git config user.name 'github-actions[bot]'
@@ -52,4 +51,3 @@ jobs:
           if [ -z "$pr" ]; then
             pr="$(gh pr create --head automation/asm3-stable --title 'Update ASM3 to latest stable' --body-file /tmp/update-body.md)"
           fi
-          if [ "$AUTO_MERGE" = true ]; then gh pr merge "$pr" --auto --squash; fi

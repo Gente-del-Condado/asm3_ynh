@@ -1,11 +1,9 @@
 # Publicar en GitHub y Forgejo
 
-El mismo repositorio funciona en ambas forjas. Contiene workflows independientes:
-
-| Directorio | Uso |
-| --- | --- |
-| `.github/workflows` | GitHub Actions: validación, actualización estable y matriz YunoHost manual |
-| `.forgejo/workflows` | Forgejo Actions: los mismos procesos con acciones compatibles y API propia |
+Forgejo conserva el origen y replica hacia GitHub. Solo `.github/workflows/`
+ejecuta la validación, el seguimiento upstream, la matriz YunoHost manual y Pages.
+Actions permanece desactivado en Forgejo; sus antiguos workflows específicos se
+han retirado para evitar dos recorridos de CI. Los cambios se preparan en Forgejo.
 
 ## Subir el repositorio
 
@@ -13,13 +11,11 @@ Publica desde el checkout Git para conservar su historial. Configura solo los
 remotos que vayas a usar y sustituye las URLs de ejemplo:
 
 ```bash
-git remote add github https://github.com/TU_USUARIO/asm3_ynh.git
-git remote add forgejo https://TU_FORGEJO/TU_USUARIO/asm3_ynh.git
-git push -u github main
-git push forgejo main
+git remote add origin ssh://forgejo@TU_FORGEJO/TU_USUARIO/asm3_ynh.git
+git push origin HEAD:refs/for/main/mantenimiento
 ```
 
-Si Forgejo ya está configurado como `origin`, usa `git push origin main`.
+Revisa y fusiona la propuesta en Forgejo; su espejo lleva main a GitHub.
 Los bundles de `dist/` sirven para instalar o transportar el paquete. Mantén
 discos de laboratorio, credenciales y copias de producción fuera del checkout.
 
@@ -31,8 +27,8 @@ forjas como aplicación personalizada. La raíz debe contener `manifest.toml` y
 
 Activa Actions. Permite que los workflows creen PRs en Settings → Actions → General.
 La validación funciona en un runner Ubuntu alojado. El seguimiento de versiones usa
-`GITHUB_TOKEN` del propio repositorio. `ASM3_AUTO_MERGE=true` es opcional y requiere
-configurar auto-merge y las protecciones de rama correspondientes.
+`GITHUB_TOKEN` del propio repositorio. Las propuestas upstream se revisan y se trasladan al origen Forgejo antes de
+fusionar allí; no se fusionan automáticamente sobre el espejo GitHub.
 
 ### Publicar el manual con GitHub Pages
 
@@ -48,20 +44,9 @@ Consulta la [guía oficial de GitHub Pages](https://docs.github.com/en/pages/get
 
 ## Forgejo
 
-Activa Actions para el repositorio y conecta un runner cuya etiqueta `docker` use
-contenedores. Los jobs usan `data.forgejo.org/oci/node:22-bookworm`; instalan las
-dependencias dentro del job y no requieren que el servidor Forgejo sea Debian.
-
-La validación de pushes/PRs no necesita un token personal. Para que el seguimiento
-diario pueda subir su rama y crear una propuesta, añade el secreto Actions
-**`ASM3_UPDATE_TOKEN`**, limitado a este repositorio, con permiso de escritura del
-repositorio y sus pull requests. Nunca lo añadas a archivos Git. El script usa
-`FORGEJO_SERVER_URL` y `FORGEJO_REPOSITORY` que proporciona el runner; no depende de
-GitHub CLI ni de un dominio Forgejo fijo. No activa fusión automática en Forgejo.
-
-Si mantienes un espejo en ambas forjas, activa el seguimiento diario en una sola
-para evitar propuestas duplicadas. Replicar Git no replica secretos, runners ni
-configuración de Actions.
+Mantén el espejo de salida y Actions desactivado. No se necesita un token de CI
+Forgejo ni un runner en YunoHost para los flujos de este paquete. Se conservan las
+herramientas de laboratorio y `tools/run_package_check.sh` para pruebas explícitas.
 
 ## Sincronizar main y actualizar Pages
 
@@ -76,12 +61,11 @@ los ajustes del repositorio de Forgejo y el workflow de Pages en GitHub.
 
 ## Matriz integral de YunoHost en CI
 
-Los workflows `package-check.yml` son manuales. Usa un runner de laboratorio con
+El workflow `.github/workflows/package-check.yml` es manual. Usa un runner de laboratorio con
 Incus/LXD configurado y las dependencias oficiales de `package_check`. En GitHub
-necesita las etiquetas `self-hosted`, `linux`, `yunohost-package-check`; en Forgejo,
-la etiqueta `yunohost-package-check` debe ejecutar directamente en ese host.
+necesita las etiquetas `self-hosted`, `linux`, `yunohost-package-check`; el runner debe estar preparado explícitamente para ese laboratorio.
 
-Ambos llaman a `tools/run_package_check.sh`. Guarda consola, log completo, JSON y
+Este llama a `tools/run_package_check.sh`. Guarda consola, log completo, JSON y
 commit de la herramienta en `.package-check/results/`. El wrapper devuelve error
 si falla una prueba, incluso cuando el lanzador oficial termina con código 0.
 El chequeo de pertenencia al catálogo seguirá fallando hasta que la comunidad
@@ -90,7 +74,3 @@ Aunque las siete pruebas funcionales tengan `main_result=success`, el workflow
 integral también devuelve error si el nivel oficial sigue en 0 por los hallazgos
 del linter. La validación ordinaria del paquete y sus pruebas MariaDB son jobs
 independientes de esa aceptación administrativa.
-
-Las acciones Forgejo se eligieron según la
-[referencia oficial](https://forgejo.org/docs/latest/user/actions/reference/) y la
-[guía de uso](https://forgejo.org/docs/latest/user/actions/actions/).

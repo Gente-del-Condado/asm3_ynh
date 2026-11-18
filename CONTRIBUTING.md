@@ -18,7 +18,7 @@ las guías.
 | `patches/main/` | Adaptaciones mínimas al código descargado de ASM3 |
 | `tests/`, `tests.toml`, `tools/` | Pruebas, comprobaciones, actualización y empaquetado |
 | `doc/`, `docs/` | Documentación de YunoHost y sitio estático respectivamente |
-| `.github/workflows/`, `.forgejo/workflows/` | Validación, actualización upstream y matriz de laboratorio |
+| `.github/workflows/` | Validación, actualización upstream y matriz de laboratorio |
 
 ## Flujo de ejecución
 
