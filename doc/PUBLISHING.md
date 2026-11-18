@@ -11,13 +11,11 @@ Publica desde el checkout Git para conservar su historial. Configura solo los
 remotos que vayas a usar y sustituye las URLs de ejemplo:
 
 ```bash
-git remote add github https://github.com/TU_USUARIO/asm3_ynh.git
-git remote add forgejo https://TU_FORGEJO/TU_USUARIO/asm3_ynh.git
-git push -u github main
-git push forgejo main
+git remote add origin ssh://forgejo@TU_FORGEJO/TU_USUARIO/asm3_ynh.git
+git push origin HEAD:refs/for/main/mantenimiento
 ```
 
-Si Forgejo ya está configurado como `origin`, usa `git push origin main`.
+Revisa y fusiona la propuesta en Forgejo; su espejo lleva main a GitHub.
 Los bundles de `dist/` sirven para instalar o transportar el paquete. Mantén
 discos de laboratorio, credenciales y copias de producción fuera del checkout.
 
@@ -29,8 +27,8 @@ forjas como aplicación personalizada. La raíz debe contener `manifest.toml` y
 
 Activa Actions. Permite que los workflows creen PRs en Settings → Actions → General.
 La validación funciona en un runner Ubuntu alojado. El seguimiento de versiones usa
-`GITHUB_TOKEN` del propio repositorio. `ASM3_AUTO_MERGE=true` es opcional y requiere
-configurar auto-merge y las protecciones de rama correspondientes.
+`GITHUB_TOKEN` del propio repositorio. Las propuestas upstream se revisan y se trasladan al origen Forgejo antes de
+fusionar allí; no se fusionan automáticamente sobre el espejo GitHub.
 
 ### Publicar el manual con GitHub Pages
 
@@ -76,4 +74,3 @@ Aunque las siete pruebas funcionales tengan `main_result=success`, el workflow
 integral también devuelve error si el nivel oficial sigue en 0 por los hallazgos
 del linter. La validación ordinaria del paquete y sus pruebas MariaDB son jobs
 independientes de esa aceptación administrativa.
-
