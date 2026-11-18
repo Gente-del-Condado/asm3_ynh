@@ -1,0 +1,498 @@
+{
+  "source_sha": "45b29efa4ddb30de0728621adf7c0211580b3622",
+  "version": "51.1~ynh10",
+  "main_files": {
+    ".gitattributes": {
+      "sha256": "2c15c0155393adc76747bfcef49690d1b9eb6a5bad6b343ecab3f37dfe5b41dd",
+      "mode": 420
+    },
+    ".gitignore": {
+      "sha256": "ab8ca7005e67707b0b6f337b6662de99461990a2eb88fd1219fe927897eab7a0",
+      "mode": 420
+    },
+    "AGENTS.md": {
+      "sha256": "4744bd01e41d7da179df574e81bc264c2ecf83b73d6c7969347c25e4b3113a24",
+      "mode": 420
+    },
+    "CONTRIBUTING.md": {
+      "sha256": "0ad4618dfb739a69ae1a87a3f9129bd8f19e97fc1ecb7d35207a9c7ea047b59d",
+      "mode": 420
+    },
+    "LICENSE": {
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "mode": 420
+    },
+    "README.md": {
+      "sha256": "e85f12141227d8556662e1f5f6cf6889d8136f2ed142f460c1a886296dceae4d",
+      "mode": 420
+    },
+    "conf/asm3.conf": {
+      "sha256": "996ae360eac01d87c8b574eab317d1269fdff3fa567ed57b2d0254cf3aa78b09",
+      "mode": 420
+    },
+    "conf/build.py": {
+      "sha256": "222645b87b766ead57e3ffb88f5fcfe309704d533db016acda26c7196679d4de",
+      "mode": 420
+    },
+    "conf/cron": {
+      "sha256": "7a37378801de2e7eeb44afa5048507407afa1b970013682e1c19928dae831a12",
+      "mode": 420
+    },
+    "conf/manage.py": {
+      "sha256": "8a1d18597c09b0ac4c514a4335ab212795a54be84673d6b0d8219502746dacbc",
+      "mode": 420
+    },
+    "conf/manage_identity.py": {
+      "sha256": "ee7b58921cb6c7de52e8e38e08edfa194f74cfb168fc9494d43eb339fd330952",
+      "mode": 420
+    },
+    "conf/manage_oidc.py": {
+      "sha256": "c9e152d79aeb60767000765b7a7b0844a74d1a5866d26a9dbbdfcab84be60737",
+      "mode": 420
+    },
+    "conf/nginx.conf": {
+      "sha256": "0008a284871b369e2e47cee3e7817eb2ca7d2e26dfaa2d98bf38139413a2779f",
+      "mode": 420
+    },
+    "conf/oidc.json.example": {
+      "sha256": "15a898baeb5d51ba39d2688b166fbeb786365caa0f7095dc6765a90a62784aee",
+      "mode": 420
+    },
+    "conf/server.py": {
+      "sha256": "504c0d811a46e34725f0f219c38215ade91b8a5c31588415e458d1b824a12cc6",
+      "mode": 420
+    },
+    "conf/systemd.service": {
+      "sha256": "4ca1fb2558dbce11b55ed24b05a4013b79d8c4c9416d1d86766208c4519b0e0d",
+      "mode": 420
+    },
+    "conf/ynh_auth.py": {
+      "sha256": "d45da6fd936e4a233e162abda5479e4bd8ab6d755e2453d081b4cd7eed69663e",
+      "mode": 420
+    },
+    "conf/ynh_mfa.py": {
+      "sha256": "9ecb6422082c049490254d34c9f65dbe2b28ad2b074095541a3a4e5a03638618",
+      "mode": 420
+    },
+    "conf/ynh_oidc.py": {
+      "sha256": "bbfa933999dbb5c3df3703cd6736ccd6a50be34ebef941d653fcbf36eadfd321",
+      "mode": 420
+    },
+    "config_panel.toml": {
+      "sha256": "06a9dc6800845ffe0266882d16fff66999bbddfe4344ec7ad6a12e5aee296cc3",
+      "mode": 420
+    },
+    "doc/ADMIN.md": {
+      "sha256": "9c08f86cff6f57f7891a92538b521aa6273189425db8a4e5f49743a568cf7c5f",
+      "mode": 420
+    },
+    "doc/ADMIN_es.md": {
+      "sha256": "c79f4b56b22643c322c3947da3050bd37892032122dfd079f0b8179f757c152f",
+      "mode": 420
+    },
+    "doc/CHANGELOG.md": {
+      "sha256": "54fc6196959bb810a77fafd849b64bebe7957c2ddc0be26a1d44d05c5ec26019",
+      "mode": 420
+    },
+    "doc/DESCRIPTION.md": {
+      "sha256": "cd7b189bf78d59841ddc20d9dab20956b167c4de9068ea9a8e0644b7592ad284",
+      "mode": 420
+    },
+    "doc/DESCRIPTION_es.md": {
+      "sha256": "1edbc9e300b9c200a0eef9a14607bdf313ddf37b06c5a6fc28c33dfc02635ceb",
+      "mode": 420
+    },
+    "doc/DEX.md": {
+      "sha256": "0e9cb715094fde7e5b421c7946811d326968d144fa134517d3f8d306ed1e9499",
+      "mode": 420
+    },
+    "doc/HOME_ASSISTANT.md": {
+      "sha256": "131f48c0239a49e799cc6b0b11da203983f1bbe5a3fde6ab473ba1b45441b1f5",
+      "mode": 420
+    },
+    "doc/IDENTITY_PROVIDERS.md": {
+      "sha256": "6e9461ba9cd0faad15d1c56c744d698e031c428a7957f6aaefa209464e97c723",
+      "mode": 420
+    },
+    "doc/INTEGRATION.md": {
+      "sha256": "c0c345bec6c347f5a277766a398ed60f67f968668020c9b625f181e1d7498c87",
+      "mode": 420
+    },
+    "doc/LAB.md": {
+      "sha256": "9d49ea038755ee02a77af9c41b86930c79cd29c0243e0b40e46c38dedc08e66c",
+      "mode": 420
+    },
+    "doc/OIDC.md": {
+      "sha256": "c445f2e64ccc60364716e522c6dc316623c39a1bb3752bc1a2df4e7c824efbb0",
+      "mode": 420
+    },
+    "doc/POST_INSTALL.md": {
+      "sha256": "23ec74e6d18d0cdf668d6c69e201e2a612f39dc05bda3f26c9b3ae8f8a07f350",
+      "mode": 420
+    },
+    "doc/POST_INSTALL_es.md": {
+      "sha256": "27624a3c76c2a8e5c5273a2a834129f75a51ecc227f708c330479b8e39af6898",
+      "mode": 420
+    },
+    "doc/PRE_INSTALL.md": {
+      "sha256": "787c42fae67000edc59af512d87cf1dc2e80579df1b6d5afac0dbe9758de2b57",
+      "mode": 420
+    },
+    "doc/PRE_INSTALL_es.md": {
+      "sha256": "2ae850ee1eb0ec5bc1a12ec7917166e43e50e6d434b0364b316ebeb1bb2a541f",
+      "mode": 420
+    },
+    "doc/PUBLISHING.md": {
+      "sha256": "8e9b29bf0bf98b13b31831ee080071809b35df5c1555992e11747c4977460eca",
+      "mode": 420
+    },
+    "doc/SSO.md": {
+      "sha256": "21858acb12b88a9e1c589165b6c3d75e901871c4950c36b80121ca7fed3544c8",
+      "mode": 420
+    },
+    "doc/TESTING.md": {
+      "sha256": "6dd3c821e8cccd623d7b1fd7c3ecf9623843f987c20fdfc38fcec12d1cd2c8f9",
+      "mode": 420
+    },
+    "doc/examples/asm3-dex.json": {
+      "sha256": "a2b2f9486dd9080624b2e1d8d37109d4a2a3467aa521c428f3cb296bd77d8f5c",
+      "mode": 420
+    },
+    "doc/examples/asm3-google.json": {
+      "sha256": "86393d30d87b720f63f1073457504f0ffa659442fde76e8b3f83f2f07d958c8d",
+      "mode": 420
+    },
+    "doc/examples/asm3-microsoft.json": {
+      "sha256": "a315ce38fe0c61e63870434a3a9ec5ea8f66ff47f4b6a3bfee1f436ef7034086",
+      "mode": 420
+    },
+    "doc/examples/asm3-rs512.json": {
+      "sha256": "b7ea0d46d35dc9dd4be37b451fd88998e1ff5965da5756837f507b5e810e9b20",
+      "mode": 420
+    },
+    "doc/examples/dex-asm3-client.yaml": {
+      "sha256": "6136c69f1577aa85cdcdd74a332c1f58aafa289848187df37ecf4338dd592c7d",
+      "mode": 420
+    },
+    "doc/examples/dex-social-connectors.yaml": {
+      "sha256": "f53a4031a502151b1c15ca7b5b510b8cfe3a5a3d2d86abcdafa3b86b7169bcd3",
+      "mode": 420
+    },
+    "doc/logo.png": {
+      "sha256": "636d015d633bc9a44e805f25b433b92f4ff4535cd9494f0c94352c250ea4b918",
+      "mode": 420
+    },
+    "doc/logo.svg": {
+      "sha256": "e730dcb3559c5ac1eb9fddbb4045d261dc37bc124b683454fea72b52bab2be34",
+      "mode": 420
+    },
+    "doc/validation/README.md": {
+      "sha256": "33dd8d506273ad2221e541786d2d9f480bd721455f8af5e36b6de4f2ed1205d6",
+      "mode": 420
+    },
+    "doc/validation/cache-51.1~ynh9.json": {
+      "sha256": "974fcae1ae0e9bc26cf5c2dc725118f6483d72f5002ae8a66da50bc203988759",
+      "mode": 420
+    },
+    "doc/validation/dex-tests.json": {
+      "sha256": "8df39f463074a6cf2d898223ba23a3b901965fccd5d60278fd2a3a74a6d974e4",
+      "mode": 420
+    },
+    "doc/validation/environment.json": {
+      "sha256": "df3722ea5932f4a572a4d8f8e5ee5fcabdf4cc0e331a51939b7bd855dac27710",
+      "mode": 420
+    },
+    "doc/validation/mapa-51.1~ynh8.webp": {
+      "sha256": "32eb0ea02c3214014c1d2c5ef66628861256389d4646015d96176c2a0e00bed9",
+      "mode": 420
+    },
+    "doc/validation/mapa-logo-51.1~ynh8.json": {
+      "sha256": "e4a24ea00e43a5a69d201ff48aecc6655be6097d347d7c110b844f23d3af764d",
+      "mode": 420
+    },
+    "doc/validation/messages-51.1~ynh10.json": {
+      "sha256": "97c2a6c933e923529a5f0b1ec0063b156b7cf1f23b89eeb628c1646a809dceb9",
+      "mode": 420
+    },
+    "doc/validation/oidc-rs512-tests.json": {
+      "sha256": "2dad5b32a11b8e665f6531f9a2e41c038ba8f79ade2732b7f0bc1eab2e1879f0",
+      "mode": 420
+    },
+    "doc/validation/oidc-tests.json": {
+      "sha256": "11e30a6b5fa9dee21ee8c45aa86ca13694ee7eab6e100647a29e1879170bb132",
+      "mode": 420
+    },
+    "doc/validation/package-check-51.1~ynh10.json": {
+      "sha256": "472054105515fe7b35dcfa7f845a81cf9703ec87a29883828547f310d4a483be",
+      "mode": 420
+    },
+    "doc/validation/package-check-51.1~ynh7.json": {
+      "sha256": "fd2e8ccea73c8c4ac73e5a36f3db77f2a619d151d35425519f9919bcb6bfaf18",
+      "mode": 420
+    },
+    "doc/validation/package-check-51.1~ynh8.json": {
+      "sha256": "6226f6b0db40ab915097974b2a9ab3fbe9e9047595aa7d909b38be08a7ac7ad5",
+      "mode": 420
+    },
+    "doc/validation/package-check-51.1~ynh9.json": {
+      "sha256": "c122a778baf053bf227ee88dd069a6e281eae24e24ea4be3677c3c7290168237",
+      "mode": 420
+    },
+    "doc/validation/package-check-commit.txt": {
+      "sha256": "ca53e2324892f66495a63be739d87094e34461f4b825b2eda5dd81defedb7375",
+      "mode": 420
+    },
+    "doc/validation/package-check-results.json": {
+      "sha256": "3a7cc1fe74beed07d09ba1226b8b19ffebfd4d9bf1425d2f633b1928fb43d128",
+      "mode": 420
+    },
+    "doc/validation/package-linter.json": {
+      "sha256": "4a02236650daf6887dd29c34818ece205ea55a11c617bed1bd6076bdc121e1e4",
+      "mode": 420
+    },
+    "doc/validation/provider-catalog.json": {
+      "sha256": "cc771159a6c35efb19472ca966bb04c549d386e32e11d9b3b5da0016c9919a85",
+      "mode": 420
+    },
+    "doc/validation/runtime-51.1~ynh10.sha256": {
+      "sha256": "c89da765f2b55ee58b73e73ec5ffc0334446eee5d26d3afe8b404bac8e95c47f",
+      "mode": 420
+    },
+    "doc/validation/runtime-51.1~ynh8.sha256": {
+      "sha256": "d06179f451c1864ecdab654b5b657265733e485b6475eee147df4d0686d3f1cf",
+      "mode": 420
+    },
+    "doc/validation/runtime-51.1~ynh9.sha256": {
+      "sha256": "9a6cb90cfc412801280ab650ac6972f2fe3b8fb2ab17aeb862a6b999c6c5e689",
+      "mode": 420
+    },
+    "doc/validation/runtime.sha256": {
+      "sha256": "34b3a8b6e0c9f4dce1872aae9c05db23ee61527b19b3e3af55098af1dac1a6e4",
+      "mode": 420
+    },
+    "doc/validation/sso-tests.json": {
+      "sha256": "cbf71350ec0519baaa4024b6e7faf7b51db19191d76b6bd0da5cbf78977ce7d8",
+      "mode": 420
+    },
+    "doc/validation/supplementary-tests.json": {
+      "sha256": "420df210d0edb1288e1cf473946bc4b36b63c12aa83afb702c8e3fc37d111110",
+      "mode": 420
+    },
+    "doc/validation/test-tools.sha256": {
+      "sha256": "31439b159bc7896b691ab7d0508e060ab031ded63da8cb15f461839f5cb3a6c0",
+      "mode": 420
+    },
+    "docs/.nojekyll": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420
+    },
+    "docs/README.md": {
+      "sha256": "711c8d905c8bcb52abcc76556f5a85527cb52ae2430aa4a278d3898d484c4c4c",
+      "mode": 420
+    },
+    "docs/assets/asm3.webp": {
+      "sha256": "208cf4c5d8cabc932e16f9b06d6b476925cb7391cdff9e6eca6fcf47124ce862",
+      "mode": 420
+    },
+    "docs/assets/home-assistant.yaml": {
+      "sha256": "b880bb2f5fe09fe92aee6f172cb40369f5354a8697585bbadf0e53974edbc1ae",
+      "mode": 420
+    },
+    "docs/assets/manual.css": {
+      "sha256": "cd7e85d66a2b3e29584e94875c627675ff47e4f2b9fcb81e4dd3c2a87749c90d",
+      "mode": 420
+    },
+    "docs/assets/mfa.webp": {
+      "sha256": "6f67d3c785fbe51ff14867865d0b5e7ec3e822b4705c13f797edb48ec6e38f06",
+      "mode": 420
+    },
+    "docs/assets/panel.webp": {
+      "sha256": "7c10a66af3f86d2f978db1e0b695b3fb68fa67b0b93bf37bdeff61c55efe3c72",
+      "mode": 420
+    },
+    "docs/index.html": {
+      "sha256": "6ddef1b8eab8e406aa309e94d4842aad3a48498b579e5e983616ee8f38f982a8",
+      "mode": 420
+    },
+    "hooks/post_app_change_url": {
+      "sha256": "00d95cb32f72e3784f89fae94c2329501c20f31d23dc35c157024cae59867655",
+      "mode": 493
+    },
+    "hooks/post_app_install": {
+      "sha256": "00d95cb32f72e3784f89fae94c2329501c20f31d23dc35c157024cae59867655",
+      "mode": 493
+    },
+    "hooks/post_app_restore": {
+      "sha256": "00d95cb32f72e3784f89fae94c2329501c20f31d23dc35c157024cae59867655",
+      "mode": 493
+    },
+    "hooks/post_app_upgrade": {
+      "sha256": "00d95cb32f72e3784f89fae94c2329501c20f31d23dc35c157024cae59867655",
+      "mode": 493
+    },
+    "manifest.toml": {
+      "sha256": "3631a566307b5e3f211ed7ea7229de04a1ed0711271a3e7b105db18a647ea17f",
+      "mode": 420
+    },
+    "patches/main/0001-mysqlclient-escape-string.patch": {
+      "sha256": "cf9ef00a4462cd972eec7c96c98d982b0765a8444c9d27fb9e3f3fbf7b50121c",
+      "mode": 420
+    },
+    "patches/main/0002-yunohost-auth-and-redact-passwords.patch": {
+      "sha256": "e6bd4232e896d1dccab23bcd2d70a640606c7d698e899f2e8ef83b454e895a9c",
+      "mode": 420
+    },
+    "patches/main/0003-openstreetmap-referrer-policy.patch": {
+      "sha256": "9582ab170cbbaf3f2b6f581ae4b48e7990e744b2d1c7c86431a5249a6ce7eb37",
+      "mode": 420
+    },
+    "patches/main/0004-ignore-missing-cache-entry.patch": {
+      "sha256": "5dd7b2bfb8a1c77c65cbd418e7e8717f693b125aed95192241b7171a43028f4e",
+      "mode": 420
+    },
+    "patches/main/0005-spanish-maintenance-messages.patch": {
+      "sha256": "cabcf63ab982cfff6d8c99657dfb888a742369ba8db24594988769ab0e7bcfbf",
+      "mode": 420
+    },
+    "scripts/_common.sh": {
+      "sha256": "e78f4c2c4ccc5ead0397ecfa77782d8c27918f902aec79ae4743a78949e6dafa",
+      "mode": 493
+    },
+    "scripts/backup": {
+      "sha256": "99492d4131e4de1eeb8683d464f57997a9b74e454689fa09ffce61cfffc4c511",
+      "mode": 493
+    },
+    "scripts/change_url": {
+      "sha256": "4aa566197dc20d4b2aa67fce523a5ec2796b18ec16bce85fac7af8bb8afcf037",
+      "mode": 493
+    },
+    "scripts/config": {
+      "sha256": "9ad365867916644327ad9575d9b16ef7dc7f4c2e7c96fc4b5686ca066a1199a5",
+      "mode": 493
+    },
+    "scripts/install": {
+      "sha256": "15270e312c93744053c40f2708ab728b134954aeeae47477f11afbf91c319949",
+      "mode": 493
+    },
+    "scripts/remove": {
+      "sha256": "3c7810231c881a781f44a4b0e21dc479b85b0e24d6b3de09e5fd667dbec21efe",
+      "mode": 493
+    },
+    "scripts/restore": {
+      "sha256": "81cc91cfb5db3a14fd4376d9dc92b2d1b141cba8783d0d51c117cfa8f4482919",
+      "mode": 493
+    },
+    "scripts/upgrade": {
+      "sha256": "4fe66db03ed4380b88e6c5308039cf99b2be0d4849846ad9fe6b9e87f738b64d",
+      "mode": 493
+    },
+    "tests.toml": {
+      "sha256": "b0d7bf23160d3828c01d6da319411408df054d1ea26204b510ba39f4bb38c193",
+      "mode": 420
+    },
+    "tests/schemas/README.md": {
+      "sha256": "f6b5278509bc6bda982fedd959b74babd011a4e607e2c4798cc3aa2b4d53dbec",
+      "mode": 420
+    },
+    "tests/schemas/config_panel.v1.schema.json": {
+      "sha256": "c7cf3f25f6a982981674e3155a4d0a953680291485c852767364e3544d5b4c6d",
+      "mode": 420
+    },
+    "tests/schemas/manifest.v2.schema.json": {
+      "sha256": "af44a6c47c633a4c16ceeee02fa48dfe7c8c47558149b8ec8b17382f67749fa3",
+      "mode": 420
+    },
+    "tests/schemas/tests.v1.schema.json": {
+      "sha256": "88f2b6505a73fe28e1d558c5a185a6ca2847cf200bc3af4964aa43b0a1faa14a",
+      "mode": 420
+    },
+    "tests/test_forgejo.py": {
+      "sha256": "42410bbfac2991d4c9f347b178a4fca9388e6937884c8e5aafa2bf87b01ceedd",
+      "mode": 420
+    },
+    "tests/test_identity.py": {
+      "sha256": "71d594bb89a3bed6be9d9a5f880d443bae012f9ad3b44a7183f8256f61c3bf29",
+      "mode": 420
+    },
+    "tests/test_maintenance.py": {
+      "sha256": "8ca21003d88307f75e2e66ae6b4dc2123ceec598ee9ae359560104587e069505",
+      "mode": 420
+    },
+    "tests/test_oidc.py": {
+      "sha256": "46ba8ef9e9b560173e334badb9cdeadc16684277431d534590e3c552ae5825af",
+      "mode": 420
+    },
+    "tests/test_package.py": {
+      "sha256": "0fc2c0f750ba72cb7339509451f34861acae6bd8c58165752c7a951c30e55c88",
+      "mode": 420
+    },
+    "tests/test_release_archive.py": {
+      "sha256": "47d2b685e8c5a086aeff49f3c600c1b1d37ad29b7f5180d31002fb97ed666738",
+      "mode": 420
+    },
+    "tests/test_sso.py": {
+      "sha256": "da4e84a66bbb5457d9e1af7df46ac943effb269ab9a7771dca5d345cd3ca82b9",
+      "mode": 420
+    },
+    "tools/build_release.sh": {
+      "sha256": "b0704be1ac2aeca1bb54dd95744d2d47e5f0e40ba1434115929f52f6df295047",
+      "mode": 493
+    },
+    "tools/check_package.py": {
+      "sha256": "e375c73862c0e547ae87c9ee09ce02056b4e2bcf91bc0eaa37ffeabef0cb0215",
+      "mode": 493
+    },
+    "tools/check_smtp.py": {
+      "sha256": "82d2cafcdbadb860242f03be7277f2af49a7f050885af61e959dae0a3402af93",
+      "mode": 493
+    },
+    "tools/forgejo_pr.py": {
+      "sha256": "877c6a65c2a81afb83a8f8e9d466fc538f396185bc6ae880d1efff5fa2b39ad5",
+      "mode": 493
+    },
+    "tools/install_ci_deps.sh": {
+      "sha256": "0136d698599a0437ca37689785e80d5386580deb40c611bb060b423fc9f81998",
+      "mode": 493
+    },
+    "tools/mfa_lab.py": {
+      "sha256": "59b4894e9d19c748067bf21917e1e0dbdf398a20e8128022843cfa5edfc296af",
+      "mode": 420
+    },
+    "tools/oidc_fixture.py": {
+      "sha256": "8a11266af1df27e7a24116637690a70d11aff417109f2dfa94d7b0dd2b1169a2",
+      "mode": 420
+    },
+    "tools/run_ci.sh": {
+      "sha256": "797499e08744866ad7272f7c688b45385c797071754c40ffad138d741cf33f90",
+      "mode": 493
+    },
+    "tools/run_package_check.sh": {
+      "sha256": "76ec47610b83e4152bbea9a4181fa61469a37fc7df5568b86a4cceb860a44441",
+      "mode": 493
+    },
+    "tools/smoke_test.py": {
+      "sha256": "2a606c7f6a3176f660204a0362359e9047f58e8bfe417f880d44e8c7dd485657",
+      "mode": 493
+    },
+    "tools/test_yunohost_dex.py": {
+      "sha256": "548246fbd730c5885c1010baf256035c195b7fd8038229cd785959b785f3d144",
+      "mode": 493
+    },
+    "tools/test_yunohost_oidc.py": {
+      "sha256": "4e2ce8b4fdc09ee0117447d610b3e2bd36975b6429964fcbfa8d62f540cf448e",
+      "mode": 493
+    },
+    "tools/test_yunohost_sso.py": {
+      "sha256": "e63f104cf98f8dac952b140dd82d489135fd3f8496e3edad46980f4255c5cb19",
+      "mode": 493
+    },
+    "tools/update_upstream.py": {
+      "sha256": "7004247d5e0b503ca37d749922bd34de9480755f5617b87bd8a6ae6bd7a51c0f",
+      "mode": 493
+    },
+    "upstream.lock.json": {
+      "sha256": "38a94dfa086e46905e1de71c56776a8be54d59da925813c8b4a9b11fc904d7d1",
+      "mode": 420
+    }
+  }
+}
